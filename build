@@ -3,13 +3,13 @@
 NAME=$(sudo docker info | grep ^Username | awk '{print $2}' )
 NOSN=${NAME}/nodeos
 
-(cd Layer1-linux  && sudo name=layer1 ./build )
-(cd Layer2-nodejs && sudo name=layer2 ./build )
-(cd Layer3-base   && sudo name=layer3 ./build )
+(cd Layer1-linux  && sudo name=layer1 ./build -f ) &&
+(cd Layer2-nodejs && sudo name=layer2 ./build )    &&
+(cd Layer3-base   && sudo name=layer3 ./build )    || exit 10
 
-sudo docker tag layer3 nodeos/nodeos
+sudo docker tag layer3 nodeos/nodeos               || exit 20
 
-(cd Layer4-custom && sudo name=${NOSN} ./build )
+(cd Layer4-custom && sudo name=${NOSN} ./build )   || exit 30
 
 echo "Success!"
 echo "You Just Built a Custom NodeOS Image '$NOSN'"
