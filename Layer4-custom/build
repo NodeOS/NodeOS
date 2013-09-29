@@ -1,0 +1,22 @@
+#!/bin/bash
+
+if [[ $(id -u) -ne 0 ]]; then
+    echo "Please Run as Root"
+    exit 20
+fi
+
+if [[ -z "$name" ]]; then
+  echo "Please Specify an Image Name"
+  echo "e.g. '${SUDO}name=nodeos $0 $@'"
+  exit 5
+fi
+
+docker build -t $name .
+
+echo "Success!"
+echo "You Just Built a Custom NodeOS Image '$name'"
+echo "------------------------------------------"
+echo "Interactively run your image with:"
+echo "    ${SUDO}docker run -t -i $name"
+echo "Share your creation with:"
+echo "    ${SUDO}docker push $name"
