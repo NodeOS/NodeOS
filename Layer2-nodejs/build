@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# This script prepares a minimally functional linux system with
+# absolutely nothing aside from the userland C++ libraries
+# necessary to really call yourself linux
+
+# Require root privileges for some operations
+if [[ $(id -u) -ne 0 ]]; then
+    echo "Please Run as Root"
+    exit 20
+fi
+
+if [[ -e "$SUDO_COMMAND" ]]; then SUDO="sudo "; fi
+if [[ -z "$name" ]]; then
+  echo "Please Specify an Image Name"
+  echo "e.g. '${SUDO}name=demo $0 $@'"
+  exit 5
+fi
+
+make default                     &&
+docker build -t $name Release    || exit 10
+
+echo "Successfully built Layer-1 image '$name'"
+echo "To View Image : ${SUDO}docker images"
+echo "To Cleanup    : make clean"
