@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# We prepare the image with dependencies from NPM
+# Since there is no functional NPM on the system yet,
+# we use NPM from the outer host to install NPM into the container
+
+if [[ -z "$name" ]]; then
+  echo "Please Specify an Image Name"
+  echo "e.g. '${SUDO}name=layer3 $0 $@'"
+  exit 5
+fi
+
+ROOT=$(pwd)/ROOT
+HOME=$ROOT/root
+
+mkdir -p $HOME || exit 1
+
+# Install system dependencies using NPM from Ubuntu
+npmi="NPM_CONFIG_PREFIX=$ROOT npm i -g"
+eval $npmi npm                    &&
+eval $npmi bin-npkg               &&
+eval $npmi bin-ip                 &&
+eval $npmi bin-sh                 || exit 10
+
+# Install /root dependencies from NPM using Ubuntu
+npmi="NPM_CONFIG_PREFIX=$HOME npm i -g"
+eval $npmi bin-init               || exit 20
+
+mkdir -p $ROOT/usr/bin            &&
+cp /usr/bin/env $ROOT/usr/bin/env || exit 30
+
+sudo docker build -t $name .      || exit 50
+
+echo "Successfully built Layer-3 image '$name'"
