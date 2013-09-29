@@ -1,0 +1,84 @@
+#!/bin/bash
+
+# This script prepares a minimally functional linux system with
+# absolutely nothing aside from the userland C++ libraries
+# necessary to really call yourself linux
+
+SRC=$(pwd)
+
+# The root directory *must not* be a special mount,
+# such as /vagrant or an nfs directory
+if [[ -z $ROOT ]]; then
+  ROOT=/tmp/ROOT
+fi
+
+# Require root privileges for some operations
+if [[ $(id -u) -ne 0 ]]; then
+    echo "Please Run as Root"
+    exit 20
+fi
+
+if [[ -z "$name" ]]; then
+  echo "Please Specify an Image Name"
+  echo "e.g. 'name=demo $0 $@'"
+  exit 5
+fi
+
+# If -f is specified, overwrite the previous build
+if [[ "$1" == "-f" ]]; then
+  rm -rf $ROOT
+fi
+
+if [[ -d $ROOT ]]; then
+  echo "Please Delete $ROOT - Build Directory Exists"
+  echo "To Force Overwriting Use -f"
+  exit 10
+fi
+
+# Create Typical Directory Structure
+mkdir -p $ROOT                       &&
+mkdir -p $ROOT/etc                   &&
+mkdir -p $ROOT/bin                   &&
+mkdir -p $ROOT/sys                   &&
+mkdir -p $ROOT/dev                   &&
+mkdir -p $ROOT/proc                  &&
+mkdir -p $ROOT/usr/bin               &&
+mkdir -p $ROOT/sbin                  &&
+mkdir -p $ROOT/lib                   &&
+mkdir -p $ROOT/lib64                 &&
+mkdir -p $ROOT/usr/lib               || exit 40
+
+# Create Devices
+DEV=$ROOT/dev
+mknod -m 666  ${DEV}/null     c 1 3  &&
+mknod -m 666  ${DEV}/zero     c 1 5  &&
+mknod -m 666  ${DEV}/random   c 1 8  &&
+mknod -m 666  ${DEV}/urandom  c 1 9  &&
+mknod -m 666  ${DEV}/tty      c 5 0  &&
+mknod -m 600  ${DEV}/console  c 5 1  &&
+mknod -m 666  ${DEV}/tty0     c 4 0  &&
+mknod -m 666  ${DEV}/full     c 1 7  &&
+mknod -m 666  ${DEV}/ptmx     c 5 2  &&
+mknod -m 600  ${DEV}/initctl  p      &&
+mkdir -m 755  ${DEV}/pts             &&
+mkdir -m 1777 ${DEV}/shm             || exit 50
+
+# For now, lets copy /usr/bin/env because of how deeply
+# node.js
+cp -f /usr/bin/env $ROOT/usr/bin/    || exit 70
+
+# Use a well-known DNS server for now,
+# we do not yet support DHCP
+cat <<EOH > $ROOT/etc/resolv.conf    || exit 80
+nameserver 8.8.8.8
+EOH
+
+# Important shared libraries
+cp -f -r /lib/x86_64-linux-gnu            $ROOT/lib                          &&
+cp -f -r /usr/lib/x86_64-linux-gnu        $ROOT/usr/lib                      &&
+ln -s    /lib/x86_64-linux-gnu/ld-2.15.so $ROOT/lib64/ld-linux-x86-64.so.2   || exit 90
+
+# Wrap the system up and import it into docker
+tar -cC $ROOT . | docker import - $name || exit 100
+
+echo "Successfully built Layer-0 image '$name'"
