@@ -5,13 +5,14 @@ if [[ $(id -u) -ne 0 ]]; then
     exit 20
 fi
 
+if [[ -e "$SUDO_COMMAND" ]]; then SUDO="sudo "; fi
 if [[ -z "$name" ]]; then
   echo "Please Specify an Image Name"
-  echo "e.g. '${SUDO}name=nodeos $0 $@'"
+  echo "e.g. '${SUDO}name=<MY_NAME>/nodeos $0 $@'"
   exit 5
 fi
 
-docker build -t $name .
+docker build -t $name . || exit 10
 
 echo "Success!"
 echo "You Just Built a Custom NodeOS Image '$name'"

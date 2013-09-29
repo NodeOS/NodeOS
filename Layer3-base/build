@@ -4,6 +4,7 @@
 # Since there is no functional NPM on the system yet,
 # we use NPM from the outer host to install NPM into the container
 
+if [[ -e "$SUDO_COMMAND" ]]; then SUDO="sudo "; fi
 if [[ -z "$name" ]]; then
   echo "Please Specify an Image Name"
   echo "e.g. '${SUDO}name=layer3 $0 $@'"
@@ -32,3 +33,5 @@ cp /usr/bin/env $ROOT/usr/bin/env || exit 30
 sudo docker build -t $name .      || exit 50
 
 echo "Successfully built Layer-3 image '$name'"
+echo "You should tag your image with:"
+echo "    ${SUDO}docker tag $name nodeos/nodeos"

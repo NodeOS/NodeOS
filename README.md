@@ -1,5 +1,9 @@
 # NodeOS on Docker
 
+```
+./build
+```
+
 NodeOS is a Node.js based operating system, built off of the Linux kernel.
 The eventual goal of NodeOS is to produce images that can be run on 
 

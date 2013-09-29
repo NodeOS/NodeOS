@@ -1,0 +1,20 @@
+#!/bin/bash
+
+NAME=$(sudo docker info | grep ^Username | awk '{print $2}' )
+NOSN=${NAME}/nodeos
+
+(cd Layer1-linux  && sudo name=layer1 ./build )
+(cd Layer2-nodejs && sudo name=layer2 ./build )
+(cd Layer3-base   && sudo name=layer3 ./build )
+
+sudo docker tag layer3 nodeos/nodeos
+
+(cd Layer4-custom && sudo name=${NOSN} ./build )
+
+echo "Success!"
+echo "You Just Built a Custom NodeOS Image '$NOSN'"
+echo "------------------------------------------"
+echo "Interactively run your image with:"
+echo "    sudo docker run -t -i $NOSN"
+echo "Share your creation with:"
+echo "    sudo docker push $NOSN"
