@@ -3,7 +3,7 @@
 
 # This must be a layer-2 image
 # Use the default unless you're customizing layer-2 or below
-FROM layer3
+FROM nodeos/nodeos
 
 # Important to have /root/bin binaries accessible
 ENV HOME /root
