@@ -1,6 +1,8 @@
 # NodeOS on Docker
 
 ```
+git clone git@github.com:NodeOS/Docker-NodeOS.git
+cd Docker-NodeOS && git submodule init
 ./build
 ```
 
