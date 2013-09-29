@@ -1,4 +1,4 @@
-FROM nodeos/linux
+FROM layer1
 
 MAINTAINER Jacob Groundwater <groundwater@gmail.com>
 

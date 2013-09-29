@@ -13,7 +13,7 @@ fi
 if [[ -e "$SUDO_COMMAND" ]]; then SUDO="sudo "; fi
 if [[ -z "$name" ]]; then
   echo "Please Specify an Image Name"
-  echo "e.g. '${SUDO}name=demo $0 $@'"
+  echo "e.g. '${SUDO}name=layer2 $0 $@'"
   exit 5
 fi
 

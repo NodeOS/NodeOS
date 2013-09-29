@@ -20,7 +20,7 @@ fi
 
 if [[ -z "$name" ]]; then
   echo "Please Specify an Image Name"
-  echo "e.g. 'name=demo $0 $@'"
+  echo "e.g. 'name=layer1 $0 $@'"
   exit 5
 fi
 
