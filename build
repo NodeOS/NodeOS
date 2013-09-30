@@ -13,10 +13,3 @@ sudo docker tag layer3 nodeos/nodeos               || exit 20
 
 (cd Layer4-custom && sudo name=${NOSN} ./build )   || exit 30
 
-echo "Success!"
-echo "You Just Built a Custom NodeOS Image '$NOSN'"
-echo "------------------------------------------"
-echo "Interactively run your image with:"
-echo "    sudo docker run -t -i $NOSN"
-echo "Share your creation with:"
-echo "    sudo docker push $NOSN"

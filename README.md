@@ -18,15 +18,16 @@ The eventual goal of NodeOS is to produce images that can be run on
 - hardware
 - cloud providers like Joyent/Amazon/Rackspace
 - local virtual machines, like VirtualBox, VMWare, and KVM
+- PaaS providers like Heroku, or Joyent's Manta
 - container providers, like Docker
 
 Core development is being done in layers, facilitated by Docker.
 
-- Layer-0 provides the boot loader and kernel (currently provided by Docker)
-- Layer-1 provides the Linux shared libraries
-- Layer-2 provides the Node.js binary
-- Layer-3 provides the core NodeOS additions, like the init daemon and package manager
-- Layer-4 is for customizing distributions
+- *Layer-0* provides the boot loader and kernel (currently provided by Docker)
+- *Layer-1* provides the Linux shared libraries
+- *Layer-2* provides the Node.js binary
+- *Layer-3* provides the core NodeOS additions, like the init daemon and package manager
+- *Layer-4* is for customizing distributions
 
 If you are hacking on NodeOS, you are likely building Layer-4 images.
 Layer-4 images can be build entirely from a `Dockerfile`,
