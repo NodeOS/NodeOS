@@ -1,5 +1,18 @@
 #!/bin/bash
 
+REV=$(tput rev)
+BLD=$(tput bold)
+GRY="\e[90m"
+RED="\e[31m"
+GRN="\e[32m"
+WHT="\e[37m"
+CLR="\e[0m"
+
+function err(){
+  echo -e "${RED}Error Building Image${CLR}"
+  exit $1
+}
+
 NAME=$(sudo docker info | grep ^Username | awk '{print $2}' )
 if [[ -z "$NAME" ]]; then NAME=local; fi
 
@@ -7,9 +20,20 @@ NOSN=${NAME}/nodeos
 
 (cd Layer1-linux  && sudo name=layer1 ./build -f ) &&
 (cd Layer2-nodejs && sudo name=layer2 ./build )    &&
-(cd Layer3-base   && sudo name=layer3 ./build )    || exit 10
+(cd Layer3-base   && sudo name=layer3 ./build )    || err 10
 
-sudo docker tag layer3 nodeos/nodeos               || exit 20
+sudo docker tag layer3 nodeos/nodeos               || err 20
 
-(cd Layer4-custom && sudo name=${NOSN} ./build )   || exit 30
+(cd Layer4-custom && sudo name=${NOSN} ./build )   || err 30
 
+echo -e "${GRY}------------------------------------------${CLR}"
+echo -e "${GRN}${BLD}Success!${CLR}"
+echo -e "${GRN}You Just Built a Custom NodeOS Image ${WHT}$name${CLR}"
+echo -e "${GRY}------------------------------------------${CLR}"
+echo
+echo -e "- Interactively run your image with:"
+echo -e "${WHT}    sudo docker run -t -i $name${CLR}"
+echo
+echo -e "- Share your creation with:"
+echo -e "${WHT}    sudo docker push $name${CLR}"
+echo

@@ -14,10 +14,3 @@ fi
 
 docker build -t $name . || exit 10
 
-echo "Success!"
-echo "You Just Built a Custom NodeOS Image '$name'"
-echo "------------------------------------------"
-echo "Interactively run your image with:"
-echo "    ${SUDO}docker run -t -i $name"
-echo "Share your creation with:"
-echo "    ${SUDO}docker push $name"
