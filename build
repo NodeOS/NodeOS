@@ -1,6 +1,8 @@
 #!/bin/bash
 
 NAME=$(sudo docker info | grep ^Username | awk '{print $2}' )
+if [[ -z "$NAME" ]]; then NAME=local; fi
+
 NOSN=${NAME}/nodeos
 
 (cd Layer1-linux  && sudo name=layer1 ./build -f ) &&
