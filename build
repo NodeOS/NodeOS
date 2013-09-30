@@ -13,10 +13,10 @@ function err(){
   exit $1
 }
 
-NAME=$(sudo docker info | grep ^Username | awk '{print $2}' )
-if [[ -z "$NAME" ]]; then NAME=local; fi
+name=$(sudo docker info | grep ^Username | awk '{print $2}' )
+if [[ -z "$name" ]]; then name=local; fi
 
-NOSN=${NAME}/nodeos
+NOSN=${name}/nodeos
 
 (cd Layer1-linux  && sudo name=layer1 ./build -f ) &&
 (cd Layer2-nodejs && sudo name=layer2 ./build )    &&
@@ -28,12 +28,12 @@ sudo docker tag layer3 nodeos/nodeos               || err 20
 
 echo -e "${GRY}------------------------------------------${CLR}"
 echo -e "${GRN}${BLD}Success!${CLR}"
-echo -e "${GRN}You Just Built a Custom NodeOS Image ${WHT}$name${CLR}"
+echo -e "${GRN}You Just Built a Custom NodeOS Image ${WHT}$NOSN${CLR}"
 echo -e "${GRY}------------------------------------------${CLR}"
 echo
 echo -e "- Interactively run your image with:"
-echo -e "${WHT}    sudo docker run -t -i $name${CLR}"
+echo -e "${WHT}    sudo docker run -t -i $NOSN${CLR}"
 echo
 echo -e "- Share your creation with:"
-echo -e "${WHT}    sudo docker push $name${CLR}"
+echo -e "${WHT}    sudo docker push $NOSN${CLR}"
 echo
