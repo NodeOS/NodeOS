@@ -4,7 +4,7 @@
 
 - the latest alpha is build up using [Docker layers](https://github.com/NodeOS/Docker-NodeOS)
 - start here `git clone https://gist.github.com/6757451.git NodeOS`
-- current milestone is complete the docker release pipeline
+- current milestone is to complete the docker release pipeline
 - next milestone is to complete `init` and `npkg`
 
 ## Introduction
