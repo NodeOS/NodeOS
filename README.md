@@ -37,6 +37,6 @@ where as the other layers require more finesse.
 
 ```
 git clone git@github.com:NodeOS/Docker-NodeOS.git
-cd Docker-NodeOS && git submodule init
+cd Docker-NodeOS && git submodule update --init
 ./build
 ```
