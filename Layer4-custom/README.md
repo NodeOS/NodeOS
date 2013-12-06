@@ -38,6 +38,6 @@ sudo name=<MY_NAME>/nodeos ./build
 If you're proud of your image, share it!
 
 ```
-sudo docker push <MY_NAME>/nodoes
+sudo docker push <MY_NAME>/nodeos
 ```
 
