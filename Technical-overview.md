@@ -20,3 +20,18 @@
       bin-fs
       bin-init
 ```
+
+## The Root User
+
+You've very likely logged in as the root user:
+
+- your `$HOME` is set to `/root`
+- your `$PATH` is set to `$HOME/bin:/bin`
+
+## Using `npkg` to install modules
+
+The `npkg` command *always* installs modules relative to the current user.
+
+- modules are installed to `$HOME/lib/node_modules`
+- executables are placed in `$HOME/bin`
+
