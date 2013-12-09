@@ -1,18 +1,18 @@
 #-- Boilerplate --
 #
-
+#
 # This must be a layer-3 image
 # Use the default unless you're customizing layer-3 or below
 FROM nodeos/nodeos
-
+#
 # Important to have /root/bin binaries accessible
 ENV HOME /root
 ENV PATH /root/bin:/usr/bin:/usr/sbin:/bin:/sbin
-
+#
 # Use `init` to boot the system
 # You should probably not change this
 ENTRYPOINT ["init"]
-
+#
 #
 #-- /Boilerplate --
 
