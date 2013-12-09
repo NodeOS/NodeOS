@@ -4,6 +4,12 @@ There is no attempt to version manage `node` via `nvm`, `nave`, or a similar too
 NodeOS will always assume you are using the latest stable version of node.
 If a package is incompatible with the latest node version, you should fix the broken package.
 
+There is absolutely *no* mandate to keep NodeOS purely JavaScript.
+If you can find a way to distribute Ruby via npm then NodeOS will support Ruby.
+
+**Contents**
+- [[Native Modules]]
+
 ## File System
 
 **Layout**
