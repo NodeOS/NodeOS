@@ -1,7 +1,7 @@
 ## File System
 
 **Layout**
-```
+```text
 /bin/
   node <--------------- node binary
 /lib/  <--------------- shared libraries required by node
