@@ -1,3 +1,0 @@
-[submodule "Submodules/node"]
-	path = Submodules/node
-	url = git@github.com:joyent/node.git

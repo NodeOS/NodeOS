@@ -8,16 +8,31 @@ GRN="\e[32m"
 WHT="\e[37m"
 CLR="\e[0m"
 
+NODE_VERSION=v0.10.21
+
 function err(){
   echo -e "${RED}Error Building Image${CLR}"
   exit $1
 }
 
+# if user is logged into docker index
+# automatically prefix their name to built images
 name=$(sudo docker info | grep ^Username | awk '{print $2}' )
 if [[ -z "$name" ]]; then name=local; fi
 
 NOSN=${name}/nodeos
 
+# explicicly clone node because submodules SUCK
+if [[ ! -d Submodules/node ]]; then
+  git clone git@github.com:joyent/node.git Submodules/node &&
+  ( # configure node only once at checkout
+    cd Submodules/node         &&
+    git checkout $NODE_VERSION &&
+    ./configure
+  ) || err 6
+fi
+
+# Build each layer up
 (cd Layer1-linux  && sudo name=layer1 ./build -f ) &&
 (cd Layer2-nodejs && sudo name=layer2 ./build )    &&
 (cd Layer3-base   && sudo name=layer3 ./build )    || err 10
