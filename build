@@ -37,7 +37,7 @@ fi
 (cd Layer2-nodejs && sudo name=layer2 ./build )    &&
 (cd Layer3-base   && sudo name=layer3 ./build )    || err 10
 
-sudo docker tag layer3 nodeos/nodeos               || err 20
+sudo docker tag layer3 nodeos/base                 || err 20
 
 (cd Layer4-custom && sudo name=${NOSN} ./build )   || err 30
 

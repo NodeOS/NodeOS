@@ -3,7 +3,7 @@
 #
 # This must be a layer-3 image
 # Use the default unless you're customizing layer-3 or below
-FROM nodeos/nodeos
+FROM nodeos/base
 #
 # Important to have /root/bin binaries accessible
 ENV HOME /root
@@ -37,11 +37,17 @@ MAINTAINER Jacob Groundwater <groundwater@gmail.com>
 
 # Customize Your Build Here
 # ------------------------
+
+# point NodeOS through proxy
+ADD npmrc /root/.npmrc
+
 RUN npkg install bin-nsh
 RUN npkg install bin-man
 RUN npkg install bin-fs
 RUN npkg install bin-cat
 RUN npkg install bin-pwd
+RUN npkg install bin-ifconfig
+RUN npkg install wssh
 # ------------------------
 
 
@@ -62,3 +68,5 @@ CMD ["nsh"]
 # Run a package immediately after boot
 # CMD ["npkg","start","<PKG_NAME>"]
 
+INTERACTIVE yes
+TTY yes
