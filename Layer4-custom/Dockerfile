@@ -39,8 +39,6 @@ MAINTAINER Jacob Groundwater <groundwater@gmail.com>
 # ------------------------
 
 # point NodeOS through proxy
-ADD npmrc /root/.npmrc
-
 RUN npkg install bin-nsh
 RUN npkg install bin-man
 RUN npkg install bin-fs
