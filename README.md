@@ -2,36 +2,30 @@
 
 ## State of the Union
 
-- the latest alpha is build up using [Docker layers](https://github.com/NodeOS/Docker-NodeOS)
-- start here `git clone https://gist.github.com/6757451.git NodeOS`
-- current milestone is to complete the docker release pipeline
-- next milestone is to complete `init` and `npkg`
-- core packages are itemized at [npkg.org](http://npkg.org)
+- [quick start tutorial](http://node-os.com/blog/get-involved)
+- [build from source with docker](https://github.com/NodeOS/Docker-NodeOS)
+- [view packages for node-os on npkg.org](http://npkg.org)
 
-## Introduction
+## introduction
 
-node-os is an OS only by the following definition:
+what is node-os?
 
 ```
 +-----------+
-| Hardware  |
+| hardware  |
 +-----------+
-| Kernel    |
+| kernel    |
 +-----------+
-| Root      | <---  Where node-os lives
+| root      | <---  this piece is node-os
 +-----------+
-| Userland  |
+| userland  |
 +-----------+
 ```
 
-1. node-os is *not* a node.js kernel
-2. node-os starts *after* the kernel loads
-3. No non-kernel processes run before node-os
+## node-os uses npm
 
-For the purposes of this project, the above definition is *always* what is meant by an OS.
-One consequence of this definition is that eventually, node-os might be kernel agnostic.
-
-## Goal
-
-- The primary goal of node-os is to provide a working package manager
-- The primary package manager will use NPM
+We want to bring npm to the entire system.
+Any package in npm is a node-os package,
+which at last count was 56,594 packages.
+The goal of node-os is to provide just enough to let npm provide the rest.
+Since anyone can contribute to npm, anyone can create node-os packages.
