@@ -2,6 +2,7 @@
 
 ## State of the Union
 
+- [node-os.com](http://node-os.com)
 - [quick start tutorial](http://node-os.com/blog/get-involved)
 - [build from source with docker](https://github.com/NodeOS/Docker-NodeOS)
 - [view packages for node-os on npkg.org](http://npkg.org)
