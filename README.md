@@ -4,11 +4,13 @@
 
 ## Quick Start
 
-```
-git clone https://gist.github.com/6757451.git NodeOS
-sudo docker build -t MyOS NodeOS
-sudo docker run -t -i MyOS
-```
+- One Liner
+
+    ```
+    sudo docker run -t -i nodeos/nodeos
+    ```
+
+- or learn how to make a [Custom Build](http://node-os.com/blog/get-involved/)
 
 ## Introduction
 
@@ -34,6 +36,9 @@ Layer-4 images can be build entirely from a `Dockerfile`,
 where as the other layers require more finesse.
 
 ## Build from Source
+
+*Warning*: the build process is hairy, it prob. won't work the first time.
+I'm working on that.
 
 ```
 git clone git@github.com:NodeOS/Docker-NodeOS.git
