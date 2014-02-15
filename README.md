@@ -1,10 +1,10 @@
 # node-os
 
-## Discussion?
+## discussion?
 
 - please use [github issues](https://github.com/NodeOS/NodeOS/issues) for discussion
 
-## State of the Union
+## state of the union
 
 - [node-os.com](http://node-os.com)
 - [quick start tutorial](http://node-os.com/blog/get-involved)
@@ -15,7 +15,7 @@
 
 what is node-os?
 
-```
+```text
 +-----------+
 | hardware  |
 +-----------+
