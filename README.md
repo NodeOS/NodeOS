@@ -1,5 +1,9 @@
 # node-os
 
+## Discussion?
+
+- please use [github issues](https://github.com/NodeOS/NodeOS/issues) for discussion
+
 ## State of the Union
 
 - [node-os.com](http://node-os.com)
