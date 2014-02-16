@@ -21,7 +21,7 @@ what is node-os?
 +-----------+
 | kernel    |
 +-----------+
-| root      | <---  this piece is node-os
+| init/root | <---  this piece is node-os
 +-----------+
 | userland  |
 +-----------+
