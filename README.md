@@ -1,6 +1,6 @@
 # NodeOS on Docker
 
-- Please first [Install Docker](http://docs.docker.io/en/latest/installation/vagrant/)
+- Please first [Install Docker](http://docs.docker.io/en/latest/installation/)
 
 ## Quick Start
 
