@@ -1,6 +1,6 @@
 # node-os
 
-## discussion?
+![Join the Discussion](http://i.imgur.com/eSYvkIy.png)
 
 - please use [github issues](https://github.com/NodeOS/NodeOS/issues) for discussion
 - or join the [live chat](https://github.com/NodeOS/NodeOS/issues/20)
