@@ -2,8 +2,10 @@
 
 [![Join the Discussion](http://i.imgur.com/hUjSLXt.png)](https://github.com/NodeOS/NodeOS/issues)
 
-- please use [github issues](https://github.com/NodeOS/NodeOS/issues) for discussion
-- or join the [live chat](https://github.com/NodeOS/NodeOS/issues/20)
+## find us
+
+- Web: please use [github issues](https://github.com/NodeOS/NodeOS/issues) for discussion
+- IRC: join `#node-os` on Freenode
 
 ## state of the union
 
