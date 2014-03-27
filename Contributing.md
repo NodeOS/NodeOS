@@ -19,11 +19,3 @@ Long threads are okay.
 3. better linking to actual code
 4. markdown is good
 5. less spam management
-
-> Why not irc?
-
-1. irc has no record
-2. it's less accessible than the web (not everyone is familiar/comfortable with how to use irc)
-
-You can find me at [#anarchyos](http://webchat.freenode.net/?channels=%23anarchyos) on freenode under *groundwater*,
-but for now I'm trying to keep people focused on using Github.
