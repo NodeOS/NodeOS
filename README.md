@@ -5,7 +5,7 @@
 ## find us
 
 - Web: please use [github issues](https://github.com/NodeOS/NodeOS/issues) for discussion
-- IRC: join `#node-os` on Freenode
+- IRC: join [`#node-os`](https://scrollback.io/node-os/) on Freenode
 
 ## state of the union
 
@@ -16,23 +16,9 @@
 
 ## introduction
 
-what is node-os?
+Node-os is a lightweight system designed to run in a linux container.
 
-```text
-+-----------+
-| hardware  |
-+-----------+
-| kernel    |
-+-----------+
-| init/root | <---  this piece is node-os
-+-----------+
-| userland  |
-+-----------+
-```
-
-## node-os uses npm
-
-We want to bring npm to the entire system.
+Node-os wants to bring npm to the entire system.
 Any package in npm is a node-os package,
 which at last count was 56,594 packages.
 The goal of node-os is to provide just enough to let npm provide the rest.
