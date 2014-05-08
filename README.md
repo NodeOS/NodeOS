@@ -5,7 +5,7 @@
 ## find us
 
 - Web: please use [github issues](https://github.com/NodeOS/NodeOS/issues) for discussion
-- IRC: join [`#node-os`](https://scrollback.io/node-os/) on Freenode
+- IRC: join `#node-os` on Freenode
 
 ## state of the union
 
