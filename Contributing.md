@@ -14,7 +14,7 @@ Long threads are okay.
 
 > Why not a mailing list?
 
-1. it's *yet another* point of contact. This repo should be your single source of truth in exporing node-os.
+1. it's *yet another* point of contact. This repo should be your single source of truth in exploring node-os.
 2. github issues can be setup to mail you, and you can reply from email
 3. better linking to actual code
 4. markdown is good
