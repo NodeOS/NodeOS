@@ -1,4 +1,4 @@
 Design
-- [[FileSystem]]
+- [[file system|FileSystem]]
 - [[npkg]]
 - [[services]]
