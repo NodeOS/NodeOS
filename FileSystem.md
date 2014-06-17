@@ -20,6 +20,8 @@ The root user's home is in it's standard `/root` location.
 /home  <-- non-root users
 ```
 
+The [[root]] user is special because it boots the system.
+
 Other standard kernel-provided file systems are mounted in their usual locations.
 
 ```
