@@ -1,3 +1,11 @@
+## design
+
 - [[Technical Overview]]
-- [[Modules]] built for NodeOS
+
+## resources
+
+- http://npkg.org
+
+## community
+
 - [[People]] who've helped
