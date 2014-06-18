@@ -122,7 +122,7 @@ Asgard should respond with `501 Not Implemented`, rather than a `400/500` error 
 
 HTTP is secure. If you think otherwise, you should stop using all websites.
 
-HTTP security can be poorly implemented however. We actually punt on handling security asgard the server. Instead, we require that you secure the socket.
+HTTP security can be poorly implemented however. We actually punt on handling security in asgard. Instead, we require that you secure the socket asgard is listening to.
 
 For simple cases, you can bind to `localhost`. Only processes on the same host can access asgard.
 
@@ -132,14 +132,9 @@ A better approach might be binding to a unix domain socket, for example `/root/v
 ## Permissions
 
 There is no access-control. Either you have access to everything, or nothing.
-
-> Each copy of init spawns queues requested by a particular user, so that user needs access to all queues supervised by a single init process. We however don't want queues to have access to each other. If queues are spawned under the current user, then queues will be able to call init on behalf of the user.
->
-> On linux, the clone system call governs all new process (and thread) creation. Clone lets you decide what to share, and what not to share. If we require that all modules must contain all their dependencies, we could isolate each service in its own file system. This would cut the service off from having access to init.
->
-> -[Jacob June 18](https://github.com/NodeOS/node-init/issues/3#issuecomment-46272433)
-
 In a multi-user environment, each user will run their own asgard service.
+
+Since each users copy of asgard runs with user-permissions, not root permissions, it can only do as much damage as the user sending jobs to it.
 
 ```
 -+ asgard (root)
