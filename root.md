@@ -1,6 +1,18 @@
 The root user is like any other [user directory](FileSystem#user-directories)
 but it's also in charge of booting the system.
 
+```
+/root/
+  bin/
+    init     <-- boots the system
+    asgard   <-- service manager started by init
+  lib/node_modules/
+```
+
+The root directory at minimum needs the above, but will likely contain other modules helpful to booting the system.
+
+## the kernel and init
+
 During boot after the kernel has loaded,
 it passes control to another process typically called the *init process*.
 The init process has PID 1, and *must* start the rest of the system.
