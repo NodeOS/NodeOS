@@ -6,7 +6,9 @@ but it's also in charge of booting the system.
   bin/
     init     <-- boots the system
     asgard   <-- service manager started by init
-  lib/node_modules/
+  lib/       <-- installed node_modules for init/asgard
+  log/       <-- log files from init and other root services
+  var/       <-- persistent data for root services
 ```
 
 The root directory at minimum needs the above, but will likely contain other modules helpful to booting the system.
