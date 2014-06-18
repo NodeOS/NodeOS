@@ -1,10 +1,29 @@
-The service-manager (code name asgard) is a job-control service.
+The service-manager (code name asgard) is a task running service.
+
+Asgard provides a simple abstraction, upon which a tool like [[npkg]] can build a traditional service manager like *systemd* or *forever*.
+
+Asgard has two abstractions:
+
+1. a **task** is a real process that must be run
+2. a **queue** is an ordered list of tasks
+
+This is a low-level abstraction, and not really of concern for the end user. The end-user will use a tool like [[npkg]] and in general never need to know about how asgard works. Similar to how there is no *spawn* system call, rather spawning a child process is just a combination of `fork` and `exec`.
+
+So for anyone who just wants to run your node process, have a look at [[npkg]]. For those interested in the gory details, here are a few high-level features of asgard:
+
+- tasks are run as soon as they are added to a queue
+- tasks run sequentially per queue
+- different queues run in parallel
+- when a queue is empty, it just waits for new tasks to be added
+- there is limited support for manipulating a queue
+
+Typically queues will only have a few tasks added to them at any time.
 
 ## HTTP IPC
 
-You communicate with asgard over http.
+You communicate with asgard over http using JSON encoded data.
 
-For example, to start a job you `PUT` to `/job/:name` where `:name` is the unique identifier for your job.
+For example, to start a queue you `PUT` to `/queue/:name` where `:name` is the unique identifier for your queue.
 
 ```json
 {
@@ -16,7 +35,7 @@ For example, to start a job you `PUT` to `/job/:name` where `:name` is the uniqu
         "PATH": "/bin:/root/lib/node_modules/myapp/node_modules/.bin"
       },
       "cwd": "/root/lib/node_modules/myapp",
-      "fd": []
+      "fd": [...]
     }
   ]
 }
@@ -33,6 +52,7 @@ The following are optional for each *task*
 }
 ```
 
+Eventually we would like to support segmenting processes, and limiting them via a quota.
 The following are reserved, but not implemented.
 For more information see the Linux [clone](http://linux.die.net/man/2/clone) call.
 
@@ -54,8 +74,6 @@ For more information see the Linux [clone](http://linux.die.net/man/2/clone) cal
   "newpic": true, // create a new PIC space
 }
 ```
-
-All of the above are required, aside from `user` and `group`.
 
 ## File Descriptors
 
@@ -113,9 +131,9 @@ A better approach might be binding to a unix domain socket, for example `/root/v
 
 ## Permissions
 
-There are no permissions. Either you have access to everything, or nothing.
+There is no access-control. Either you have access to everything, or nothing.
 
-> Each copy of init spawns jobs requested by a particular user, so that user needs access to all jobs supervised by a single init process. We however don't want jobs to have access to each other. If jobs are spawned under the current user, then jobs will be able to call init on behalf of the user.
+> Each copy of init spawns queues requested by a particular user, so that user needs access to all queues supervised by a single init process. We however don't want queues to have access to each other. If queues are spawned under the current user, then queues will be able to call init on behalf of the user.
 >
 > On linux, the clone system call governs all new process (and thread) creation. Clone lets you decide what to share, and what not to share. If we require that all modules must contain all their dependencies, we could isolate each service in its own file system. This would cut the service off from having access to init.
 >
@@ -137,18 +155,21 @@ In a multi-user environment, each user will run their own asgard service.
 
 ## Restart Semantics
 
-There are no restart semantics. You can restart a job by defining a second restart task, e.g.
+There are no restart semantics. You can restart a queue by defining a second restart task, e.g.
 
 ```javascript
 {
   tasks: [
-    {...}, // job to run
-    {...}  // command to restart job
+    {...}, // queue to run
+    {...}  // command to restart queue
   ]
 }
 ```
 
-Restart semantics are difficult
+The second command can decide how to restart the service,
+since different tasks will demand different restart semantics.
+
+Why restart semantics are difficult:
 
 - A process that exits immediately due to an error can peg the CPU at 100%.
 - Generally we do not want to ever *stop* trying to restart a process.
@@ -167,5 +188,5 @@ We let the caller to asgard decide how they want to handle restart.
 ## Review
 
 - asgard is simple, yet flexible.
-- asgard is focused on running tasks, and jobs.
+- asgard is focused on running tasks, and queues.
 - asgard should export a well-defined API, to allow multiple products interact with it.
