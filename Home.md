@@ -1,8 +1,14 @@
 ## design
 
 - [[file system|FileSystem]] an overview of how the file system is laid out
-- [[npkg]] the npkg command is the main interface to the system
+
+### components
+
+- [[init]] a minimal init
 - [[services]] an overview of how services are managed
+- [[asgard]] the service manager's gory details
+- [[npkg]] the user-friendly interface to downloading and running services
+- [[root]] the user in charge of the above
 
 ## resources
 
