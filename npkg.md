@@ -22,18 +22,24 @@ and any executables defined in the package are linked into `$HOME/bin`.
 Since `npkg` always writes to your home directory,
 you do not need root permissions.
 
-You can use `npkg install` to craft a custom interface to the systme,
-unique to every user.
+You can use `npkg install` to craft a custom command line interface unique to every user.
+For example:
+
+Install a package from *npm* which includes a [bin key](https://github.com/groundwater/node-bin-ifconfig/blob/master/package.json#L12-L14).
 
 ```bash
-$ ncurl google.com
-  ERROR ncurl not found
-$ npkg install ncurl
-  --> installing ncurl from npmjs.org
-  --> okay, done
-$ ncurl google.com
-<!DOCTYPE html>
-...
+$ npkg install bin-ifconfig
+  --> installing bin-ifconfig from npmjs.org
+  --> linked executable `ifconfig`
+```
+
+Executables are installed to `$HOME/bin`, and should be immediately available to the CLI.
+
+```bash
+$ ifconfig
+{
+  "lo0": { ip: "127.0.0.1", mask: "255.255.255.0" }
+}
 ```
 
 ## staring services
