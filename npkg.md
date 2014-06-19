@@ -62,3 +62,12 @@ You can one-step daemonize this module with
 ```bash
 $ npkg start my_app
 ```
+
+Once started with `npkg` the server is running in the background.
+You can detach from the current login session without interrupting the server.
+
+Started services can be stopped with
+
+```bash
+$ npkg stop my_app
+```
