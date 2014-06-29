@@ -9,7 +9,7 @@ The way Linux works,
 when a parent process dies it's children become children of PID 1.
 When those children exit,
 their PID number and exit status are recorded in the kernels process table.
-The parent, in this cae init,
+The parent, in this case init,
 needs to periodically call `wait` or `waitpid` to clear the process table.
 Processes which have exited but have not been cleared are called **zombies**.
 
