@@ -8,47 +8,46 @@ GRN="\e[32m"
 WHT="\e[37m"
 CLR="\e[0m"
 
-NODE_VERSION=v0.10.21
-
 function err(){
   echo -e "${RED}Error Building Image${CLR}"
   exit $1
 }
 
-# if user is logged into docker index
-# automatically prefix their name to built images
-name=$(sudo docker info | grep ^Username | awk '{print $2}' )
+if [[ -z "$QEMU" ]]; then
+  # if user is logged into docker index
+  # automatically prefix their name to built images
+  name=$(sudo docker info | grep ^Username | awk '{print $2}' )
+fi
+
 if [[ -z "$name" ]]; then name=local; fi
 
 NOSN=${name}/nodeos
 
-# explicicly clone node because submodules SUCK
-if [[ ! -d Submodules/node ]]; then
-  git clone git@github.com:joyent/node.git Submodules/node &&
-  ( # configure node only once at checkout
-    cd Submodules/node         &&
-    git checkout $NODE_VERSION &&
-    ./configure
-  ) || err 6
+# Build each layer up
+(cd Layer1-linux  && sudo name=layer1 QEMU=${QEMU} ./build -f ) &&
+(cd Layer2-nodejs && sudo name=layer2 QEMU=${QEMU} ./build )    &&
+(cd Layer3-base   && sudo name=layer3 QEMU=${QEMU} ./build )    || err 10
+
+if [[ -z "$QEMU" ]]; then
+  sudo docker tag layer3 nodeos/base               || err 20
 fi
 
-# Build each layer up
-(cd Layer1-linux  && sudo name=layer1 ./build -f ) &&
-(cd Layer2-nodejs && sudo name=layer2 ./build )    &&
-(cd Layer3-base   && sudo name=layer3 ./build )    || err 10
-
-sudo docker tag layer3 nodeos/base                 || err 20
-
-(cd Layer4-custom && sudo name=${NOSN} ./build )   || err 30
+(cd Layer4-custom && sudo name=${NOSN} QEMU=${QEMU} ./build )   || err 30
 
 echo -e "${GRY}------------------------------------------${CLR}"
 echo -e "${GRN}${BLD}Success!${CLR}"
 echo -e "${GRN}You Just Built a Custom NodeOS Image ${WHT}$NOSN${CLR}"
 echo -e "${GRY}------------------------------------------${CLR}"
 echo
-echo -e "- Interactively run your image with:"
-echo -e "${WHT}    sudo docker run -t -i $NOSN${CLR}"
-echo
-echo -e "- Share your creation with:"
-echo -e "${WHT}    sudo docker push $NOSN${CLR}"
-echo
+if [[ -n "$QEMU" ]]; then
+  echo -e "- Interactively run your image with:"
+  echo -e "${WHT}    sudo qemu-system-i386 --kernel /boot/vmlinuz-3.16.0-7-generic --initrd Layer2-nodejs/layer2.cpio.gz $NOSN${CLR}"
+  echo
+else
+  echo -e "- Interactively run your image with:"
+  echo -e "${WHT}    sudo docker run -t -i $NOSN${CLR}"
+  echo
+  echo -e "- Share your creation with:"
+  echo -e "${WHT}    sudo docker push $NOSN${CLR}"
+  echo
+fi

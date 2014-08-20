@@ -74,11 +74,21 @@ nameserver 8.8.8.8
 EOH
 
 # Important shared libraries
-cp -f -r /lib/x86_64-linux-gnu            $ROOT/lib                          &&
-cp -f -r /usr/lib/x86_64-linux-gnu        $ROOT/usr/lib                      &&
-ln -s    /lib/x86_64-linux-gnu/ld-2.15.so $ROOT/lib64/ld-linux-x86-64.so.2   || exit 90
+if [ $(uname -m) == 'x86_64' ]; then
+  cp -f -r /lib/x86_64-linux-gnu               $ROOT/lib                        &&
+  cp -f -r /usr/lib/x86_64-linux-gnu           $ROOT/usr/lib                    &&
+  ln -s    /lib/x86_64-linux-gnu/ld-linux.so.2 $ROOT/lib64/ld-linux-x86-64.so.2 || exit 90
+else
+  cp -f -r /lib/i386-linux-gnu     $ROOT/lib     &&
+  cp -f -r /usr/lib/i386-linux-gnu $ROOT/usr/lib || exit 91
+fi
 
-# Wrap the system up and import it into docker
-tar -cC $ROOT . | docker import - $name || exit 100
+if [[ -z "$QEMU" ]]; then
+  # Wrap the system up and import it into docker
+  tar -cC $ROOT . | docker import - $name || exit 100
+#else
+  # Wrap the system up and create initramfs file
+#  (cd "$ROOT"; find . | cpio -o -H newc | gzip) > $name.cpio.gz || exit 101
+fi
 
-echo "Successfully built Layer-0 image '$name'"
+echo "Successfully built Layer-1 image '$name'"

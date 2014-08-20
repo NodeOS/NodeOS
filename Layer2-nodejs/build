@@ -4,22 +4,49 @@
 # absolutely nothing aside from the userland C++ libraries
 # necessary to really call yourself linux
 
-# Require root privileges for some operations
-if [[ $(id -u) -ne 0 ]]; then
-    echo "Please Run as Root"
-    exit 20
-fi
+NODE_VERSION=v0.10.21
 
-if [[ -e "$SUDO_COMMAND" ]]; then SUDO="sudo "; fi
 if [[ -z "$name" ]]; then
   echo "Please Specify an Image Name"
   echo "e.g. '${SUDO}name=layer2 $0 $@'"
   exit 5
 fi
 
-make default                     &&
-docker build -t $name Release    || exit 10
+if [[ -e "$SUDO_COMMAND" ]]; then SUDO="sudo "; fi
 
-echo "Successfully built Layer-1 image '$name'"
+# The root directory *must not* be a special mount,
+# such as /vagrant or an nfs directory
+if [[ -z $ROOT ]]; then
+  ROOT=/tmp/ROOT
+fi
+
+# explicicly clone node because submodules SUCK
+if [[ ! -d deps/node ]]; then
+  git clone https://github.com/joyent/node.git deps/node &&
+  ( # configure node only once at checkout
+    cd deps/node               &&
+    git checkout $NODE_VERSION &&
+    ./configure
+  ) || err 6
+fi
+
+make default || exit 10
+
+mkdir -p $ROOT/usr/bin            &&
+cp /usr/bin/env $ROOT/usr/bin/env || exit 30
+
+if [[ -n "$QEMU" ]]; then
+cat <<EOH > $ROOT/init || exit 80
+#!/usr/bin/env node
+console.log('Hello NodeOS! :-)')
+EOH
+
+  sudo cp deps/node/node $ROOT/bin/node
+  (cd "$ROOT"; find . | cpio -o -H newc | gzip) > $name.cpio.gz || exit 101
+else
+  docker build -t $name Release || exit 11
+fi
+
+echo "Successfully built Layer-2 image '$name'"
 echo "To View Image : ${SUDO}docker images"
 echo "To Cleanup    : make clean"

@@ -12,5 +12,8 @@ if [[ -z "$name" ]]; then
   exit 5
 fi
 
-docker build -t $name . || exit 10
+if [[ -z "$QEMU" ]]; then
+  docker build -t $name . || exit 10
+fi
 
+echo "Successfully built Layer-4 image '$name'"
