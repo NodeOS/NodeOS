@@ -36,15 +36,28 @@ mkdir -p $ROOT/usr/bin            &&
 cp /usr/bin/env $ROOT/usr/bin/env || exit 30
 
 if [[ -n "$QEMU" ]]; then
-cat <<EOH > $ROOT/init || exit 80
-#!/usr/bin/env node
-console.log('Hello NodeOS! :-)')
-EOH
+#cat <<EOH > $ROOT/init || exit 80
+##!/usr/bin/env node
+#console.log('Hello NodeOS! :-)')
+#EOH
+#
+#  chmod +x $ROOT/init
+
+cat << EOF | gcc -static -o $ROOT/init -x c -
+#include <stdio.h>
+#include <unistd.h>
+
+int main(int argc, char *argv[])
+{
+printf("Hello NodeOS! I'm {initramfs}/init written in C :-)\n");
+sleep(999999999);
+}
+EOF
 
   sudo cp deps/node/node $ROOT/bin/node
   (cd "$ROOT"; find . | cpio -o -H newc | gzip) > $name.cpio.gz || exit 101
 else
-  docker build -t $name Release || exit 11
+  docker build -t $name . || exit 11
 fi
 
 echo "Successfully built Layer-2 image '$name'"

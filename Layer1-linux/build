@@ -43,9 +43,9 @@ mkdir -p $ROOT/sys                   &&
 mkdir -p $ROOT/dev                   &&
 mkdir -p $ROOT/proc                  &&
 mkdir -p $ROOT/usr/bin               &&
-mkdir -p $ROOT/sbin                  &&
+#mkdir -p $ROOT/sbin                  &&
 mkdir -p $ROOT/lib                   &&
-mkdir -p $ROOT/lib64                 &&
+#mkdir -p $ROOT/lib64                 &&
 mkdir -p $ROOT/usr/lib               || exit 40
 
 # Create Devices
@@ -75,19 +75,31 @@ EOH
 
 # Important shared libraries
 if [ $(uname -m) == 'x86_64' ]; then
-  cp -f -r /lib/x86_64-linux-gnu               $ROOT/lib                        &&
-  cp -f -r /usr/lib/x86_64-linux-gnu           $ROOT/usr/lib                    &&
-  ln -s    /lib/x86_64-linux-gnu/ld-linux.so.2 $ROOT/lib64/ld-linux-x86-64.so.2 || exit 90
+  cp -f /lib/x86_64-linux-gnu/libdl.so.2         $ROOT/lib/x86_64-linux-gnu   &&
+  cp -f /lib/x86_64-linux-gnu/librt.so.1         $ROOT/lib/x86_64-linux-gnu   &&
+  cp -f /lib/x86_64-linux-gnu/libm.so.6          $ROOT/lib/x86_64-linux-gnu   &&
+  cp -f /lib/x86_64-linux-gnu/libgcc_s.so.1      $ROOT/lib/x86_64-linux-gnu   &&
+  cp -f /lib/x86_64-linux-gnu/libpthread.so.0    $ROOT/lib/x86_64-linux-gnu   &&
+  cp -f /lib/x86_64-linux-gnu/libc.so.6          $ROOT/lib/x86_64-linux-gnu   &&
+
+  cp -f /usr/lib/x86_64-linux-gnu/libstdc++.so.6 $ROOT/usr/lib/i386-linux-gnu &&
+  ln -s /lib/x86_64-linux-gnu/ld-linux.so.2 $ROOT/lib64/ld-linux-x86-64.so.2  || exit 90
 else
-  cp -f -r /lib/i386-linux-gnu     $ROOT/lib     &&
-  cp -f -r /usr/lib/i386-linux-gnu $ROOT/usr/lib || exit 91
+  cp -f /lib/i386-linux-gnu/libdl.so.2         $ROOT/lib/i386-linux-gnu     &&
+  cp -f /lib/i386-linux-gnu/librt.so.1         $ROOT/lib/i386-linux-gnu     &&
+  cp -f /lib/i386-linux-gnu/libm.so.6          $ROOT/lib/i386-linux-gnu     &&
+  cp -f /lib/i386-linux-gnu/libgcc_s.so.1      $ROOT/lib/i386-linux-gnu     &&
+  cp -f /lib/i386-linux-gnu/libpthread.so.0    $ROOT/lib/i386-linux-gnu     &&
+  cp -f /lib/i386-linux-gnu/libc.so.6          $ROOT/lib/i386-linux-gnu     &&
+
+  cp -f /usr/lib/i386-linux-gnu/libstdc++.so.6 $ROOT/usr/lib/i386-linux-gnu || exit 91
 fi
 
 if [[ -z "$QEMU" ]]; then
   # Wrap the system up and import it into docker
   tar -cC $ROOT . | docker import - $name || exit 100
 #else
-  # Wrap the system up and create initramfs file
+#  # Wrap the system up and create initramfs file
 #  (cd "$ROOT"; find . | cpio -o -H newc | gzip) > $name.cpio.gz || exit 101
 fi
 
