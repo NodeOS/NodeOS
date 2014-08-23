@@ -26,36 +26,28 @@ if [[ ! -d deps/node ]]; then
   ( # configure node only once at checkout
     cd deps/node               &&
     git checkout $NODE_VERSION &&
-    ./configure
+    ./configure --fully-static
   ) || err 6
 fi
 
 make default || exit 10
 
-mkdir -p $ROOT/usr/bin            &&
-cp /usr/bin/env $ROOT/usr/bin/env || exit 30
+# Important shared libraries
+if [ $(uname -m) == 'x86_64' ]; then
+  platform=x86_64-linux-gnu
+
+  mkdir -p $ROOT/lib64                                                &&
+  ln -s /lib/$platform/ld-linux.so.2 $ROOT/lib64/ld-linux-x86-64.so.2 || exit 90
+else
+  platform=i386-linux-gnu
+fi
+
+mkdir -p $ROOT/lib/$platform                                 &&
+cp    -f /lib/$platform/libpthread.so.0 $ROOT/lib/$platform/ || exit 100
+
 
 if [[ -n "$QEMU" ]]; then
-#cat <<EOH > $ROOT/init || exit 80
-##!/usr/bin/env node
-#console.log('Hello NodeOS! :-)')
-#EOH
-#
-#  chmod +x $ROOT/init
-
-cat << EOF | gcc -static -o $ROOT/init -x c -
-#include <stdio.h>
-#include <unistd.h>
-
-int main(int argc, char *argv[])
-{
-printf("Hello NodeOS! I'm {initramfs}/init written in C :-)\n");
-sleep(999999999);
-}
-EOF
-
-  sudo cp deps/node/node $ROOT/bin/node
-  (cd "$ROOT"; find . | cpio -o -H newc | gzip) > $name.cpio.gz || exit 101
+  sudo cp deps/node/node $ROOT/usr/bin/node
 else
   docker build -t $name . || exit 11
 fi

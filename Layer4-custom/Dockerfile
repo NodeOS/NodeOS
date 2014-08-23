@@ -7,7 +7,7 @@ FROM nodeos/base
 #
 # Important to have /root/bin binaries accessible
 ENV HOME /root
-ENV PATH /root/bin:/usr/bin:/usr/sbin:/bin:/sbin
+ENV PATH /root/bin:/usr/bin:/bin
 #
 # Use `init` to boot the system
 # You should probably not change this
@@ -16,20 +16,9 @@ ENTRYPOINT ["init"]
 #
 #-- /Boilerplate --
 
-
-
-
-
-
 # Tell us who you are! 
 # Replace the following with your own contact
 MAINTAINER Jacob Groundwater <groundwater@gmail.com>
-
-
-
-
-
-
 
 # Use the `npkg` command to customize your build
 # Each installed package will expose new funtionality
@@ -47,13 +36,6 @@ RUN npkg install bin-pwd
 RUN npkg install bin-ifconfig
 RUN npkg install wssh
 # ------------------------
-
-
-
-
-
-
-
 
 # The CMD is run *after* init
 # You can customize this

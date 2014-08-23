@@ -12,31 +12,44 @@ if [[ -z "$name" ]]; then
 fi
 
 
-ROOT=$(pwd)/ROOT
-HOME=$ROOT/root
-
-mkdir -p $HOME || exit 1
+if [[ -z "$QEMU" ]]; then
+  ROOT=$(pwd)/ROOT
+else
+  ROOT=/tmp/ROOT
+fi
 
 
 # Install system dependencies using NPM from Ubuntu
 
 npmi="npm_config_prefix=$ROOT npm i -g"
 
-eval $npmi npm                    &&
-#eval $npmi bin-npkg               &&
-eval $npmi bin-ip                 &&
-eval $npmi bin-sh                 || exit 10
+eval $npmi piranna/node-century#patch-1 || exit 20
+
+ln -s bin/century $ROOT/init
 
 
-# Install /root dependencies from NPM using Ubuntu
+#cat <<EOH > $ROOT/init || exit 80
+##!/usr/bin/node
+#while(true)
+#{
+#  console.log('Hello NodeOS! :-)')
+#};
+#EOH
+#
+#chmod +x $ROOT/init
 
-npmi="npm_config_prefix=$HOME npm i -g"
 
-eval $npmi bin-init               || exit 20
+cat <<EOH > $ROOT/boot.js || exit 80
+#!/usr/bin/env node
+while(true)
+  console.log('Booting... :-)')
+EOH
 
 
 if [[ -z "$QEMU" ]]; then
-  docker build -t $name .      || exit 50
+  docker build -t $name . || exit 50
+else
+  (cd "$ROOT"; find . | cpio -o -H newc | gzip) > $name.cpio.gz || exit 101
 fi
 
 

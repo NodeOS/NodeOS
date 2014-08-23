@@ -12,6 +12,21 @@ if [[ -z "$name" ]]; then
   exit 5
 fi
 
+
+ROOT=$(pwd)/ROOT
+HOME=$ROOT/root
+
+mkdir -p $HOME || exit 1
+
+# Install /root dependencies from NPM using Ubuntu
+
+npmi="npm_config_prefix=$HOME npm i -g"
+
+eval $npmi npm    &&
+eval $npmi bin-ip &&
+eval $npmi bin-sh || exit 10
+
+
 if [[ -z "$QEMU" ]]; then
   docker build -t $name . || exit 10
 fi
