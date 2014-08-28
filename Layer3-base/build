@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# We prepare the image with dependencies from NPM
-# Since there is no functional NPM on the system yet,
-# we use NPM from the outer host to install NPM into the container
+# We prepare the ROOT filesystem with dependencies from NPM
+# Since there is no functional NPM on the system yet, we use NPM from the
+# downloaded Node.js source code to install NPM packages into the container
 
 if [[ -e "$SUDO_COMMAND" ]]; then SUDO="sudo "; fi
 if [[ -z "$name" ]]; then
@@ -30,14 +30,7 @@ eval $npmi piranna/node-century#patch-2 || exit 20
 ln -s /bin/century $ROOT/init
 
 
-cat <<EOH > $ROOT/boot || exit 80
-#!/usr/bin/env node
-console.log('Welcome to NodeOS')
-
-require("repl").start("NodeOS> ")
-EOH
-
-chmod +x $ROOT/boot
+cp boot.js $ROOT/boot || exit 80
 
 
 if [[ -z "$QEMU" ]]; then

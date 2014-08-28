@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# This script prepares the users filesystem
+
 if [[ $(id -u) -ne 0 ]]; then
     echo "Please Run as Root"
     exit 20

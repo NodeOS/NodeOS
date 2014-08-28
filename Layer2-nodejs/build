@@ -3,7 +3,7 @@
 # This script compiles from scratch a Node.js executable and copy it with its
 # needed libraries on the ROOT filesystem
 
-NODE_VERSION=v0.10.31
+NODE_VERSION=v`curl -s https://semver.io/node/stable`
 
 if [[ -z "$name" ]]; then
   echo "Please Specify an Image Name"
@@ -21,15 +21,16 @@ fi
 
 # explicicly clone node because submodules SUCK
 if [[ ! -d deps/node ]]; then
-  git clone https://github.com/joyent/node.git deps/node &&
-  ( # configure node only once at checkout
-    cd deps/node               &&
-    git checkout $NODE_VERSION &&
-    ./configure
-  ) || err 6
+  git clone https://github.com/joyent/node.git deps/node || err 6
 fi
 
-make default --jobs=16 || exit 10
+(
+  cd deps/node               &&
+  git remote update          &&
+  git checkout $NODE_VERSION &&
+  ./configure                &&
+  make --jobs=16
+) || err 7
 
 
 # Important shared libraries

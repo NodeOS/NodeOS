@@ -55,14 +55,12 @@ mkdir -m 1777 ${DEV}/shm             || exit 50
 # For now, lets copy /usr/bin/env because of how deeply
 # node.js
 mkdir -p $ROOT/usr/bin               &&
-cp -f /usr/bin/env $ROOT/usr/bin/    || exit 70
+cp    -f /usr/bin/env $ROOT/usr/bin/ || exit 70
 
 # Use a well-known DNS server for now,
 # we do not yet support DHCP
-mkdir -p $ROOT/etc                   &&
-cat <<EOH > $ROOT/etc/resolv.conf    || exit 80
-nameserver 8.8.8.8
-EOH
+mkdir -p $ROOT/etc              &&
+cp    -f resolv.conf $ROOT/etc/ || exit 80
 
 
 # Wrap the system up and pack it
