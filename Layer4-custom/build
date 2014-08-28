@@ -20,7 +20,9 @@ mkdir -p $HOME || exit 1
 
 # Install /root dependencies from NPM using Ubuntu
 
-npmi="npm_config_prefix=$HOME npm i -g"
+NODE_DIR=`pwd`/../Layer2-nodejs/deps/node
+NPM="$NODE_DIR/node $NODE_DIR/deps/npm/cli.js"
+npmi="npm_config_prefix=$ROOT $NPM i -g"
 
 eval $npmi npm    &&
 eval $npmi bin-ip &&

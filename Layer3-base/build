@@ -21,29 +21,23 @@ fi
 
 # Install system dependencies using NPM from Ubuntu
 
-npmi="npm_config_prefix=$ROOT npm i -g"
+NODE_DIR=`pwd`/../Layer2-nodejs/deps/node
+NPM="$NODE_DIR/node $NODE_DIR/deps/npm/cli.js"
+npmi="npm_config_prefix=$ROOT $NPM i -g"
 
-eval $npmi piranna/node-century#patch-1 || exit 20
+eval $npmi piranna/node-century#patch-2 || exit 20
 
-ln -s bin/century $ROOT/init
-
-
-#cat <<EOH > $ROOT/init || exit 80
-##!/usr/bin/node
-#while(true)
-#{
-#  console.log('Hello NodeOS! :-)')
-#};
-#EOH
-#
-#chmod +x $ROOT/init
+ln -s /bin/century $ROOT/init
 
 
-cat <<EOH > $ROOT/boot.js || exit 80
+cat <<EOH > $ROOT/boot || exit 80
 #!/usr/bin/env node
-while(true)
-  console.log('Booting... :-)')
+console.log('Welcome to NodeOS')
+
+require("repl").start("NodeOS> ")
 EOH
+
+chmod +x $ROOT/boot
 
 
 if [[ -z "$QEMU" ]]; then

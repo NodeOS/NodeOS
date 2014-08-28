@@ -1,10 +1,9 @@
 #!/bin/bash
 
-# This script prepares a minimally functional linux system with
-# absolutely nothing aside from the userland C++ libraries
-# necessary to really call yourself linux
+# This script compiles from scratch a Node.js executable and copy it with its
+# needed libraries on the ROOT filesystem
 
-NODE_VERSION=v0.10.21
+NODE_VERSION=v0.10.31
 
 if [[ -z "$name" ]]; then
   echo "Please Specify an Image Name"
@@ -26,24 +25,41 @@ if [[ ! -d deps/node ]]; then
   ( # configure node only once at checkout
     cd deps/node               &&
     git checkout $NODE_VERSION &&
-    ./configure --fully-static
+    ./configure
   ) || err 6
 fi
 
-make default || exit 10
+make default --jobs=16 || exit 10
+
 
 # Important shared libraries
 if [ $(uname -m) == 'x86_64' ]; then
   platform=x86_64-linux-gnu
-
-  mkdir -p $ROOT/lib64                                                &&
-  ln -s /lib/$platform/ld-linux.so.2 $ROOT/lib64/ld-linux-x86-64.so.2 || exit 90
 else
   platform=i386-linux-gnu
 fi
 
-mkdir -p $ROOT/lib/$platform                                 &&
-cp    -f /lib/$platform/libpthread.so.0 $ROOT/lib/$platform/ || exit 100
+mkdir -p $ROOT/lib/$platform
+
+cp -f /lib/$platform/libdl.so.2      $ROOT/lib/$platform/ &&
+cp -f /lib/$platform/librt.so.1      $ROOT/lib/$platform/ &&
+cp -f /lib/$platform/libm.so.6       $ROOT/lib/$platform/ &&
+cp -f /lib/$platform/libgcc_s.so.1   $ROOT/lib/$platform/ &&
+cp -f /lib/$platform/libpthread.so.0 $ROOT/lib/$platform/ &&
+cp -f /lib/$platform/libc.so.6       $ROOT/lib/$platform/ &&
+
+cp -f /lib/$platform/ld-2.19.so      $ROOT/lib/$platform/    &&
+ln -s $platform/ld-2.19.so           $ROOT/lib/ld-linux.so.2 &&
+
+mkdir -p $ROOT/usr/lib/$platform                                    &&
+cp    -f /usr/lib/$platform/libstdc++.so.6 $ROOT/usr/lib/$platform/ || exit 91
+
+if [ $(uname -m) == 'x86_64' ]; then
+  cp    -f /lib/$platform/ld-linux.so.2 $ROOT/lib/$platform/             &&
+
+  mkdir -p $ROOT/lib64                                                   &&
+  ln    -s /lib/$platform/ld-linux.so.2 $ROOT/lib64/ld-linux-x86-64.so.2 || exit 90
+fi
 
 
 if [[ -n "$QEMU" ]]; then
