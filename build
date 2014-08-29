@@ -41,7 +41,7 @@ echo -e "${GRY}------------------------------------------${CLR}"
 echo
 if [[ -n "$QEMU" ]]; then
   echo -e "- Interactively run your image with:"
-  echo -e "${WHT}    sudo qemu-system-i386 --kernel /boot/vmlinuz-3.16.0-10-generic --initrd Layer3-base/layer3.cpio.gz -nographic  -append \"console=ttyS0 /boot.js\"${CLR}"
+  echo -e "${WHT}    sudo qemu-system-i386 --kernel /vmlinuz --initrd Layer3-base/layer3.cpio.gz -nographic  -append \"console=ttyS0 /boot.js\"${CLR}"
   echo
 else
   echo -e "- Interactively run your image with:"

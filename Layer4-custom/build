@@ -15,8 +15,13 @@ if [[ -z "$name" ]]; then
 fi
 
 
-ROOT=$(pwd)/ROOT
-HOME=$ROOT/root
+if [[ -z "$QEMU" ]]; then
+  USERS=$(pwd)/USERS
+else
+  USERS=/tmp/USERS
+fi
+
+HOME=$USERS/root
 
 mkdir -p $HOME || exit 1
 
@@ -24,15 +29,30 @@ mkdir -p $HOME || exit 1
 
 NODE_DIR=`pwd`/../Layer2-nodejs/deps/node
 NPM="$NODE_DIR/node $NODE_DIR/deps/npm/cli.js"
-npmi="npm_config_prefix=$ROOT $NPM i -g"
+npmi="npm_config_prefix=$HOME $NPM i -g"
 
-eval $npmi npm    &&
-eval $npmi bin-ip &&
-eval $npmi bin-sh || exit 10
+eval $npmi `cat packages.txt` || exit 10
 
 
 if [[ -z "$QEMU" ]]; then
   docker build -t $name . || exit 10
+else
+  name=layer3
+
+  qemu-img create -f raw $name.img 32M
+  mkfs.ext4 -F $name.img
+
+  sudo mkdir /tmp/usersfs
+  sudo mount -o loop $name.img /tmp/usersfs
+
+  # sudo mkdir /mnt/rootfs/boot
+  # sudo cp vmlinuz /mnt/rootfs/boot/vmlinuz
+  # sudo cp initrd /mnt/rootfs/boot/initrd
+
+  sudo cp -R $USERS/* /tmp/usersfs
+
+  sudo umount /tmp/usersfs
+  rm -r /tmp/usersfs
 fi
 
 echo "Successfully built Layer-4 image '$name'"
