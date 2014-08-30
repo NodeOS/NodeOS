@@ -39,12 +39,11 @@ echo -e "${GRN}${BLD}Success!${CLR}"
 echo -e "${GRN}You Just Built a Custom NodeOS Image ${WHT}$NOSN${CLR}"
 echo -e "${GRY}------------------------------------------${CLR}"
 echo
+echo -e "- Interactively run your image with:"
 if [[ -n "$QEMU" ]]; then
-  echo -e "- Interactively run your image with:"
-  echo -e "${WHT}    sudo qemu-system-i386 --kernel /vmlinuz --initrd Layer3-base/layer3.cpio.gz -hda Layer4-custom/layer4.img -nographic -append \"console=ttyS0 /bin/NodeOS-boot /dev/sda\"${CLR}"
+  echo -e "${WHT}    sudo qemu-system-i386 --kernel /vmlinuz --initrd Layer3-base/layer3.cpio.gz -hda Layer4-custom/layer4.img -enable-kvm -nographic -append \"console=ttyS0 /bin/nodeos-boot /dev/sda\"${CLR}"
   echo
 else
-  echo -e "- Interactively run your image with:"
   echo -e "${WHT}    sudo docker run -t -i $NOSN${CLR}"
   echo
   echo -e "- Share your creation with:"

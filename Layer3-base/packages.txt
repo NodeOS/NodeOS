@@ -1,2 +1,2 @@
 piranna/node-century#patch-2
-/home/piranna/Dropbox/Proyectos/NodeOS/NodeOS-boot
+nodeos-boot
