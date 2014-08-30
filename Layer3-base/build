@@ -30,9 +30,6 @@ eval $npmi `cat packages.txt` || exit 20
 ln -s /bin/century $ROOT/init
 
 
-cp boot.js $ROOT/boot || exit 80
-
-
 if [[ -z "$QEMU" ]]; then
   docker build -t $name . || exit 50
 else

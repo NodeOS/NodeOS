@@ -41,7 +41,7 @@ echo -e "${GRY}------------------------------------------${CLR}"
 echo
 if [[ -n "$QEMU" ]]; then
   echo -e "- Interactively run your image with:"
-  echo -e "${WHT}    sudo qemu-system-i386 --kernel /vmlinuz --initrd Layer3-base/layer3.cpio.gz -nographic  -append \"console=ttyS0 /boot.js\"${CLR}"
+  echo -e "${WHT}    sudo qemu-system-i386 --kernel /vmlinuz --initrd Layer3-base/layer3.cpio.gz -hda Layer4-custom/layer4.img -nographic -append \"console=ttyS0 /bin/NodeOS-boot /dev/sda\"${CLR}"
   echo
 else
   echo -e "- Interactively run your image with:"
