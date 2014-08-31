@@ -16,7 +16,7 @@ if [[ -z $ROOT ]];   then ROOT=/tmp/ROOT; fi
 
 # If -f is specified, overwrite the previous build
 if [[ "$1" == "-f" ]]; then
-  rm -rf $ROOT
+  sudo rm -rf $ROOT
 fi
 
 if [[ -d $ROOT ]]; then
@@ -38,7 +38,7 @@ cp    -f resolv.conf $ROOT/etc/ || exit 13
 # Wrap the system up and pack it
 case $PLATFORM in
   docker)
-    tar -cC $ROOT . | docker import - $name || exit 14
+    tar -cC $ROOT . | sudo docker import - $name || exit 14
   ;;
 esac
 

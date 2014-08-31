@@ -5,16 +5,18 @@
 # Use the default unless you're customizing layer-3 or below
 FROM nodeos/base
 #
-# Important to have /root/bin binaries accessible
-ENV HOME /root
-ENV PATH /root/bin:/usr/bin
+# Important to have /home/root/bin binaries accessible
+ENV HOME /home/root
+ENV PATH /home/root/bin:/usr/bin
 #
 # Use `init` to boot the system
 # You should probably not change this
-ENTRYPOINT ["init"]
+ENTRYPOINT ["/init", "/bin/nodeos-boot"]
 #
 #
 #-- /Boilerplate --
+
+ADD USERS/ /home/
 
 # Tell us who you are! 
 # Replace the following with your own contact

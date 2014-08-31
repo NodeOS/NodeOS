@@ -31,7 +31,7 @@ ln -s /bin/century $ROOT/init
 
 case $PLATFORM in
   docker)
-    docker build -t $name . || exit 31
+    sudo docker build -t $name . || exit 31
   ;;
   qemu)
     (

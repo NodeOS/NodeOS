@@ -32,7 +32,7 @@ eval $npmi `cat packages.txt` || exit 41
 
 case $PLATFORM in
   docker)
-    docker build -t $name . || exit 42
+    sudo docker build -t $name . || exit 42
   ;;
   qemu)
     qemu-img create -f raw $name.img 32M

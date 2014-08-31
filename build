@@ -9,7 +9,6 @@ WHT="\e[37m"
 CLR="\e[0m"
 
 
-if [[ -z "$name" ]];     then name=local;      fi
 if [[ -z "$PLATFORM" ]]; then PLATFORM=docker; fi
 
 
@@ -24,6 +23,7 @@ case $PLATFORM in
     # if user is logged into docker index
     # automatically prefix their name to built images
     name=$(sudo docker info | grep ^Username | awk '{print $2}' )
+    if [[ -z "$name" ]]; then name=local;      fi
 
     NOSN=${name}/nodeos
   ;;
