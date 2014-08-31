@@ -4,19 +4,18 @@
 # Since there is no functional NPM on the system yet, we use NPM from the
 # downloaded Node.js source code to install NPM packages into the container
 
-if [[ -e "$SUDO_COMMAND" ]]; then SUDO="sudo "; fi
-if [[ -z "$name" ]]; then
-  echo "Please Specify an Image Name"
-  echo "e.g. '${SUDO}name=layer3 $0 $@'"
-  exit 5
-fi
+
+if [[ -z "$name" ]]; then name=layer3; fi
 
 
-if [[ -z "$QEMU" ]]; then
-  ROOT=$(pwd)/ROOT
-else
-  ROOT=/tmp/ROOT
-fi
+case $PLATFORM in
+  docker)
+    ROOT=$(pwd)/ROOT
+  ;;
+  qemu)
+    ROOT=/tmp/ROOT
+  ;;
+esac
 
 
 # Install system dependencies using NPM from Ubuntu
@@ -25,18 +24,23 @@ NODE_DIR=`pwd`/../Layer2-nodejs/deps/node
 NPM="$NODE_DIR/node $NODE_DIR/deps/npm/cli.js"
 npmi="npm_config_prefix=$ROOT $NPM i -g"
 
-eval $npmi `cat packages.txt` || exit 20
+eval $npmi `cat packages.txt` || exit 30
 
 ln -s /bin/century $ROOT/init
 
 
-if [[ -z "$QEMU" ]]; then
-  docker build -t $name . || exit 50
-else
-  (cd "$ROOT"; find . | cpio -o -H newc | gzip) > $name.cpio.gz || exit 101
-fi
+case $PLATFORM in
+  docker)
+    docker build -t $name . || exit 31
+  ;;
+  qemu)
+    (
+      cd "$ROOT";
+      sudo chown -R root:root . ;  # Set rootfs files owner to root
+      find . | cpio -o -H newc | gzip
+    ) > $name.cpio.gz || exit 32
+  ;;
+esac
 
 
 echo "Successfully built Layer-3 image '$name'"
-echo "You should tag your image with:"
-echo "    ${SUDO}docker tag $name nodeos/nodeos"

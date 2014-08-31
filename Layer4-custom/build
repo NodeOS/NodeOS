@@ -2,28 +2,24 @@
 
 # This script prepares the users filesystem
 
-if [[ $(id -u) -ne 0 ]]; then
-    echo "Please Run as Root"
-    exit 20
-fi
 
-if [[ -e "$SUDO_COMMAND" ]]; then SUDO="sudo "; fi
-if [[ -z "$name" ]]; then
-  echo "Please Specify an Image Name"
-  echo "e.g. '${SUDO}name=<MY_NAME>/nodeos $0 $@'"
-  exit 5
-fi
+if [[ -z "$name" ]]; then name=layer4; fi
 
 
-if [[ -z "$QEMU" ]]; then
-  USERS=$(pwd)/USERS
-else
-  USERS=/tmp/USERS
-fi
+case $PLATFORM in
+  docker)
+    USERS=$(pwd)/USERS
+  ;;
+  qemu)
+    USERS=/tmp/USERS
+  ;;
+esac
+
 
 HOME=$USERS/root
 
-mkdir -p $HOME || exit 1
+mkdir -p $HOME || exit 40
+
 
 # Install /root dependencies from NPM using Ubuntu
 
@@ -31,28 +27,29 @@ NODE_DIR=`pwd`/../Layer2-nodejs/deps/node
 NPM="$NODE_DIR/node $NODE_DIR/deps/npm/cli.js"
 npmi="npm_config_prefix=$HOME $NPM i -g"
 
-eval $npmi `cat packages.txt` || exit 10
+eval $npmi `cat packages.txt` || exit 41
 
 
-if [[ -z "$QEMU" ]]; then
-  docker build -t $name . || exit 10
-else
-  name=layer4
+case $PLATFORM in
+  docker)
+    docker build -t $name . || exit 42
+  ;;
+  qemu)
+    qemu-img create -f raw $name.img 32M
+    mkfs.ext4 -F $name.img
 
-  qemu-img create -f raw $name.img 32M
-  mkfs.ext4 -F $name.img
+    mkdir /tmp/usersfs
+    sudo mount -o loop $name.img /tmp/usersfs
 
-  sudo mkdir /tmp/usersfs
-  sudo mount -o loop $name.img /tmp/usersfs
+    # sudo mkdir /mnt/rootfs/boot
+    # sudo cp vmlinuz /mnt/rootfs/boot/vmlinuz
+    # sudo cp initrd /mnt/rootfs/boot/initrd
 
-  # sudo mkdir /mnt/rootfs/boot
-  # sudo cp vmlinuz /mnt/rootfs/boot/vmlinuz
-  # sudo cp initrd /mnt/rootfs/boot/initrd
+    sudo cp -R $USERS/* /tmp/usersfs
 
-  sudo cp -R $USERS/* /tmp/usersfs
-
-  sudo umount /tmp/usersfs
-  rm -r /tmp/usersfs
-fi
+    sudo umount /tmp/usersfs
+    rm -r /tmp/usersfs
+  ;;
+esac
 
 echo "Successfully built Layer-4 image '$name'"

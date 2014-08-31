@@ -2,25 +2,17 @@
 
 # Prepare a minimal ROOT filesystem with some basic commands and configs
 
-SRC=$(pwd)
 
-# The root directory *must not* be a special mount,
-# such as /vagrant or an nfs directory
-if [[ -z $ROOT ]]; then
-  ROOT=/tmp/ROOT
-fi
+if [[ -z "$name" ]]; then name=layer1;    fi
+if [[ -z $ROOT ]];   then ROOT=/tmp/ROOT; fi
 
-# Require root privileges for some operations
-if [[ $(id -u) -ne 0 ]]; then
-    echo "Please Run as Root"
-    exit 20
-fi
 
-if [[ -z "$name" ]]; then
-  echo "Please Specify an Image Name"
-  echo "e.g. 'name=layer1 $0 $@'"
-  exit 5
-fi
+## Require root privileges for some operations
+#if [[ $(id -u) -ne 0 ]]; then
+#    echo "Please Run as Root"
+#    exit 10
+#fi
+
 
 # If -f is specified, overwrite the previous build
 if [[ "$1" == "-f" ]]; then
@@ -30,26 +22,24 @@ fi
 if [[ -d $ROOT ]]; then
   echo "Please Delete $ROOT - Build Directory Exists"
   echo "To Force Overwriting Use -f"
-  exit 10
+  exit 11
 fi
 
 
-# For now, lets copy /usr/bin/env because of how deeply node.js use it
+# For now, lets copy /usr/bin/env because of how deeply node.js depend on it
 mkdir -p $ROOT/usr/bin               &&
-cp    -f /usr/bin/env $ROOT/usr/bin/ || exit 70
+cp    -f /usr/bin/env $ROOT/usr/bin/ || exit 12
 
 # Use a well-known DNS server for now, we do not yet support DHCP
 mkdir -p $ROOT/etc              &&
-cp    -f resolv.conf $ROOT/etc/ || exit 80
+cp    -f resolv.conf $ROOT/etc/ || exit 13
 
 
 # Wrap the system up and pack it
-if [[ -z "$QEMU" ]]; then
-  # Docker
-  tar -cC $ROOT . | docker import - $name || exit 100
-#else
-#  # initramfs
-#  (cd "$ROOT"; find . | cpio -o -H newc | gzip) > $name.cpio.gz || exit 101
-fi
+case $PLATFORM in
+  docker)
+    tar -cC $ROOT . | docker import - $name || exit 14
+  ;;
+esac
 
 echo "Successfully built Layer-1 image '$name'"
