@@ -27,7 +27,9 @@ NODE_DIR=`pwd`/../Layer2-nodejs/deps/node
 NPM="$NODE_DIR/node $NODE_DIR/deps/npm/cli.js"
 npmi="npm_config_prefix=$HOME $NPM i -g"
 
-eval $npmi `cat packages.txt` || exit 41
+eval $npmi `grep -v "^#" packages.txt` || exit 41
+
+ln -s bin/nsh $HOME/init
 
 
 case $PLATFORM in
