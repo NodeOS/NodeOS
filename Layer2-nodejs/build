@@ -17,20 +17,15 @@ esac
 
 
 NODE_VERSION=v`curl -s https://semver.io/node/stable`
+NODE_URL=http://nodejs.org/dist/latest/node-$NODE_VERSION.tar.gz
 
 
 # explicicly clone node because submodules SUCK
 if [[ ! -d deps/node ]]; then
-  git clone https://github.com/joyent/node.git deps/node || exit 20
+  mkdir -p deps/node                                           &&
+  curl $NODE_URL | tar xzf - -C deps/node --strip-components=1 &&
+  ( cd deps/node && ./configure && make --jobs=16 )            || exit 20
 fi
-
-(
-  cd deps/node               &&
-  git remote update          &&
-  git checkout $NODE_VERSION &&
-  ./configure                &&
-  make --jobs=16
-) || exit 21
 
 
 # Important shared libraries
@@ -42,7 +37,7 @@ fi
 
 rm -rf $ROOT/lib     &&
 rm -rf $ROOT/lib64   && 
-rm -rf $ROOT/usr/lib || exit 22
+rm -rf $ROOT/usr/lib || exit 21
 
 mkdir -p $ROOT/lib/$platform                              &&
 
@@ -57,18 +52,18 @@ cp -f /lib/$platform/ld-2.19.so      $ROOT/lib/$platform/    &&
 ln -s $platform/ld-2.19.so           $ROOT/lib/ld-linux.so.2 &&
 
 mkdir -p $ROOT/usr/lib/$platform                                    &&
-cp    -f /usr/lib/$platform/libstdc++.so.6 $ROOT/usr/lib/$platform/ || exit 23
+cp    -f /usr/lib/$platform/libstdc++.so.6 $ROOT/usr/lib/$platform/ || exit 22
 
 if [ $(uname -m) == 'x86_64' ]; then
   mkdir -p $ROOT/lib64                                                &&
   cp -f /lib/$platform/ld-linux.so.2 $ROOT/lib/$platform/             &&
-  ln -s /lib/$platform/ld-linux.so.2 $ROOT/lib64/ld-linux-x86-64.so.2 || exit 24
+  ln -s /lib/$platform/ld-linux.so.2 $ROOT/lib64/ld-linux-x86-64.so.2 || exit 23
 fi
 
 
 case $PLATFORM in
   docker)
-    sudo docker build -t $name . || exit 25
+    sudo docker build -t $name . || exit 24
   ;;
   qemu)
     cp deps/node/node $ROOT/usr/bin/node
