@@ -22,13 +22,25 @@ fi
 if [[ -d $ROOT ]]; then
   echo "Please Delete $ROOT - Build Directory Exists"
   echo "To Force Overwriting Use -f"
-  exit 11
+  exit 10
 fi
 
 
+COREUTILS_VERSION=8.23
+COREUTILS_URL=http://ftp.gnu.org/pub/gnu/coreutils/coreutils-$COREUTILS_VERSION.tar.xz
+
+# Download and compile coreutils. We are only interested on 'env', thought.
+if [[ ! -d deps/coreutils ]]; then
+  sudo apt-get install autopoint bison gperf texinfo                     &&
+  mkdir -p deps/coreutils                                                &&
+  curl $COREUTILS_URL | tar xJf - -C deps/coreutils --strip-components=1 &&
+  ( cd deps/coreutils && ./configure && make --jobs=16 )                 || exit 11
+fi
+
 # For now, lets copy /usr/bin/env because of how deeply node.js depend on it
-mkdir -p $ROOT/usr/bin               &&
-cp    -f /usr/bin/env $ROOT/usr/bin/ || exit 12
+mkdir -p $ROOT/usr/bin                         &&
+cp    -f deps/coreutils/src/env $ROOT/usr/bin/ || exit 12
+
 
 # Use a well-known DNS server for now, we do not yet support DHCP
 mkdir -p $ROOT/etc              &&
