@@ -18,6 +18,7 @@ esac
 
 HOME=$USERS/root
 
+rm -rf $USERS  &&
 mkdir -p $HOME || exit 40
 
 
@@ -27,17 +28,23 @@ NODE_DIR=`pwd`/../Layer2-nodejs/deps/node
 NPM="$NODE_DIR/node $NODE_DIR/deps/npm/cli.js"
 npmi="npm_config_prefix=$HOME $NPM i -g"
 
+# Install un-commented packages
 eval $npmi `grep -v "^#" packages.txt` || exit 41
 
-ln -s bin/nsh $HOME/init
+ln -sf bin/forever-starter $HOME/init
+
+
+mkdir -p $HOME/etc                 &&
+cp forever-starter.json $HOME/etc/ || exit 42
 
 
 case $PLATFORM in
   docker)
-    sudo docker build -t $name . || exit 42
+    sudo docker build -t $name . || exit 43
   ;;
   qemu)
-    qemu-img create -f raw $name.img 32M
+    rm -f $name.img
+    qemu-img create -f raw $name.img 48M
     mkfs.ext4 -F $name.img
 
     mkdir /tmp/usersfs

@@ -7,3 +7,6 @@ bin-fs
 bin-pwd
 bin-ifconfig
 wssh
+piranna/forever-monitor
+piranna/forever#starter
+piranna/node-bin-getty
