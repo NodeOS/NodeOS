@@ -1,5 +1,7 @@
 # node-os
 
+This repo is discussion only, source code is available at [Docker-NodeOS](https://github.com/NodeOS/Docker-NodeOS)
+
 [![Join the Discussion](http://i.imgur.com/hUjSLXt.png)](https://github.com/NodeOS/NodeOS/issues)
 
 ## find us
