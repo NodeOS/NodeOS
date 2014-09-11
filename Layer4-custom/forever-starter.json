@@ -1,0 +1,12 @@
+[
+  {
+    "command": "getty",
+    "args": ["nsh"],
+    "enabled": true
+  },
+  {
+    "command": "wssh-server",
+    "args": ["nsh"],
+    "enabled": true
+  }
+]

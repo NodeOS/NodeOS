@@ -1,37 +1,51 @@
 #!/bin/bash
 
-# We prepare the image with dependencies from NPM
-# Since there is no functional NPM on the system yet,
-# we use NPM from the outer host to install NPM into the container
+# We prepare the ROOT filesystem with dependencies from NPM
+# Since there is no functional NPM on the system yet, we use NPM from the
+# downloaded Node.js source code to install NPM packages into the container
 
-if [[ -e "$SUDO_COMMAND" ]]; then SUDO="sudo "; fi
-if [[ -z "$name" ]]; then
-  echo "Please Specify an Image Name"
-  echo "e.g. '${SUDO}name=layer3 $0 $@'"
-  exit 5
-fi
+GRN="\e[32m"
+CLR="\e[0m"
 
-ROOT=$(pwd)/ROOT
-HOME=$ROOT/root
 
-mkdir -p $HOME || exit 1
+if [[ -z "$name" ]]; then name=layer3; fi
+
+case $PLATFORM in
+  docker)
+    ROOT=$(pwd)/ROOT
+
+    rm    -rf $ROOT &&
+    mkdir -p  $ROOT || exit 10
+  ;;
+  qemu)
+    ROOT=/tmp/ROOT
+  ;;
+esac
+
 
 # Install system dependencies using NPM from Ubuntu
-npmi="NPM_CONFIG_PREFIX=$ROOT npm i -g"
-eval $npmi npm                    &&
-eval $npmi bin-npkg               &&
-eval $npmi bin-ip                 &&
-eval $npmi bin-sh                 || exit 10
 
-# Install /root dependencies from NPM using Ubuntu
-npmi="NPM_CONFIG_PREFIX=$HOME npm i -g"
-eval $npmi bin-init               || exit 20
+NODE_DIR=`pwd`/../Layer2-nodejs/deps/node
+NPM="$NODE_DIR/node $NODE_DIR/deps/npm/cli.js"
+npmi="npm_config_prefix=$ROOT $NPM i -g"
 
-mkdir -p $ROOT/usr/bin            &&
-cp /usr/bin/env $ROOT/usr/bin/env || exit 30
+eval $npmi `grep -v "^#" packages.txt` || exit 31
 
-sudo docker build -t $name .      || exit 50
+ln -s /bin/century $ROOT/init
 
-echo "Successfully built Layer-3 image '$name'"
-echo "You should tag your image with:"
-echo "    ${SUDO}docker tag $name nodeos/nodeos"
+
+case $PLATFORM in
+  docker)
+    sudo docker build -t $name . || exit 32
+  ;;
+  qemu)
+    (
+      cd "$ROOT";
+      sudo chown -R root:root . ;  # Set rootfs files owner to root
+      find . | cpio -o -H newc | gzip
+    ) > $name.cpio.gz || exit 33
+  ;;
+esac
+
+
+echo -e "${GRN}Successfully built Layer-3 image '$name'${CLR}"

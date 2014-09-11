@@ -8,38 +8,33 @@ GRN="\e[32m"
 WHT="\e[37m"
 CLR="\e[0m"
 
-NODE_VERSION=v0.10.21
+
+if [[ -z "$PLATFORM" ]]; then PLATFORM=docker; fi
+
 
 function err(){
   echo -e "${RED}Error Building Image${CLR}"
   exit $1
 }
 
-# if user is logged into docker index
-# automatically prefix their name to built images
-name=$(sudo docker info | grep ^Username | awk '{print $2}' )
-if [[ -z "$name" ]]; then name=local; fi
 
-NOSN=${name}/nodeos
+case $PLATFORM in
+  docker)
+    # if user is logged into docker index
+    # automatically prefix their name to built images
+    name=$(sudo docker info | grep ^Username | awk '{print $2}' )
+    if [[ -z "$name" ]]; then name=local; fi
 
-# explicicly clone node because submodules SUCK
-if [[ ! -d Submodules/node ]]; then
-  git clone git@github.com:joyent/node.git Submodules/node &&
-  ( # configure node only once at checkout
-    cd Submodules/node         &&
-    git checkout $NODE_VERSION &&
-    ./configure
-  ) || err 6
-fi
+    NOSN=${name}/nodeos
+  ;;
+esac
+
 
 # Build each layer up
-(cd Layer1-linux  && sudo name=layer1 ./build -f ) &&
-(cd Layer2-nodejs && sudo name=layer2 ./build )    &&
-(cd Layer3-base   && sudo name=layer3 ./build )    || err 10
-
-sudo docker tag layer3 nodeos/base                 || err 20
-
-(cd Layer4-custom && sudo name=${NOSN} ./build )   || err 30
+(cd Layer1-linux  && PLATFORM=${PLATFORM} ./build ) &&
+(cd Layer2-nodejs && PLATFORM=${PLATFORM} ./build ) &&
+(cd Layer3-base   && PLATFORM=${PLATFORM} ./build ) &&
+(cd Layer4-custom && PLATFORM=${PLATFORM} name=${NOSN} ./build ) || err $?
 
 echo -e "${GRY}------------------------------------------${CLR}"
 echo -e "${GRN}${BLD}Success!${CLR}"
@@ -47,8 +42,15 @@ echo -e "${GRN}You Just Built a Custom NodeOS Image ${WHT}$NOSN${CLR}"
 echo -e "${GRY}------------------------------------------${CLR}"
 echo
 echo -e "- Interactively run your image with:"
-echo -e "${WHT}    sudo docker run -t -i $NOSN${CLR}"
-echo
-echo -e "- Share your creation with:"
-echo -e "${WHT}    sudo docker push $NOSN${CLR}"
-echo
+
+case $PLATFORM in
+  docker)
+    echo -e "${WHT}    sudo docker run -t -i $NOSN${CLR}"
+    echo
+    echo -e "- Share your creation with:"
+    echo -e "${WHT}    sudo docker push $NOSN${CLR}"
+  ;;
+  qemu)
+    echo -e "${WHT}    sudo qemu-system-i386 --kernel /vmlinuz --initrd Layer3-base/layer3.cpio.gz -hda Layer4-custom/layer4.img -enable-kvm -nographic -append \"console=ttyS0 /bin/nodeos-boot /dev/sda\"${CLR}"
+  ;;
+esac

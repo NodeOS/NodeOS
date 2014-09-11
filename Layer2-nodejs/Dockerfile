@@ -2,4 +2,4 @@ FROM layer1
 
 MAINTAINER Jacob Groundwater <groundwater@gmail.com>
 
-ADD node /bin/node
+ADD ROOT/ /

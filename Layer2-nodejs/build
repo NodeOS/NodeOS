@@ -1,25 +1,79 @@
 #!/bin/bash
 
-# This script prepares a minimally functional linux system with
-# absolutely nothing aside from the userland C++ libraries
-# necessary to really call yourself linux
+# This script compiles from scratch a Node.js executable and copy it with its
+# needed libraries on the ROOT filesystem
 
-# Require root privileges for some operations
-if [[ $(id -u) -ne 0 ]]; then
-    echo "Please Run as Root"
-    exit 20
+GRN="\e[32m"
+CLR="\e[0m"
+
+
+if [[ -z "$name" ]]; then name=layer2; fi
+
+case $PLATFORM in
+  docker)
+    ROOT=$(pwd)/ROOT
+
+    rm    -rf $ROOT &&
+    mkdir -p  $ROOT || exit 10
+  ;;
+  qemu)
+    ROOT=/tmp/ROOT
+  ;;
+esac
+
+
+NODE_VERSION=v`curl -s https://semver.io/node/stable`
+NODE_URL=http://nodejs.org/dist/latest/node-$NODE_VERSION.tar.gz
+
+
+# explicicly clone node because submodules SUCK
+if [[ ! -d deps/node ]]; then
+  mkdir -p deps/node                                           &&
+  curl $NODE_URL | tar xzf - -C deps/node --strip-components=1 &&
+  ( cd deps/node && ./configure && make --jobs=16 )            || exit 21
 fi
 
-if [[ -e "$SUDO_COMMAND" ]]; then SUDO="sudo "; fi
-if [[ -z "$name" ]]; then
-  echo "Please Specify an Image Name"
-  echo "e.g. '${SUDO}name=layer2 $0 $@'"
-  exit 5
+mkdir -p $ROOT/usr/bin               &&
+cp deps/node/node $ROOT/usr/bin/node || exit 22
+
+
+# Important shared libraries
+if [ $(uname -m) == 'x86_64' ]; then
+  platform=x86_64-linux-gnu
+else
+  platform=i386-linux-gnu
 fi
 
-make default                     &&
-docker build -t $name Release    || exit 10
+rm -rf $ROOT/lib     &&
+rm -rf $ROOT/lib64   && 
+rm -rf $ROOT/usr/lib || exit 23
 
-echo "Successfully built Layer-1 image '$name'"
-echo "To View Image : ${SUDO}docker images"
-echo "To Cleanup    : make clean"
+mkdir -p $ROOT/lib/$platform                              &&
+
+cp -f /lib/$platform/libdl.so.2      $ROOT/lib/$platform/ &&
+cp -f /lib/$platform/librt.so.1      $ROOT/lib/$platform/ &&
+cp -f /lib/$platform/libm.so.6       $ROOT/lib/$platform/ &&
+cp -f /lib/$platform/libgcc_s.so.1   $ROOT/lib/$platform/ &&
+cp -f /lib/$platform/libpthread.so.0 $ROOT/lib/$platform/ &&
+cp -f /lib/$platform/libc.so.6       $ROOT/lib/$platform/ &&
+
+cp -f /lib/$platform/ld-2.19.so      $ROOT/lib/$platform/    &&
+ln -s $platform/ld-2.19.so           $ROOT/lib/ld-linux.so.2 &&
+
+mkdir -p $ROOT/usr/lib/$platform                                    &&
+cp    -f /usr/lib/$platform/libstdc++.so.6 $ROOT/usr/lib/$platform/ || exit 24
+
+if [ $(uname -m) == 'x86_64' ]; then
+  mkdir -p $ROOT/lib64                                                &&
+  cp -f /lib/$platform/ld-linux.so.2 $ROOT/lib/$platform/             &&
+  ln -s /lib/$platform/ld-linux.so.2 $ROOT/lib64/ld-linux-x86-64.so.2 || exit 25
+fi
+
+
+case $PLATFORM in
+  docker)
+    sudo docker build -t $name . || exit 26
+  ;;
+esac
+
+echo -e "${GRN}Successfully built Layer-2 image '$name'${CLR}"
