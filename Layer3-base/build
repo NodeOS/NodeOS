@@ -4,9 +4,11 @@
 # Since there is no functional NPM on the system yet, we use NPM from the
 # downloaded Node.js source code to install NPM packages into the container
 
+GRN="\e[32m"
+CLR="\e[0m"
+
 
 if [[ -z "$name" ]]; then name=layer3; fi
-
 
 case $PLATFORM in
   docker)
@@ -18,29 +20,33 @@ case $PLATFORM in
 esac
 
 
+rm    -rf $ROOT &&
+mkdir -p  $ROOT || exit 30
+
+
 # Install system dependencies using NPM from Ubuntu
 
 NODE_DIR=`pwd`/../Layer2-nodejs/deps/node
 NPM="$NODE_DIR/node $NODE_DIR/deps/npm/cli.js"
 npmi="npm_config_prefix=$ROOT $NPM i -g"
 
-eval $npmi `grep -v "^#" packages.txt` || exit 30
+eval $npmi `grep -v "^#" packages.txt` || exit 31
 
 ln -s /bin/century $ROOT/init
 
 
 case $PLATFORM in
   docker)
-    sudo docker build -t $name . || exit 31
+    sudo docker build -t $name . || exit 32
   ;;
   qemu)
     (
       cd "$ROOT";
       sudo chown -R root:root . ;  # Set rootfs files owner to root
       find . | cpio -o -H newc | gzip
-    ) > $name.cpio.gz || exit 32
+    ) > $name.cpio.gz || exit 33
   ;;
 esac
 
 
-echo "Successfully built Layer-3 image '$name'"
+echo -e "${GRN}Successfully built Layer-3 image '$name'${CLR}"

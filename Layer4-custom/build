@@ -2,9 +2,11 @@
 
 # This script prepares the users filesystem
 
+GRN="\e[32m"
+CLR="\e[0m"
+
 
 if [[ -z "$name" ]]; then name=layer4; fi
-
 
 case $PLATFORM in
   docker)
@@ -18,8 +20,8 @@ esac
 
 HOME=$USERS/root
 
-rm -rf $USERS  &&
-mkdir -p $HOME || exit 40
+rm    -rf $USERS &&
+mkdir -p $HOME   || exit 40
 
 
 # Install /root dependencies from NPM using Ubuntu
@@ -61,4 +63,4 @@ case $PLATFORM in
   ;;
 esac
 
-echo "Successfully built Layer-4 image '$name'"
+echo -e "${GRN}Successfully built Layer-4 image '$name'${CLR}"

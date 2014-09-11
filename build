@@ -23,7 +23,7 @@ case $PLATFORM in
     # if user is logged into docker index
     # automatically prefix their name to built images
     name=$(sudo docker info | grep ^Username | awk '{print $2}' )
-    if [[ -z "$name" ]]; then name=local;      fi
+    if [[ -z "$name" ]]; then name=local; fi
 
     NOSN=${name}/nodeos
   ;;
@@ -31,9 +31,9 @@ esac
 
 
 # Build each layer up
-(cd Layer1-linux  && PLATFORM=${PLATFORM} ./build -f ) &&
-(cd Layer2-nodejs && PLATFORM=${PLATFORM} ./build    ) &&
-(cd Layer3-base   && PLATFORM=${PLATFORM} ./build    ) &&
+(cd Layer1-linux  && PLATFORM=${PLATFORM} ./build ) &&
+(cd Layer2-nodejs && PLATFORM=${PLATFORM} ./build ) &&
+(cd Layer3-base   && PLATFORM=${PLATFORM} ./build ) &&
 (cd Layer4-custom && PLATFORM=${PLATFORM} name=${NOSN} ./build ) || err $?
 
 echo -e "${GRY}------------------------------------------${CLR}"

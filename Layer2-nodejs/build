@@ -3,8 +3,11 @@
 # This script compiles from scratch a Node.js executable and copy it with its
 # needed libraries on the ROOT filesystem
 
+GRN="\e[32m"
+CLR="\e[0m"
 
-if [[ -z "$name" ]]; then name=layer2;    fi
+
+if [[ -z "$name" ]]; then name=layer2; fi
 
 case $PLATFORM in
   docker)
@@ -16,6 +19,10 @@ case $PLATFORM in
 esac
 
 
+rm    -rf $ROOT &&
+mkdir -p  $ROOT || exit 20
+
+
 NODE_VERSION=v`curl -s https://semver.io/node/stable`
 NODE_URL=http://nodejs.org/dist/latest/node-$NODE_VERSION.tar.gz
 
@@ -24,8 +31,11 @@ NODE_URL=http://nodejs.org/dist/latest/node-$NODE_VERSION.tar.gz
 if [[ ! -d deps/node ]]; then
   mkdir -p deps/node                                           &&
   curl $NODE_URL | tar xzf - -C deps/node --strip-components=1 &&
-  ( cd deps/node && ./configure && make --jobs=16 )            || exit 20
+  ( cd deps/node && ./configure && make --jobs=16 )            || exit 21
 fi
+
+mkdir -p $ROOT/usr/bin               &&
+cp deps/node/node $ROOT/usr/bin/node || exit 22
 
 
 # Important shared libraries
@@ -37,7 +47,7 @@ fi
 
 rm -rf $ROOT/lib     &&
 rm -rf $ROOT/lib64   && 
-rm -rf $ROOT/usr/lib || exit 21
+rm -rf $ROOT/usr/lib || exit 23
 
 mkdir -p $ROOT/lib/$platform                              &&
 
@@ -52,22 +62,19 @@ cp -f /lib/$platform/ld-2.19.so      $ROOT/lib/$platform/    &&
 ln -s $platform/ld-2.19.so           $ROOT/lib/ld-linux.so.2 &&
 
 mkdir -p $ROOT/usr/lib/$platform                                    &&
-cp    -f /usr/lib/$platform/libstdc++.so.6 $ROOT/usr/lib/$platform/ || exit 22
+cp    -f /usr/lib/$platform/libstdc++.so.6 $ROOT/usr/lib/$platform/ || exit 24
 
 if [ $(uname -m) == 'x86_64' ]; then
   mkdir -p $ROOT/lib64                                                &&
   cp -f /lib/$platform/ld-linux.so.2 $ROOT/lib/$platform/             &&
-  ln -s /lib/$platform/ld-linux.so.2 $ROOT/lib64/ld-linux-x86-64.so.2 || exit 23
+  ln -s /lib/$platform/ld-linux.so.2 $ROOT/lib64/ld-linux-x86-64.so.2 || exit 25
 fi
 
 
 case $PLATFORM in
   docker)
-    sudo docker build -t $name . || exit 24
-  ;;
-  qemu)
-    cp deps/node/node $ROOT/usr/bin/node
+    sudo docker build -t $name . || exit 26
   ;;
 esac
 
-echo "Successfully built Layer-2 image '$name'"
+echo -e "${GRN}Successfully built Layer-2 image '$name'${CLR}"

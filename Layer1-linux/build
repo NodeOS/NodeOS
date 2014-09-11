@@ -2,28 +2,24 @@
 
 # Prepare a minimal ROOT filesystem with some basic commands and configs
 
-
-if [[ -z "$name" ]]; then name=layer1;    fi
-if [[ -z $ROOT ]];   then ROOT=/tmp/ROOT; fi
-
-
-## Require root privileges for some operations
-#if [[ $(id -u) -ne 0 ]]; then
-#    echo "Please Run as Root"
-#    exit 10
-#fi
+GRN="\e[32m"
+CLR="\e[0m"
 
 
-# If -f is specified, overwrite the previous build
-if [[ "$1" == "-f" ]]; then
-  sudo rm -rf $ROOT
-fi
+if [[ -z "$name" ]]; then name=layer1; fi
 
-if [[ -d $ROOT ]]; then
-  echo "Please Delete $ROOT - Build Directory Exists"
-  echo "To Force Overwriting Use -f"
-  exit 10
-fi
+case $PLATFORM in
+  docker)
+    ROOT=$(pwd)/ROOT
+  ;;
+  qemu)
+    ROOT=/tmp/ROOT
+  ;;
+esac
+
+
+rm    -rf $ROOT &&
+mkdir -p  $ROOT || exit 10
 
 
 COREUTILS_VERSION=8.23
@@ -54,4 +50,4 @@ case $PLATFORM in
   ;;
 esac
 
-echo "Successfully built Layer-1 image '$name'"
+echo -e "${GRN}Successfully built Layer-1 image '$name'${CLR}"
