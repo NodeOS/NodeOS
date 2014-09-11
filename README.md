@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/NodeOS/NodeOS.png?label=ready&title=Ready)](https://waffle.io/NodeOS/NodeOS)
 # node-os
 
 Lightweight operating system using [Node.js](http://nodejs.org) as userspace.
