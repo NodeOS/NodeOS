@@ -8,16 +8,7 @@ CLR="\e[0m"
 
 if [[ -z "$name" ]]; then name=layer4; fi
 
-case $PLATFORM in
-  docker)
-    USERS=$(pwd)/USERS
-  ;;
-  qemu)
-    USERS=/tmp/USERS
-  ;;
-esac
-
-
+USERS=$(pwd)/USERS
 HOME=$USERS/root
 
 rm    -rf $USERS &&

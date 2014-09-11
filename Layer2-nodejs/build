@@ -12,15 +12,14 @@ if [[ -z "$name" ]]; then name=layer2; fi
 case $PLATFORM in
   docker)
     ROOT=$(pwd)/ROOT
+
+    rm    -rf $ROOT &&
+    mkdir -p  $ROOT || exit 10
   ;;
   qemu)
     ROOT=/tmp/ROOT
   ;;
 esac
-
-
-rm    -rf $ROOT &&
-mkdir -p  $ROOT || exit 20
 
 
 NODE_VERSION=v`curl -s https://semver.io/node/stable`

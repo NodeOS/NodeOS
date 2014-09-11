@@ -13,15 +13,14 @@ if [[ -z "$name" ]]; then name=layer3; fi
 case $PLATFORM in
   docker)
     ROOT=$(pwd)/ROOT
+
+    rm    -rf $ROOT &&
+    mkdir -p  $ROOT || exit 10
   ;;
   qemu)
     ROOT=/tmp/ROOT
   ;;
 esac
-
-
-rm    -rf $ROOT &&
-mkdir -p  $ROOT || exit 30
 
 
 # Install system dependencies using NPM from Ubuntu
