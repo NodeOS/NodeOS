@@ -1,0 +1,75 @@
+#!/bin/bash
+
+# We prepare the ROOT filesystem with dependencies from NPM
+# Since there is no functional NPM on the system yet, we use NPM from the
+# downloaded Node.js source code to install NPM packages into the container
+
+GRN="\e[32m"
+CLR="\e[0m"
+
+
+if [[ -z "$name" ]]; then name=rootfs; fi
+
+ROOT=$(pwd)/ROOT
+#HOME=$ROOT/root
+HOME=$ROOT
+
+sudo rm -rf $ROOT &&
+mkdir   -p  $HOME || exit 20
+
+
+#
+# Install system dependencies
+#
+
+NODE_DIR=`pwd`/../initramfs/deps/node
+NPM="node $NODE_DIR/deps/npm/cli.js"
+npmi="npm_config_prefix=$HOME $NPM i -g"
+
+eval $npmi `grep -v "^#" packages.txt` || exit 21
+
+ln -sf bin/nodeos-usersfs $HOME/init
+#ln -sf bin/forever-starter $HOME/init
+
+mkdir -p $HOME/etc                 &&
+cp forever-starter.json $HOME/etc/ || exit 22
+
+
+#
+# Copy kernel and initramfs on the disk image
+#
+
+# mkdir $ROOT/boot              &&
+# cp vmlinuz $ROOT/boot/vmlinuz &&
+# cp initrd  $ROOT/boot/initrd  || exit 23
+
+
+#
+# Wrap the system up and pack it
+#
+
+sudo chown -R root:root "$ROOT"  # Set rootfs files owner to root
+
+case $PLATFORM in
+  docker)
+    sudo docker build -t $name . || exit 24
+  ;;
+  qemu)
+    ROOTFS=$(pwd)/rootfs
+
+    rm -f $name.img                      &&
+    qemu-img create -f raw $name.img 32M &&
+    mkfs.ext2 -F $name.img               &&
+
+    mkdir $ROOTFS                        &&
+    sudo mount -o loop $name.img $ROOTFS &&
+
+    sudo cp -R $ROOT/* $ROOTFS &&
+
+    sudo umount $ROOTFS &&
+    rm -r $ROOTFS       || exit 25
+  ;;
+esac
+
+
+echo -e "${GRN}Successfully built Layer-2 image '$name'${CLR}"

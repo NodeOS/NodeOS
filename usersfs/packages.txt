@@ -1,0 +1,8 @@
+npm
+bin-ip
+bin-sh
+bin-nsh
+bin-man
+bin-fs
+bin-pwd
+bin-ifconfig

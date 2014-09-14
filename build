@@ -31,10 +31,9 @@ esac
 
 
 # Build each layer up
-(cd Layer1-linux  && PLATFORM=${PLATFORM} ./build ) &&
-(cd Layer2-nodejs && PLATFORM=${PLATFORM} ./build ) &&
-(cd Layer3-base   && PLATFORM=${PLATFORM} ./build ) &&
-(cd Layer4-custom && PLATFORM=${PLATFORM} name=${NOSN} ./build ) || err $?
+(cd initramfs && PLATFORM=${PLATFORM} ./build ) &&
+(cd rootfs    && PLATFORM=${PLATFORM} ./build ) &&
+(cd usersfs   && PLATFORM=${PLATFORM} name=${NOSN} ./build ) || err $?
 
 echo -e "${GRY}------------------------------------------${CLR}"
 echo -e "${GRN}${BLD}Success!${CLR}"
@@ -51,6 +50,6 @@ case $PLATFORM in
     echo -e "${WHT}    sudo docker push $NOSN${CLR}"
   ;;
   qemu)
-    echo -e "${WHT}    sudo qemu-system-i386 --kernel /vmlinuz --initrd Layer3-base/layer3.cpio.gz -hda Layer4-custom/layer4.img -enable-kvm -nographic -append \"console=ttyS0 /bin/nodeos-boot /dev/sda\"${CLR}"
+    echo -e "${WHT}    sudo qemu-system-i386 --kernel /vmlinuz --initrd initramfs/initramfs.cpio.gz -hda rootfs/rootfs.img -hdb usersfs/usersfs.img -enable-kvm -nographic -append \"console=ttyS0 /bin/nodeos-rootfs ROOT=/dev/sda USERS=/dev/sdb\"${CLR}"
   ;;
 esac

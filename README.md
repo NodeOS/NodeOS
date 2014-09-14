@@ -25,8 +25,8 @@ Since anyone can contribute to npm, anyone can create node-os packages.
 
 ## introduction
 
-NodeOS is a Node.js based operating system, built off of the Linux kernel.
-The eventual goal of NodeOS is to produce images that can be run on 
+NodeOS is a Node.js based operating system, built-off of the Linux kernel.
+The eventual goal of NodeOS is to produce images that can be run on
 
 - hardware
 - cloud providers like Joyent/Amazon/Rackspace
@@ -36,15 +36,16 @@ The eventual goal of NodeOS is to produce images that can be run on
 
 Core development is being done in layers:
 
-- *Layer-0* provides the boot loader and kernel (currently provided by Docker)
-- *Layer-1* provides the basic Linux structure
-- *Layer-2* provides the Node.js binary and its required shared libraries
-- *Layer-3* provides the core NodeOS additions, like the bootstrapping script
-- *Layer-4* is for customizing distributions, like the init daemon and package manager
+- *kernel*    boot loader and kernel (currently provided by Docker)
+- *initramfs* Node.js binary and its required shared libraries
+- *rootfs*    NodeOS boot additions (and single-user environment)
+- *usersfs*   multi-user environment
 
-If you are hacking on NodeOS, you are likely building Layer-4 images.
-Layer-4 images can be build entirely from a `Dockerfile`,
-where as the other layers require more finesse.
+All the layers except *kernel* are bootable, leading both *initramfs* and
+*rootfs* to a Node.js [REPL](http://nodejs.org/api/repl.html) prompt by default.
+
+If you are hacking on NodeOS as a somewhat production server, you are likely
+building *usersfs* images.
 
 # NodeOS on Docker
 
@@ -54,7 +55,7 @@ where as the other layers require more finesse.
 
 - One Liner
 
-    ```
+    ```bash
     sudo docker run -t -i nodeos/nodeos
     ```
 
@@ -62,10 +63,10 @@ where as the other layers require more finesse.
 
 ## Build from Source
 
-*Warning*: the build process is hairy, it prob. won't work the first time.
+*Warning*: the build process is hairy, it probably won't work the first time.
 I'm working on that.
 
-```
+```bash
 git clone git@github.com:NodeOS/Docker-NodeOS.git
 cd Docker-NodeOS
 ./build

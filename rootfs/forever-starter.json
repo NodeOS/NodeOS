@@ -1,0 +1,16 @@
+[
+  {
+    "command": "/root/bin/getty",
+    "args": ["/home/nodeos/bin/nsh"],
+    "cwd": "/home/nodeos",
+    "env": {
+      "PATH": "/home/nodeos/bin:/usr/bin"
+    },
+    "enabled": true
+  },
+  {
+    "command": "wssh-server",
+    "args": ["nsh"],
+    "enabled": true
+  }
+]
