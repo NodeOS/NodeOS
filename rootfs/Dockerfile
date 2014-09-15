@@ -1,5 +1,7 @@
-FROM layer1
+FROM initramfs
 
 MAINTAINER Jacob Groundwater <groundwater@gmail.com>
 
-ADD ROOT/ /
+ADD ROOT/ /root/
+
+CMD ["/init", "/bin/nodeos-rootfs"]

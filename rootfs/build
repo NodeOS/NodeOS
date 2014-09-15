@@ -29,7 +29,6 @@ npmi="npm_config_prefix=$HOME $NPM i -g"
 eval $npmi `grep -v "^#" packages.txt` || exit 21
 
 ln -sf bin/nodeos-usersfs $HOME/init
-#ln -sf bin/forever-starter $HOME/init
 
 mkdir -p $HOME/etc                 &&
 cp forever-starter.json $HOME/etc/ || exit 22

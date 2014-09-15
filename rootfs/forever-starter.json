@@ -7,10 +7,5 @@
       "PATH": "/home/nodeos/bin:/usr/bin"
     },
     "enabled": true
-  },
-  {
-    "command": "wssh-server",
-    "args": ["nsh"],
-    "enabled": true
   }
 ]
