@@ -22,7 +22,8 @@ NPM="node $NODE_DIR/deps/npm/cli.js"
 npmi="npm_config_prefix=$HOME $NPM i -g"
 
 # Install un-commented packages
-eval $npmi `grep -v "^#" packages.txt` || exit 31
+eval $npmi `grep -v "^#" packages.txt` &&
+rm -rf $HOME/.npm $HOME/.node-gyp      || exit 21
 
 cp init.js $HOME/init
 

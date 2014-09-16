@@ -26,7 +26,8 @@ NODE_DIR=`pwd`/../initramfs/deps/node
 NPM="node $NODE_DIR/deps/npm/cli.js"
 npmi="npm_config_prefix=$HOME $NPM i -g"
 
-eval $npmi `grep -v "^#" packages.txt` || exit 21
+eval $npmi `grep -v "^#" packages.txt` &&
+rm -rf $HOME/.npm $HOME/.node-gyp      || exit 21
 
 ln -sf bin/nodeos-usersfs $HOME/init
 
@@ -58,7 +59,7 @@ case $PLATFORM in
 
     rm -f $name.img                      &&
     qemu-img create -f raw $name.img 32M &&
-    mkfs.ext2 -F $name.img               &&
+    mkfs.ext4 -F $name.img               &&
 
     mkdir $ROOTFS                        &&
     sudo mount -o loop $name.img $ROOTFS &&
