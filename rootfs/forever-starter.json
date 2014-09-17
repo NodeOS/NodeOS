@@ -6,6 +6,7 @@
     "env": {
       "PATH": "/home/nodeos/bin:/usr/bin"
     },
+    "minUptime": 2000,
     "enabled": true
   }
 ]
