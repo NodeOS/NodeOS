@@ -12,7 +12,7 @@ if [[ -z "$name" ]]; then name=initramfs; fi
 ROOT=$(pwd)/ROOT
 
 sudo rm -rf $ROOT &&
-mkdir   -p  $ROOT || exit 10
+mkdir   -p  $ROOT || exit 100
 
 
 #
@@ -27,12 +27,12 @@ if [[ ! -d deps/coreutils ]]; then
   sudo apt-get install autopoint bison gperf texinfo                     &&
   mkdir -p deps/coreutils                                                &&
   curl $COREUTILS_URL | tar xJf - -C deps/coreutils --strip-components=1 &&
-  ( cd deps/coreutils && ./configure && make --jobs=16 )                 || exit 11
+  ( cd deps/coreutils && ./configure && make --jobs=16 )                 || exit 110
 fi
 
 # For now, lets copy /usr/bin/env because of how deeply node.js depend on it
 mkdir -p $ROOT/usr/bin                         &&
-cp    -f deps/coreutils/src/env $ROOT/usr/bin/ || exit 12
+cp    -f deps/coreutils/src/env $ROOT/usr/bin/ || exit 111
 
 
 #
@@ -46,11 +46,11 @@ NODE_URL=http://nodejs.org/dist/latest/node-$NODE_VERSION.tar.gz
 if [[ ! -d deps/node ]]; then
   mkdir -p deps/node                                           &&
   curl $NODE_URL | tar xzf - -C deps/node --strip-components=1 &&
-  ( cd deps/node && ./configure && make --jobs=16 )            || exit 13
+  ( cd deps/node && ./configure && make --jobs=16 )            || exit 120
 fi
 
 mkdir -p $ROOT/usr/bin               &&
-cp deps/node/node $ROOT/usr/bin/node || exit 14
+cp deps/node/node $ROOT/usr/bin/node || exit 121
 
 
 #
@@ -76,12 +76,12 @@ cp -f /lib/$platform/ld-2.19.so $ROOT/lib/$platform/    &&
 ln -s $platform/ld-2.19.so      $ROOT/lib/ld-linux.so.2 &&
 
 mkdir -p $ROOT/usr/lib/$platform                                    &&
-cp    -f /usr/lib/$platform/libstdc++.so.6 $ROOT/usr/lib/$platform/ || exit 15
+cp    -f /usr/lib/$platform/libstdc++.so.6 $ROOT/usr/lib/$platform/ || exit 130
 
 if [ $(uname -m) == 'x86_64' ]; then
   mkdir -p $ROOT/lib64                                                &&
   cp -f /lib/$platform/ld-linux.so.2 $ROOT/lib/$platform/             &&
-  ln -s /lib/$platform/ld-linux.so.2 $ROOT/lib64/ld-linux-x86-64.so.2 || exit 16
+  ln -s /lib/$platform/ld-linux.so.2 $ROOT/lib64/ld-linux-x86-64.so.2 || exit 131
 fi
 
 
@@ -93,7 +93,7 @@ NODE_DIR=`pwd`/deps/node
 NPM="node $NODE_DIR/deps/npm/cli.js"
 npmi="npm_config_prefix=$ROOT $NPM i -g"
 
-eval $npmi `grep -v "^#" packages.txt` || exit 17
+eval $npmi `grep -v "^#" packages.txt` || exit 140
 
 ln -s bin/century $ROOT/init
 
@@ -103,24 +103,27 @@ ln -s bin/century $ROOT/init
 #
 
 mkdir -p $ROOT/etc              &&
-cp    -f resolv.conf $ROOT/etc/ || exit 23
+cp    -f resolv.conf $ROOT/etc/ || exit 150
 
 
 #
 # Wrap the system up and pack it
 #
 
-sudo chown -R root:root "$ROOT"  # Set rootfs files owner to root
+# Set initramfs files owner to root
+sudo chown -R root:root "$ROOT"                       &&
+sudo chmod -R go=r      "$ROOT"                       &&
+sudo find "$ROOT" -type d | xargs sudo chmod -R go=rx || exit 160
 
 case $PLATFORM in
   docker)
-    tar -cC $ROOT . | sudo docker import - $name || exit 18
+    tar -cC $ROOT . | sudo docker import - $name || exit 161
   ;;
   qemu)
     (
       cd "$ROOT";
       find . | cpio -o -H newc | gzip
-    ) > $name.cpio.gz || exit 19
+    ) > $name.cpio.gz || exit 162
   ;;
 esac
 

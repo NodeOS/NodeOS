@@ -48,11 +48,17 @@ cp forever-starter.json $HOME/etc/ || exit 22
 # Wrap the system up and pack it
 #
 
-sudo chown -R root:root "$ROOT"  # Set rootfs files owner to root
+# Set rootfs files owner to root
+sudo chown -R root:root "$ROOT"                       &&
+sudo chmod -R go=r      "$ROOT"                       &&
+sudo find "$ROOT" -type d | xargs sudo chmod -R go=rx || exit 24
+
+# Set /root files ONLY accesible to root
+#sudo chmod -R go= "$HOME" || exit 25
 
 case $PLATFORM in
   docker)
-    sudo docker build -t $name . || exit 24
+    sudo docker build -t $name . || exit 26
   ;;
   qemu)
     ROOTFS=$(pwd)/rootfs
@@ -61,13 +67,13 @@ case $PLATFORM in
     qemu-img create -f raw $name.img 32M &&
     mkfs.ext4 -F $name.img               &&
 
-    mkdir $ROOTFS                        &&
+    mkdir -p $ROOTFS                     &&
     sudo mount -o loop $name.img $ROOTFS &&
 
     sudo cp -R $ROOT/* $ROOTFS &&
 
     sudo umount $ROOTFS &&
-    rm -r $ROOTFS       || exit 25
+    rm -r $ROOTFS       || exit 27
   ;;
 esac
 

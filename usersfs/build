@@ -35,11 +35,13 @@ cp init.js $HOME/init
 # Wrap the system up and pack it
 #
 
-sudo chown -R 1:1 "$HOME"  # Set files owner to nodeos user
+# Set files owner to nodeos user and ONLY accesible to it
+sudo chown -R 1:1 "$HOME" &&
+sudo chmod -R go= "$HOME" || exit 33
 
 case $PLATFORM in
   docker)
-    sudo docker build -t $name . || exit 33
+    sudo docker build -t $name . || exit 34
   ;;
   qemu)
     USERSFS=$(pwd)/usersfs
@@ -48,14 +50,15 @@ case $PLATFORM in
     qemu-img create -f raw $name.img 32M &&
     mkfs.ext4 -F $name.img               &&
 
-    mkdir $USERSFS                        &&
+    mkdir -p $USERSFS                     &&
     sudo mount -o loop $name.img $USERSFS &&
 
     sudo cp -R $USERS/* $USERSFS &&
 
     sudo umount $USERSFS &&
-    rm -r $USERSFS       || exit 34
+    rm -r $USERSFS       || exit 35
   ;;
 esac
+
 
 echo -e "${GRN}Successfully built Layer-3 image '$name'${CLR}"
