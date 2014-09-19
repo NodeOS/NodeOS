@@ -15,24 +15,29 @@ ROOT=$(pwd)/ROOT
 HOME=$ROOT
 
 sudo rm -rf $ROOT &&
-mkdir   -p  $HOME || exit 20
+mkdir   -p  $HOME || exit 300
 
 
 #
 # Install system dependencies
 #
 
-NODE_DIR=`pwd`/../initramfs/deps/node
+NODE_DIR=`pwd`/../barebones/deps/node
 NPM="node $NODE_DIR/deps/npm/cli.js"
 npmi="npm_config_prefix=$HOME $NPM i -g"
 
 eval $npmi `grep -v "^#" packages.txt` &&
-rm -rf $HOME/.npm $HOME/.node-gyp      || exit 21
+rm -rf $HOME/.npm $HOME/.node-gyp      || exit 310
 
-ln -sf bin/nodeos-usersfs $HOME/init
+ln -sf bin/nodeos-usersfs $HOME/init || exit 311
+
+
+#
+# Services to be started at boot
+#
 
 mkdir -p $HOME/etc                 &&
-cp forever-starter.json $HOME/etc/ || exit 22
+cp forever-starter.json $HOME/etc/ || exit 320
 
 
 #
@@ -41,7 +46,7 @@ cp forever-starter.json $HOME/etc/ || exit 22
 
 # mkdir $ROOT/boot              &&
 # cp vmlinuz $ROOT/boot/vmlinuz &&
-# cp initrd  $ROOT/boot/initrd  || exit 23
+# cp initrd  $ROOT/boot/initrd  || exit 330
 
 
 #
@@ -51,14 +56,14 @@ cp forever-starter.json $HOME/etc/ || exit 22
 # Set rootfs files owner to root
 sudo chown -R root:root "$ROOT"                       &&
 sudo chmod -R go=r      "$ROOT"                       &&
-sudo find "$ROOT" -type d | xargs sudo chmod -R go=rx || exit 24
+sudo find "$ROOT" -type d | xargs sudo chmod -R go=rx || exit 340
 
 # Set /root files ONLY accesible to root
-#sudo chmod -R go= "$HOME" || exit 25
+#sudo chmod -R go= "$HOME" || exit 341
 
 case $PLATFORM in
   docker)
-    sudo docker build -t $name . || exit 26
+    sudo docker build -t $name . || exit 342
   ;;
   qemu)
     ROOTFS=$(pwd)/rootfs
@@ -73,9 +78,9 @@ case $PLATFORM in
     sudo cp -R $ROOT/* $ROOTFS &&
 
     sudo umount $ROOTFS &&
-    rm -r $ROOTFS       || exit 27
+    rm -r $ROOTFS       || exit 343
   ;;
 esac
 
 
-echo -e "${GRN}Successfully built Layer-2 image '$name'${CLR}"
+echo -e "${GRN}Successfully built '$name'${CLR}"

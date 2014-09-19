@@ -12,23 +12,32 @@ USERS=$(pwd)/USERS
 HOME=$USERS/nodeos
 
 sudo rm -rf $USERS &&
-mkdir    -p $HOME  || exit 30
+mkdir    -p $HOME  || exit 400
 
 
-# Install /root dependencies from NPM using Ubuntu
+# Install user dependencies
 
-NODE_DIR=`pwd`/../initramfs/deps/node
+NODE_DIR=`pwd`/../barebones/deps/node
 NPM="node $NODE_DIR/deps/npm/cli.js"
 npmi="npm_config_prefix=$HOME $NPM i -g"
 
-# Install un-commented packages
 eval $npmi `grep -v "^#" packages.txt` &&
-rm -rf $HOME/.npm $HOME/.node-gyp      || exit 21
+rm -rf $HOME/.npm $HOME/.node-gyp      || exit 410
 
-cp init.js $HOME/init
+
+#
+# Dummy init file for the user
+#
+
+cp init.js $HOME/init || exit 420
+
+
+#
+# Services to be started at boot
+#
 
 #mkdir -p $HOME/etc                 &&
-#cp forever-starter.json $HOME/etc/ || exit 32
+#cp forever-starter.json $HOME/etc/ || exit 430
 
 
 #
@@ -37,11 +46,11 @@ cp init.js $HOME/init
 
 # Set files owner to nodeos user and ONLY accesible to it
 sudo chown -R 1:1 "$HOME" &&
-sudo chmod -R go= "$HOME" || exit 33
+sudo chmod -R go= "$HOME" || exit 440
 
 case $PLATFORM in
   docker)
-    sudo docker build -t $name . || exit 34
+    sudo docker build -t $name . || exit 441
   ;;
   qemu)
     USERSFS=$(pwd)/usersfs
@@ -56,7 +65,7 @@ case $PLATFORM in
     sudo cp -R $USERS/* $USERSFS &&
 
     sudo umount $USERSFS &&
-    rm -r $USERSFS       || exit 35
+    rm -r $USERSFS       || exit 442
   ;;
 esac
 

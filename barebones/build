@@ -1,0 +1,117 @@
+#!/bin/bash
+
+# This script compiles from scratch a Node.js executable and its needed
+# libraries and shell utils to offer a Node.js REPL from cold boot
+
+GRN="\e[32m"
+CLR="\e[0m"
+
+
+if [[ -z "$name" ]]; then name=barebones; fi
+
+ROOT=$(pwd)/ROOT
+
+sudo rm -rf $ROOT &&
+mkdir   -p  $ROOT || exit 100
+
+
+#
+# coreutils (/usr/bin/env)
+#
+
+COREUTILS_VERSION=8.23
+COREUTILS_URL=http://ftp.gnu.org/pub/gnu/coreutils/coreutils-$COREUTILS_VERSION.tar.xz
+
+# Download and compile coreutils. We are only interested on 'env', thought.
+if [[ ! -d deps/coreutils ]]; then
+  sudo apt-get install autopoint bison gperf texinfo                     &&
+  mkdir -p deps/coreutils                                                &&
+  curl $COREUTILS_URL | tar xJf - -C deps/coreutils --strip-components=1 &&
+  ( cd deps/coreutils && ./configure && make --jobs=16 )                 || exit 110
+fi
+
+# For now, lets copy /usr/bin/env because of how deeply node.js depend on it
+mkdir -p $ROOT/usr/bin                         &&
+cp    -f deps/coreutils/src/env $ROOT/usr/bin/ || exit 111
+
+
+#
+# Node.js
+#
+
+NODE_VERSION=v`curl -s https://semver.io/node/stable`
+NODE_URL=http://nodejs.org/dist/latest/node-$NODE_VERSION.tar.gz
+
+# explicicly clone node because submodules SUCK
+if [[ ! -d deps/node ]]; then
+  mkdir -p deps/node                                           &&
+  curl $NODE_URL | tar xzf - -C deps/node --strip-components=1 &&
+  ( cd deps/node && ./configure && make --jobs=16 )            || exit 120
+fi
+
+mkdir -p $ROOT/usr/bin               &&
+cp deps/node/node $ROOT/usr/bin/node || exit 121
+
+
+#
+# Node.js required shared libraries
+#
+
+if [ $(uname -m) == 'x86_64' ]; then
+  platform=x86_64-linux-gnu
+else
+  platform=i386-linux-gnu
+fi
+
+mkdir -p $ROOT/lib/$platform &&
+
+cp -f /lib/$platform/libdl.so.2      $ROOT/lib/$platform/ &&
+cp -f /lib/$platform/librt.so.1      $ROOT/lib/$platform/ &&
+cp -f /lib/$platform/libm.so.6       $ROOT/lib/$platform/ &&
+cp -f /lib/$platform/libgcc_s.so.1   $ROOT/lib/$platform/ &&
+cp -f /lib/$platform/libpthread.so.0 $ROOT/lib/$platform/ &&
+cp -f /lib/$platform/libc.so.6       $ROOT/lib/$platform/ &&
+
+cp -f /lib/$platform/ld-2.19.so $ROOT/lib/$platform/    &&
+ln -s $platform/ld-2.19.so      $ROOT/lib/ld-linux.so.2 &&
+
+mkdir -p $ROOT/usr/lib/$platform                                    &&
+cp    -f /usr/lib/$platform/libstdc++.so.6 $ROOT/usr/lib/$platform/ || exit 130
+
+if [ $(uname -m) == 'x86_64' ]; then
+  mkdir -p $ROOT/lib64                                                &&
+  cp -f /lib/$platform/ld-linux.so.2 $ROOT/lib/$platform/             &&
+  ln -s /lib/$platform/ld-linux.so.2 $ROOT/lib64/ld-linux-x86-64.so.2 || exit 131
+fi
+
+
+#
+# Set Node.js as /init
+#
+
+ln -s usr/bin/node $ROOT/init || exit 140
+
+
+#
+# Wrap the system up and pack it
+#
+
+# Set initramfs files owner to root
+sudo chown -R root:root "$ROOT"                       &&
+sudo chmod -R go=r      "$ROOT"                       &&
+sudo find "$ROOT" -type d | xargs sudo chmod -R go=rx || exit 150
+
+case $PLATFORM in
+  docker)
+    tar -cC $ROOT . | sudo docker import - $name || exit 151
+  ;;
+  qemu)
+    (
+      cd "$ROOT";
+      find . | cpio -o -H newc | gzip
+    ) > $name.cpio.gz || exit 152
+  ;;
+esac
+
+
+echo -e "${GRN}Successfully built '$name'${CLR}"

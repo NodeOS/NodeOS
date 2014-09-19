@@ -31,6 +31,7 @@ esac
 
 
 # Build each layer up
+(cd barebones && PLATFORM=${PLATFORM} ./build ) &&
 (cd initramfs && PLATFORM=${PLATFORM} ./build ) &&
 (cd rootfs    && PLATFORM=${PLATFORM} ./build ) &&
 (cd usersfs   && PLATFORM=${PLATFORM} name=${NOSN} ./build ) || err $?

@@ -37,9 +37,10 @@ The eventual goal of NodeOS is to produce images that can be run on
 Core development is being done in layers:
 
 - *kernel*    boot loader and kernel (currently provided by Docker)
-- *initramfs* Node.js binary and its required shared libraries
-- *rootfs*    NodeOS boot additions (and single-user environment)
-- *usersfs*   multi-user environment
+- *barebones* Node.js binary and its required shared libraries booting to REPL
+- *initramfs* Basic NodeOS environment to mount a root filesystem
+- *rootfs*    NodeOS global services (and single-user environment)
+- *usersfs*   multi-user environment with the same behaviour of traditional OSes
 
 All the layers except *kernel* are bootable, leading both *initramfs* and
 *rootfs* to a Node.js [REPL](http://nodejs.org/api/repl.html) prompt by default.
