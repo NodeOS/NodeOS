@@ -33,11 +33,11 @@ cp init.js $HOME/init || exit 420
 
 
 #
-# Services to be started at boot
+# Copy nodeos user login info
 #
 
-#mkdir -p $HOME/etc                 &&
-#cp forever-starter.json $HOME/etc/ || exit 430
+mkdir -p $HOME/etc       &&
+cp logon.json $HOME/etc/ || exit 430
 
 
 #

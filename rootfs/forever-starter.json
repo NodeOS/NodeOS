@@ -1,11 +1,7 @@
 [
   {
     "command": "/root/bin/getty",
-    "args": ["/home/nodeos/bin/nsh"],
-    "cwd": "/home/nodeos",
-    "env": {
-      "PATH": "/home/nodeos/bin:/usr/bin"
-    },
+    "args": ["/root/bin/logon"],
     "minUptime": 2000,
     "enabled": true
   }
