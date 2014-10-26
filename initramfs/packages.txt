@@ -1,3 +1,4 @@
 piranna/node-century#patch-2
+#/home/piranna/Dropbox/Proyectos/NodeOS/node-century
 nodeos-rootfs
 #/home/piranna/Dropbox/Proyectos/NodeOS/NodeOS-rootfs

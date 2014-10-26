@@ -36,6 +36,9 @@ eval $npmi `grep -v "^#" packages.txt` || exit 210
 
 ln -fs bin/century $ROOT/init || exit 211
 
+mkdir -p $ROOT/sbin                         &&
+ln -fs ../bin/nodeos-rootfs $ROOT/sbin/init || exit 212
+
 
 #
 # Use a well-known DNS server for now, we do not yet support DHCP
