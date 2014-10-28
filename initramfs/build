@@ -13,15 +13,15 @@ ROOT=$(pwd)/ROOT
 sudo rm -rf $ROOT &&
 mkdir -p $ROOT    || exit 200
 
-case $PLATFORM in
-  qemu)
-    gunzip -c `pwd`/../barebones/barebones.cpio.gz |
-    (
-      cd "$ROOT";
-      cpio -i -d -H newc --no-absolute-filenames
-    ) || exit 201
-  ;;
-esac
+#case $PLATFORM in
+#  qemu)
+#    gunzip -c `pwd`/../barebones/barebones.cpio.gz |
+#    (
+#      cd "$ROOT";
+#      cpio -i -d -H newc --no-absolute-filenames
+#    ) || exit 201
+#  ;;
+#esac
 
 
 #

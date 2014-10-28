@@ -7,6 +7,8 @@ GRN="\e[32m"
 CLR="\e[0m"
 
 
+NUM_JOBS=$((`nproc` + 1))
+
 if [[ -z "$name" ]]; then name=barebones; fi
 
 ROOT=$(pwd)/ROOT
@@ -27,12 +29,13 @@ if [[ ! -d deps/coreutils ]]; then
   sudo apt-get install autopoint bison gperf texinfo                     &&
   mkdir -p deps/coreutils                                                &&
   curl $COREUTILS_URL | tar xJf - -C deps/coreutils --strip-components=1 &&
-  ( cd deps/coreutils && ./configure && make --jobs=16 )                 || exit 110
+  ( cd deps/coreutils && ./configure && make --jobs=$NUM_JOBS )          || exit 110
 fi
 
 # For now, lets copy /usr/bin/env because of how deeply node.js depend on it
 mkdir -p $ROOT/usr/bin                         &&
-cp    -f deps/coreutils/src/env $ROOT/usr/bin/ || exit 111
+cp    -f deps/coreutils/src/env $ROOT/usr/bin/ &&
+strip --strip-unneeded $ROOT/usr/bin/env       || exit 111
 
 
 #
@@ -46,11 +49,12 @@ NODE_URL=http://nodejs.org/dist/latest/node-$NODE_VERSION.tar.gz
 if [[ ! -d deps/node ]]; then
   mkdir -p deps/node                                           &&
   curl $NODE_URL | tar xzf - -C deps/node --strip-components=1 &&
-  ( cd deps/node && ./configure && make --jobs=16 )            || exit 120
+  ( cd deps/node && ./configure && make --jobs=$NUM_JOBS )     || exit 120
 fi
 
-mkdir -p $ROOT/usr/bin               &&
-cp deps/node/node $ROOT/usr/bin/node || exit 121
+mkdir -p $ROOT/usr/bin                    &&
+cp    -f deps/node/node $ROOT/usr/bin/    &&
+strip --strip-unneeded $ROOT/usr/bin/node || exit 121
 
 
 #
@@ -105,11 +109,33 @@ case $PLATFORM in
   docker)
     tar -cC $ROOT . | sudo docker import - $name || exit 151
   ;;
-  qemu)
+  qemu)  # Linux kernel
+#     (
+#      cd "$ROOT";
+#      find . | cpio -o -H newc | gzip
+#    ) > $name.cpio.gz || exit 152
+    KERNEL_VERSION=3.16.0
+    KERNEL_URL=http://archive.ubuntu.com/ubuntu/pool/main/l/linux/linux_$KERNEL_VERSION.orig.tar.gz
+
+    # Download and compile Linux kernel using as basis the one from Ubuntu and
+    # the current system configuration, setting all modules to be compiled in
+    # the kernel and the path to the bundle initramfs with Node.js binary.
+    if [[ ! -d deps/linux ]]; then
+      mkdir -p deps/linux                                             &&
+      curl $KERNEL_URL | tar xzf - -C deps/linux --strip-components=1 &&
+      cp -vi config deps/linux/.config                                || exit 152
+    fi
+
+    # Add console device to initramfs so we can interact with the system
+    sudo mkdir -p     $ROOT/dev               &&
+    sudo mknod -m 622 $ROOT/dev/console c 5 1 || exit 153
+
+    # Compile the kernel
     (
-      cd "$ROOT";
-      find . | cpio -o -H newc | gzip
-    ) > $name.cpio.gz || exit 152
+      cd deps/linux &&
+      make --jobs=$NUM_JOBS &&
+      cp arch/x86/boot/bzImage ../..
+    ) || exit 154
   ;;
 esac
 

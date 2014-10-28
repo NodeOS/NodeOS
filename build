@@ -51,6 +51,6 @@ case $PLATFORM in
     echo -e "${WHT}    sudo docker push $NOSN${CLR}"
   ;;
   qemu)
-    echo -e "${WHT}    sudo qemu-system-i386 --kernel /vmlinuz --initrd initramfs/initramfs.cpio.gz -hda rootfs/rootfs.img -hdb usersfs/usersfs.img -enable-kvm -nographic -append \"console=ttyS0 ROOT=/dev/sda USERS=/dev/sdb\"${CLR}"
+    echo -e "${WHT}    sudo qemu-system-i386 --kernel barebones/bzImage --initrd initramfs/initramfs.cpio.gz -hda rootfs/rootfs.img -hdb usersfs/usersfs.img -enable-kvm -nographic -append \"console=ttyS0 ROOT=/dev/sda USERS=/dev/sdb\"${CLR}"
   ;;
 esac
