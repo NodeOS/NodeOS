@@ -11,11 +11,6 @@ NUM_JOBS=$((`nproc` + 1))
 
 if [[ -z "$name" ]]; then name=barebones; fi
 
-ROOT=$(pwd)/ROOT
-
-sudo rm -rf $ROOT &&
-mkdir   -p  $ROOT || exit 100
-
 
 #
 # coreutils (/usr/bin/env)
@@ -29,13 +24,9 @@ if [[ ! -d deps/coreutils ]]; then
   sudo apt-get install autopoint bison gperf texinfo                     &&
   mkdir -p deps/coreutils                                                &&
   curl $COREUTILS_URL | tar xJf - -C deps/coreutils --strip-components=1 &&
-  ( cd deps/coreutils && ./configure && make --jobs=$NUM_JOBS )          || exit 110
+  ( cd deps/coreutils && ./configure && make --jobs=$NUM_JOBS )          &&
+  strip --strip-unneeded deps/coreutils/src/env                          || exit 110
 fi
-
-# For now, lets copy /usr/bin/env because of how deeply node.js depend on it
-mkdir -p $ROOT/usr/bin                         &&
-cp    -f deps/coreutils/src/env $ROOT/usr/bin/ &&
-strip --strip-unneeded $ROOT/usr/bin/env       || exit 111
 
 
 #
@@ -49,86 +40,58 @@ NODE_URL=http://nodejs.org/dist/latest/node-$NODE_VERSION.tar.gz
 if [[ ! -d deps/node ]]; then
   mkdir -p deps/node                                           &&
   curl $NODE_URL | tar xzf - -C deps/node --strip-components=1 &&
-  ( cd deps/node && ./configure && make --jobs=$NUM_JOBS )     || exit 120
+  ( cd deps/node && ./configure && make --jobs=$NUM_JOBS )     &&
+  strip --strip-unneeded deps/node/node                        || exit 120
 fi
-
-mkdir -p $ROOT/usr/bin                    &&
-cp    -f deps/node/node $ROOT/usr/bin/    &&
-strip --strip-unneeded $ROOT/usr/bin/node || exit 121
 
 
 #
 # Node.js required shared libraries
 #
 
-if [ $(uname -m) == 'x86_64' ]; then
-  platform=x86_64-linux-gnu
-else
-  platform=i386-linux-gnu
-fi
-
-mkdir -p $ROOT/lib/$platform &&
-
-cp -f /lib/$platform/libdl.so.2      $ROOT/lib/$platform/ &&
-cp -f /lib/$platform/librt.so.1      $ROOT/lib/$platform/ &&
-cp -f /lib/$platform/libm.so.6       $ROOT/lib/$platform/ &&
-cp -f /lib/$platform/libgcc_s.so.1   $ROOT/lib/$platform/ &&
-cp -f /lib/$platform/libpthread.so.0 $ROOT/lib/$platform/ &&
-cp -f /lib/$platform/libc.so.6       $ROOT/lib/$platform/ &&
-
-cp -f /lib/$platform/ld-2.19.so $ROOT/lib/$platform/    &&
-ln -s $platform/ld-2.19.so      $ROOT/lib/ld-linux.so.2 &&
-
-mkdir -p $ROOT/usr/lib/$platform                                    &&
-cp    -f /usr/lib/$platform/libstdc++.so.6 $ROOT/usr/lib/$platform/ || exit 130
-
-if [ $(uname -m) == 'x86_64' ]; then
-  mkdir -p $ROOT/lib64                                                &&
-  cp -f /lib/$platform/ld-linux.so.2 $ROOT/lib/$platform/             &&
-  ln -s /lib/$platform/ld-linux.so.2 $ROOT/lib64/ld-linux-x86-64.so.2 || exit 131
-fi
+#if [ $(uname -m) == 'x86_64' ]; then
+#  platform=x86_64-linux-gnu
+#else
+#  platform=i386-linux-gnu
+#fi
+#
+#if [ $(uname -m) == 'x86_64' ]; then
+#  mkdir -p $ROOT/lib64                                                &&
+#  cp -f /lib/$platform/ld-linux.so.2 $ROOT/lib/$platform/             &&
+#  ln -s /lib/$platform/ld-linux.so.2 $ROOT/lib64/ld-linux-x86-64.so.2 || exit 131
+#fi
 
 
 #
-# Set Node.js as /init
+# Linux kernel & gen_init_cpio utility
 #
 
-ln -s usr/bin/node $ROOT/init || exit 140
+KERNEL_VERSION=3.16.0
+KERNEL_URL=http://archive.ubuntu.com/ubuntu/pool/main/l/linux/linux_$KERNEL_VERSION.orig.tar.gz
+
+# Download and compile Linux kernel using as basis the one from Ubuntu and
+# the current system configuration, setting all modules to be compiled in
+# the kernel and the path to the bundle initramfs with Node.js binary.
+if [[ ! -d deps/linux ]]; then
+  mkdir -p deps/linux                                             &&
+  curl $KERNEL_URL | tar xzf - -C deps/linux --strip-components=1 &&
+  cp -vi config deps/linux/.config                                &&
+  ( cd deps/linux && make --jobs=$NUM_JOBS gen_init_cpio )        || exit 152
+fi
+
+GEN_INIT_CPIO="deps/linux/usr/gen_init_cpio"
 
 
 #
 # Wrap the system up and pack it
 #
 
-# Set initramfs files owner to root
-sudo chown -R root:root "$ROOT"                       &&
-sudo chmod -R go=r      "$ROOT"                       &&
-sudo find "$ROOT" -type d | xargs sudo chmod -R go=rx || exit 150
-
 case $PLATFORM in
   docker)
-    tar -cC $ROOT . | sudo docker import - $name || exit 151
+    `$GEN_INIT_CPIO cpio.txt` | tar -cf - --format ustar @- | sudo docker import - $name || exit 151
   ;;
   qemu)  # Linux kernel
-#     (
-#      cd "$ROOT";
-#      find . | cpio -o -H newc | gzip
-#    ) > $name.cpio.gz || exit 152
-    KERNEL_VERSION=3.16.0
-    KERNEL_URL=http://archive.ubuntu.com/ubuntu/pool/main/l/linux/linux_$KERNEL_VERSION.orig.tar.gz
-
-    # Download and compile Linux kernel using as basis the one from Ubuntu and
-    # the current system configuration, setting all modules to be compiled in
-    # the kernel and the path to the bundle initramfs with Node.js binary.
-    if [[ ! -d deps/linux ]]; then
-      mkdir -p deps/linux                                             &&
-      curl $KERNEL_URL | tar xzf - -C deps/linux --strip-components=1 &&
-      cp -vi config deps/linux/.config                                || exit 152
-    fi
-
-    # Add console device to initramfs so we can interact with the system
-    sudo mkdir -p     $ROOT/dev               &&
-    sudo mknod -m 622 $ROOT/dev/console c 5 1 || exit 153
+#     `$GEN_INIT_CPIO cpio.txt` | gzip > $name.cpio.gz || exit 152
 
     # Compile the kernel
     (
