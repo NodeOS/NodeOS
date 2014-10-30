@@ -52,10 +52,8 @@ cp    -f resolv.conf $ROOT/etc/ || exit 220
 # Wrap the system up and pack it
 #
 
-# Set initramfs files owner to root
-sudo chown -R root:root "$ROOT"                       &&
-sudo chmod -R go=r      "$ROOT"                       &&
-sudo find "$ROOT" -type d | xargs sudo chmod -R go=rx || exit 230
+# Set initramfs files only accesible to owner
+chmod -R u-w,go= "$ROOT" || exit 230
 
 case $PLATFORM in
   docker)
@@ -64,7 +62,7 @@ case $PLATFORM in
   qemu)
     (
       cd "$ROOT";
-      find . | cpio -o -H newc | gzip
+      find . | sudo cpio --owner root:root -o -H newc | gzip
     ) > $name.cpio.gz || exit 232
   ;;
 esac
