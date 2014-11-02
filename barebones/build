@@ -21,10 +21,9 @@ COREUTILS_URL=http://ftp.gnu.org/pub/gnu/coreutils/coreutils-$COREUTILS_VERSION.
 
 # Download and compile coreutils. We are only interested on 'env', thought.
 if [[ ! -d deps/coreutils ]]; then
-  sudo apt-get install autopoint bison gperf texinfo                     &&
   mkdir -p deps/coreutils                                                &&
   curl $COREUTILS_URL | tar xJf - -C deps/coreutils --strip-components=1 &&
-  ( cd deps/coreutils && ./configure && make --jobs=$NUM_JOBS )          &&
+  ( cd deps/coreutils && ./configure && make --jobs=$NUM_JOBS )  &&
   strip --strip-unneeded deps/coreutils/src/env                          || exit 110
 fi
 
@@ -76,7 +75,7 @@ if [[ ! -d deps/linux ]]; then
   mkdir -p deps/linux                                             &&
   curl $KERNEL_URL | tar xzf - -C deps/linux --strip-components=1 &&
   cp -vi config deps/linux/.config                                &&
-  ( cd deps/linux && make --jobs=$NUM_JOBS gen_init_cpio )        || exit 152
+  ( cd deps/linux/usr && make --jobs=$NUM_JOBS gen_init_cpio )    || exit 152
 fi
 
 GEN_INIT_CPIO="deps/linux/usr/gen_init_cpio"
@@ -88,12 +87,9 @@ GEN_INIT_CPIO="deps/linux/usr/gen_init_cpio"
 
 case $PLATFORM in
   docker)
-    `$GEN_INIT_CPIO cpio.txt` | tar -cf - --format ustar @- | sudo docker import - $name || exit 151
+    `$GEN_INIT_CPIO cpio.txt` | tar -cf - --format ustar @- | docker import - $name || exit 151
   ;;
-  qemu)  # Linux kernel
-#     `$GEN_INIT_CPIO cpio.txt` | gzip > $name.cpio.gz || exit 152
-
-    # Compile the kernel
+  qemu)
     (
       cd deps/linux &&
       make --jobs=$NUM_JOBS &&

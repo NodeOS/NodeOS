@@ -10,8 +10,11 @@ if [[ -z "$name" ]]; then name=initramfs; fi
 
 ROOT=$(pwd)/ROOT
 
-sudo rm -rf $ROOT &&
-mkdir -p $ROOT    || exit 200
+if [[ -d $ROOT ]]; then
+  chmod -R u+w $ROOT &&
+  rm    -rf    $ROOT || exit 200
+fi
+mkdir -p $ROOT || exit 201
 
 #case $PLATFORM in
 #  qemu)
@@ -57,12 +60,12 @@ chmod -R u-w,go= "$ROOT" || exit 230
 
 case $PLATFORM in
   docker)
-    sudo docker build -t $name . || exit 231
+    docker build -t $name . || exit 231
   ;;
   qemu)
     (
       cd "$ROOT";
-      find . | sudo cpio --owner root:root -o -H newc | gzip
+      find | cpio --owner root:root -o -H newc | gzip
     ) > $name.cpio.gz || exit 232
   ;;
 esac

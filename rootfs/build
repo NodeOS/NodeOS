@@ -14,8 +14,11 @@ ROOT=$(pwd)/ROOT
 #HOME=$ROOT/root
 HOME=$ROOT
 
-sudo rm -rf $ROOT &&
-mkdir   -p  $HOME || exit 300
+if [[ -d $ROOT ]]; then
+  chmod -R u+w $ROOT &&
+  rm    -rf    $ROOT || exit 300
+fi
+mkdir -p $HOME || exit 301
 
 
 #
@@ -41,44 +44,28 @@ cp forever-starter.json $HOME/etc/ || exit 320
 
 
 #
-# Copy kernel and initramfs on the disk image
-#
-
-# mkdir $ROOT/boot              &&
-# cp vmlinuz $ROOT/boot/vmlinuz &&
-# cp initrd  $ROOT/boot/initrd  || exit 330
-
-
-#
 # Wrap the system up and pack it
 #
 
-# Set rootfs files owner to root
-sudo chown -R root:root "$ROOT"                       &&
-sudo chmod -R go=r      "$ROOT"                       &&
-sudo find "$ROOT" -type d | xargs sudo chmod -R go=rx || exit 340
-
-# Set /root files ONLY accesible to root
-#sudo chmod -R go= "$HOME" || exit 341
+# Set rootfs files ONLY readable
+chmod -R u-w,go= "$ROOT" || exit 340
 
 case $PLATFORM in
   docker)
-    sudo docker build -t $name . || exit 342
+    docker build -t $name . || exit 342
   ;;
   qemu)
-    ROOTFS=$(pwd)/rootfs
+    # Copy kernel and initramfs on the disk image
 
-    rm -f $name.img                      &&
-    qemu-img create -f raw $name.img 32M &&
-    mkfs.ext4 -F $name.img               &&
+    # mkdir $ROOT/boot              &&
+    # cp vmlinuz $ROOT/boot/vmlinuz &&
+    # cp initrd  $ROOT/boot/initrd  || exit 330
 
-    mkdir -p $ROOTFS                     &&
-    sudo mount -o loop $name.img $ROOTFS &&
+    # Create the disk image
 
-    sudo cp -R $ROOT/* $ROOTFS &&
+    DISK_SIZE=32  # Size in MB
 
-    sudo umount $ROOTFS &&
-    rm -r $ROOTFS       || exit 343
+    genext2fs -b $((DISK_SIZE*1024)) --root "$ROOT" --squash $name.img || exit 343
   ;;
 esac
 

@@ -11,8 +11,8 @@ if [[ -z "$name" ]]; then name=usersfs; fi
 USERS=$(pwd)/USERS
 HOME=$USERS/nodeos
 
-sudo rm -rf $USERS &&
-mkdir    -p $HOME  || exit 400
+rm   -rf $USERS &&
+mkdir -p $HOME  || exit 400
 
 
 # Install user dependencies
@@ -44,15 +44,16 @@ cp logon.json $HOME/etc/ || exit 430
 # Wrap the system up and pack it
 #
 
-# Set files owner to nodeos user and ONLY accesible to it
-sudo chown -R 1:1 "$HOME" &&
-sudo chmod -R go= "$HOME" || exit 440
-
 case $PLATFORM in
   docker)
-    sudo docker build -t $name . || exit 441
+    chmod -R go= "$HOME"    &&
+    docker build -t $name . || exit 441
   ;;
   qemu)
+#    DISK_SIZE=32  # Size in MB
+#
+#    genext2fs -b $((DISK_SIZE*1024)) --root "$USERS" --squash-perms $name.img || exit 442
+
     USERSFS=$(pwd)/usersfs
 
     rm -f $name.img                      &&
