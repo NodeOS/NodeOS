@@ -50,23 +50,9 @@ case $PLATFORM in
     docker build -t $name . || exit 441
   ;;
   qemu)
-#    DISK_SIZE=32  # Size in MB
-#
-#    genext2fs -b $((DISK_SIZE*1024)) --root "$USERS" --squash-perms $name.img || exit 442
+    DISK_SIZE=32  # Size in MB
 
-    USERSFS=$(pwd)/usersfs
-
-    rm -f $name.img                      &&
-    qemu-img create -f raw $name.img 32M &&
-    mkfs.ext4 -F $name.img               &&
-
-    mkdir -p $USERSFS                     &&
-    sudo mount -o loop $name.img $USERSFS &&
-
-    sudo cp -R $USERS/* $USERSFS &&
-
-    sudo umount $USERSFS &&
-    rm -r $USERSFS       || exit 442
+    genext2fs -b $((DISK_SIZE*1024)) --root "$USERS" --bytes-per-inode 8192 --reserved-percentage 0 --squash-perms $name.img || exit 442
   ;;
 esac
 

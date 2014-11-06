@@ -56,7 +56,7 @@ cp    -f resolv.conf $ROOT/etc/ || exit 220
 #
 
 # Set initramfs files only accesible to owner
-chmod -R u-w,go= "$ROOT" || exit 230
+chmod -R u-w,go-rw "$ROOT" || exit 230
 
 case $PLATFORM in
   docker)

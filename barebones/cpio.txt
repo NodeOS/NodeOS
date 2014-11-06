@@ -2,7 +2,8 @@
 # Common directories
 #
 
-dir /usr 0000 0 0
+dir /    0111 0 0
+dir /usr 0111 0 0
 
 
 # Console device so we can interact with the system
@@ -15,8 +16,8 @@ nod /dev/console 0600 0 0 c 5 1
 # Node.js required shared libraries
 #
 
-dir /lib                0000 0 0
-dir /lib/i386-linux-gnu 0000 0 0
+dir /lib                0111 0 0
+dir /lib/i386-linux-gnu 0111 0 0
 
 file /lib/i386-linux-gnu/libc.so.6       /lib/i386-linux-gnu/libc.so.6       0555 0 0
 file /lib/i386-linux-gnu/libdl.so.2      /lib/i386-linux-gnu/libdl.so.2      0444 0 0
@@ -28,8 +29,8 @@ file /lib/i386-linux-gnu/librt.so.1      /lib/i386-linux-gnu/librt.so.1      044
 file  /lib/i386-linux-gnu/ld-2.19.so /lib/i386-linux-gnu/ld-2.19.so 0555 0 0
 slink /lib/ld-linux.so.2                  i386-linux-gnu/ld-2.19.so 0555 0 0
 
-dir  /usr/lib                0000 0 0
-dir  /usr/lib/i386-linux-gnu 0000 0 0
+dir  /usr/lib                0111 0 0
+dir  /usr/lib/i386-linux-gnu 0111 0 0
 file /usr/lib/i386-linux-gnu/libstdc++.so.6 /usr/lib/i386-linux-gnu/libstdc++.so.6 0444 0 0
 
 
@@ -37,7 +38,7 @@ file /usr/lib/i386-linux-gnu/libstdc++.so.6 /usr/lib/i386-linux-gnu/libstdc++.so
 # binaries
 #
 
-dir  /usr/bin                           0444 0 0
+dir  /usr/bin                           0555 0 0
 file /usr/bin/env  ../coreutils/src/env 0555 0 0
 file /usr/bin/node ../node/node         0555 0 0
 
@@ -46,4 +47,4 @@ file /usr/bin/node ../node/node         0555 0 0
 # Set Node.js as /init
 #
 
-slink /init usr/bin/node 0500 0 0
+slink /init usr/bin/node 0100 0 0

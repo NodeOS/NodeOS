@@ -48,7 +48,7 @@ cp forever-starter.json $HOME/etc/ || exit 320
 #
 
 # Set rootfs files ONLY readable
-chmod -R u-w,go= "$ROOT" || exit 340
+chmod -R u-w,go-rw "$ROOT" || exit 340
 
 case $PLATFORM in
   docker)
@@ -57,15 +57,14 @@ case $PLATFORM in
   qemu)
     # Copy kernel and initramfs on the disk image
 
-    # mkdir $ROOT/boot              &&
-    # cp vmlinuz $ROOT/boot/vmlinuz &&
-    # cp initrd  $ROOT/boot/initrd  || exit 330
+    # cp vmlinuz $ROOT/vmlinuz &&
+    # cp initrd  $ROOT/initrd  || exit 330
 
     # Create the disk image
 
     DISK_SIZE=32  # Size in MB
 
-    genext2fs -b $((DISK_SIZE*1024)) --root "$ROOT" --squash $name.img || exit 343
+    genext2fs -b $((DISK_SIZE*1024)) --root "$ROOT" --bytes-per-inode 8192 --reserved-percentage 0 --squash $name.img || exit 343
   ;;
 esac
 
