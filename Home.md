@@ -1,6 +1,7 @@
 ## design
 
 - [[file system|FileSystem]] an overview of how the file system is laid out
+- [[GUI]] guidelines to build graphical applications
 
 ### components
 
