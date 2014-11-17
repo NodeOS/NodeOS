@@ -1,9 +1,14 @@
 # NodeOS barebones
 
 The included script download and compile
-[coreutils](http://www.gnu.org/software/coreutils) (needed for
-```/usr/bin/env```), [Node.js](http://nodejs.org) and all its required shared
-libraries needed to boots to a Node.js [REPL](http://nodejs.org/api/repl.html)
+
+- [gcc](https://gcc.gnu.org/)
+- [coreutils](http://www.gnu.org/software/coreutils)
+- [glibc](http://www.gnu.org/software/libc/)
+- [Node.js](http://nodejs.org)
+- [linux kernel](https://www.kernel.org/)
+
+It can be able to boots to a Node.js [REPL](http://nodejs.org/api/repl.html)
 prompt. ```coreutils``` requires some extra build tools, you can install them on
 Ubuntu by executing:
 
