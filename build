@@ -22,7 +22,7 @@ case $PLATFORM in
   docker)
     # if user is logged into docker index
     # automatically prefix their name to built images
-    name=$(sudo docker info | grep ^Username | awk '{print $2}' )
+    name=$(docker info | grep ^Username | awk '{print $2}' )
     if [[ -z "$name" ]]; then name=local; fi
 
     NOSN=${name}/nodeos
@@ -31,10 +31,10 @@ esac
 
 
 # Build each layer up
-(cd Layer1-linux  && PLATFORM=${PLATFORM} ./build ) &&
-(cd Layer2-nodejs && PLATFORM=${PLATFORM} ./build ) &&
-(cd Layer3-base   && PLATFORM=${PLATFORM} ./build ) &&
-(cd Layer4-custom && PLATFORM=${PLATFORM} name=${NOSN} ./build ) || err $?
+(cd barebones && PLATFORM=${PLATFORM} ./build ) &&
+(cd initramfs && PLATFORM=${PLATFORM} ./build ) &&
+(cd rootfs    && PLATFORM=${PLATFORM} ./build ) &&
+(cd usersfs   && PLATFORM=${PLATFORM} name=${NOSN} ./build ) || err $?
 
 echo -e "${GRY}------------------------------------------${CLR}"
 echo -e "${GRN}${BLD}Success!${CLR}"
@@ -45,12 +45,12 @@ echo -e "- Interactively run your image with:"
 
 case $PLATFORM in
   docker)
-    echo -e "${WHT}    sudo docker run -t -i $NOSN${CLR}"
+    echo -e "${WHT}    docker run -t -i $NOSN${CLR}"
     echo
     echo -e "- Share your creation with:"
-    echo -e "${WHT}    sudo docker push $NOSN${CLR}"
+    echo -e "${WHT}    docker push $NOSN${CLR}"
   ;;
   qemu)
-    echo -e "${WHT}    sudo qemu-system-i386 --kernel /vmlinuz --initrd Layer3-base/layer3.cpio.gz -hda Layer4-custom/layer4.img -enable-kvm -nographic -append \"console=ttyS0 /bin/nodeos-boot /dev/sda\"${CLR}"
+    echo -e "${WHT}    qemu-system-i386 --kernel barebones/bzImage --initrd initramfs/initramfs.cpio.gz -hda rootfs/rootfs.img -hdb usersfs/usersfs.img -enable-kvm -nographic -append \"console=ttyS0 ROOT=/dev/sda USERS=/dev/sdb\"${CLR}"
   ;;
 esac

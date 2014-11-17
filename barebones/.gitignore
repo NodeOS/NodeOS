@@ -1,0 +1,4 @@
+deps/
+bzImage
+obj/
+out/

@@ -1,0 +1,7 @@
+piranna/forever-monitor
+piranna/forever#starter
+piranna/node-bin-getty
+nodeos-usersfs
+#/home/piranna/Dropbox/Proyectos/NodeOS/NodeOS-usersfs
+logon
+#/home/piranna/Dropbox/Proyectos/NodeOS/logon
