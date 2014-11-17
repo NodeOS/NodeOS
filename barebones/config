@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/x86 3.18.0-rc4 Kernel Configuration
+# Linux/x86 3.18.0-rc5 Kernel Configuration
 #
 # CONFIG_64BIT is not set
 CONFIG_X86_32=y
@@ -1445,6 +1445,7 @@ CONFIG_NET_VENDOR_QLOGIC=y
 # CONFIG_QLCNIC is not set
 # CONFIG_QLGE is not set
 # CONFIG_NETXEN_NIC is not set
+CONFIG_NET_VENDOR_QUALCOMM=y
 CONFIG_NET_VENDOR_REALTEK=y
 # CONFIG_8139CP is not set
 CONFIG_8139TOO=y

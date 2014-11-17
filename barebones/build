@@ -168,7 +168,7 @@ find $OUT_DIR | xargs strip --strip-unneeded
 # Linux kernel & gen_init_cpio utility
 #
 
-VERSION=3.18-rc4
+VERSION=3.18-rc5
 URL=https://www.kernel.org/pub/linux/kernel/v3.x/testing/linux-$VERSION.tar.xz
 SRC_DIR=`pwd`/deps/linux
 
@@ -177,7 +177,10 @@ if [[ ! -d $SRC_DIR ]]; then
   mkdir -p $SRC_DIR                                            &&
   curl -L $URL | tar xJf - -C $SRC_DIR --strip-components=1    &&
   cp -vi config $SRC_DIR/.config                               &&
-  ( cd deps/linux/usr && make --jobs=$NUM_JOBS gen_init_cpio ) || exit 150
+  (
+    cd deps/linux/usr && make oldnoconfig &&
+    make --jobs=$NUM_JOBS gen_init_cpio
+  ) || exit 150
 fi
 
 GEN_INIT_CPIO="deps/linux/usr/gen_init_cpio"
