@@ -9,6 +9,8 @@ which at last count was 106,713 packages.
 The goal of NodeOS is to provide just enough to let npm provide the rest.
 Since anyone can contribute to npm, anyone can create node-os packages.
 
+[Roadmap](https://github.com/NodeOS/NodeOS/issues/37)
+
 [![Join the Discussion](http://i.imgur.com/hUjSLXt.png)](https://github.com/NodeOS/NodeOS/issues)
 
 ## find us
