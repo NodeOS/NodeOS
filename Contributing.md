@@ -7,7 +7,7 @@ This repository is for:
 3. high-level planning
 
 You should feel free to shoot from the hip when posting issues.
-Having said that, please take a moment to *search* for open issues before posting.
+Having said that, please take a moment to *search* for [open issues](https://github.com/NodeOS/NodeOS/issues "open issues on NodeOs") before posting.
 Long threads are okay.
 
 ## Contributing FAQ
