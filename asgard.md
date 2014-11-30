@@ -118,8 +118,7 @@ Asgard should respond with `501 Not Implemented`, rather than a `400/500` error 
 
 ## Authentication
 
-HTTP is secure. If you think otherwise, you should stop using the web.
-HTTP security can be poorly implemented however. We actually punt on handling security in asgard. Instead, we require that you secure the socket asgard is listening to.
+HTTP + SSL is secure. If you think otherwise, you should stop using the web. We actually punt on handling security in asgard. Instead, we require that you secure the socket asgard is listening to.
 
 For simple cases, you can bind to `localhost`. Only processes on the same host can access asgard.
 
