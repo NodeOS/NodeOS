@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+qemu-system-i386 -enable-kvm -nographic                    \
+  --kernel node_modules/nodeos-barebones/bzImage           \
+  --initrd node_modules/nodeos-initramfs/initramfs.cpio.gz \
+  -hda     node_modules/nodeos-rootfs/rootfs.img           \
+  -hdb     node_modules/nodeos-usersfs/usersfs.img         \
+  -append "console=ttyS0 ROOT=/dev/sda USERS=/dev/sdb"

@@ -1,0 +1,32 @@
+{
+  "name": "NodeOS",
+  "version": "0.0.0",
+  "description": "Lightweight operating system using Node.js as userspace",
+  "bundleDependencies": [
+    "nodeos-barebones",
+    "nodeos-initramfs",
+    "nodeos-rootfs",
+    "nodeos-usersfs"
+  ],
+  "scripts": {
+    "install": "scripts/install",
+    "start": "scripts/start",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "uninstall": "scripts/uninstall"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NodeOS/NodeOS.git"
+  },
+  "keywords": [
+    "OS",
+    "Linux",
+    "npm"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NodeOS/NodeOS/issues"
+  },
+  "homepage": "http://node-os.com",
+  "private": true
+}

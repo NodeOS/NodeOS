@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 REV=$(tput rev)
 BLD=$(tput bold)
@@ -31,10 +31,10 @@ esac
 
 
 # Build each layer up
-(cd barebones && PLATFORM=${PLATFORM} ./build ) &&
-(cd initramfs && PLATFORM=${PLATFORM} ./build ) &&
-(cd rootfs    && PLATFORM=${PLATFORM} ./build ) &&
-(cd usersfs   && PLATFORM=${PLATFORM} name=${NOSN} ./build ) || err $?
+(cd node_modules/nodeos-barebones && PLATFORM=${PLATFORM} ./build ) &&
+(cd node_modules/nodeos-initramfs && PLATFORM=${PLATFORM} ./build ) &&
+(cd node_modules/nodeos-rootfs    && PLATFORM=${PLATFORM} ./build ) &&
+(cd node_modules/nodeos-usersfs   && PLATFORM=${PLATFORM} name=${NOSN} ./build ) || err $?
 
 echo -e "${GRY}------------------------------------------${CLR}"
 echo -e "${GRN}${BLD}Success!${CLR}"
@@ -51,6 +51,6 @@ case $PLATFORM in
     echo -e "${WHT}    docker push $NOSN${CLR}"
   ;;
   qemu)
-    echo -e "${WHT}    qemu-system-i386 --kernel barebones/bzImage --initrd initramfs/initramfs.cpio.gz -hda rootfs/rootfs.img -hdb usersfs/usersfs.img -enable-kvm -nographic -append \"console=ttyS0 ROOT=/dev/sda USERS=/dev/sdb\"${CLR}"
+    echo -e "${WHT}    npm start${CLR}"
   ;;
 esac

@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+(
+  cd node_modules/nodeos-barebones &&
+  #npm uninstall
+  rm -rf bzImage deps/ obj/ out/
+) &&
+(
+  cd node_modules/nodeos-initramfs &&
+  #npm uninstall
+  sudo rm -rf initramfs.cpio.gz ROOT/
+) &&
+(
+  cd node_modules/nodeos-rootfs    &&
+  #npm uninstall
+  sudo rm -rf rootfs.img ROOT/
+) &&
+(
+  cd node_modules/nodeos-usersfs   &&
+  #npm uninstall
+  rm -rf usersfs.img USERS/
+) || err $?
