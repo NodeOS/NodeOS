@@ -66,36 +66,6 @@ fi
 
 
 #
-# coreutils (/usr/bin/env)
-#
-
-VERSION=8.23
-URL=http://ftpmirror.gnu.org/coreutils/coreutils-$VERSION.tar.xz
-SRC_DIR=`pwd`/deps/coreutils
-OBJ_DIR=`pwd`/obj/$CPU/coreutils
-
-# Download
-if [[ ! -d $SRC_DIR ]]; then
-  mkdir -p $SRC_DIR                                         &&
-  curl -L $URL | tar xJf - -C $SRC_DIR --strip-components=1 || exit 120
-fi
-
-# Configure & compile
-if [[ ! -d $OBJ_DIR ]]; then
-  mkdir -p $OBJ_DIR &&
-  (
-    cd $OBJ_DIR                               &&
-    $SRC_DIR/configure $HOST --prefix=$PREFIX &&
-#    $SRC_DIR/configure --host=$HOST &&
-    make --jobs=$NUM_JOBS
-  ) || exit 121
-fi
-
-# Install
-( cd $OBJ_DIR && make --jobs=$NUM_JOBS DESTDIR=$OUT_DIR install ) || exit 122
-
-
-#
 # glibc
 #
 
@@ -107,7 +77,7 @@ OBJ_DIR=`pwd`/obj/$CPU/libc
 # Download
 if [[ ! -d $SRC_DIR ]]; then
   mkdir -p $SRC_DIR                                         &&
-  curl -L $URL | tar xJf - -C $SRC_DIR --strip-components=1 || exit 130
+  curl -L $URL | tar xJf - -C $SRC_DIR --strip-components=1 || exit 120
 fi
 
 # Configure & compile
@@ -118,17 +88,17 @@ if [[ ! -d $OBJ_DIR ]]; then
     $SRC_DIR/configure $HOST --prefix=$PREFIX --disable-sanity-checks &&
 #    $SRC_DIR/configure --host=$HOST --disable-sanity-checks &&
     make --jobs=$NUM_JOBS
-  ) || exit 131
+  ) || exit 121
 fi
 
 # Install
-( cd $OBJ_DIR && make --jobs=$NUM_JOBS DESTDIR=$OUT_DIR install ) || exit 132
+( cd $OBJ_DIR && make --jobs=$NUM_JOBS DESTDIR=$OUT_DIR install ) || exit 122
 
 
 #if [ $(uname -m) == 'x86_64' ]; then
 #  mkdir -p $ROOT/lib64                                            &&
 #  cp -f /lib/$HOST/ld-linux.so.2 $ROOT/lib/$HOST/                 &&
-#  ln -s /lib/$HOST/ld-linux.so.2 $ROOT/lib64/ld-linux-x86-64.so.2 || exit 131
+#  ln -s /lib/$HOST/ld-linux.so.2 $ROOT/lib64/ld-linux-x86-64.so.2 || exit 123
 #fi
 
 
@@ -143,7 +113,7 @@ SRC_DIR=`pwd`/deps/node
 # Download
 if [[ ! -d $SRC_DIR ]]; then
   mkdir -p $SRC_DIR                                         &&
-  curl -L $URL | tar xzf - -C $SRC_DIR --strip-components=1 || exit 140
+  curl -L $URL | tar xzf - -C $SRC_DIR --strip-components=1 || exit 130
 fi
 
 # Configure & compile
@@ -151,10 +121,17 @@ fi
   cd $SRC_DIR                                                  &&
   ./configure --dest-cpu=$CPU --prefix=$PREFIX --dest-os=linux &&
   make --jobs=$NUM_JOBS
-) || exit 141
+) || exit 131
 
 # Install
-( cd $SRC_DIR && make --jobs=$NUM_JOBS DESTDIR=$OUT_DIR install ) || exit 142
+( cd $SRC_DIR && make --jobs=$NUM_JOBS DESTDIR=$OUT_DIR install ) || exit 132
+
+
+#
+# /usr/bin/env
+#
+
+cp env.js $OUT_DIR/usr/bin/env || exit 140
 
 
 #
@@ -178,7 +155,8 @@ if [[ ! -d $SRC_DIR ]]; then
   curl -L $URL | tar xJf - -C $SRC_DIR --strip-components=1 &&
   (
     cd deps/linux/usr && make --jobs=$NUM_JOBS gen_init_cpio
-  ) || exit 150
+  ) &&
+  cp -vi config $SRC_DIR/.config || exit 150
 fi
 
 GEN_INIT_CPIO="deps/linux/usr/gen_init_cpio"
@@ -194,9 +172,8 @@ case $PLATFORM in
   ;;
   qemu)
     (
-      cp -vi config $SRC_DIR/.config  &&
       cd $SRC_DIR && make oldnoconfig &&
-      make --jobs=$NUM_JOBS &&
+      make --jobs=$NUM_JOBS           &&
       cp arch/x86/boot/bzImage ../..
     ) || exit 161
   ;;
