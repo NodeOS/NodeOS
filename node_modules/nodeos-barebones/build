@@ -128,13 +128,6 @@ fi
 
 
 #
-# /usr/bin/env
-#
-
-cp env.js $OUT_DIR/usr/bin/env || exit 140
-
-
-#
 # Strip libraries and binaries
 #
 
@@ -145,8 +138,8 @@ find $OUT_DIR | xargs strip --strip-unneeded
 # Linux kernel & gen_init_cpio utility
 #
 
-VERSION=3.18-rc7
-URL=https://www.kernel.org/pub/linux/kernel/v3.x/testing/linux-$VERSION.tar.xz
+VERSION=3.18
+URL=https://www.kernel.org/pub/linux/kernel/v3.x/linux-$VERSION.tar.xz
 SRC_DIR=`pwd`/deps/linux
 
 # Download & compile gen_init_cpio
