@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+DEPS=`pwd`/deps
+
+
+# Dependencies versions
+
+#NODEJS_VERSION=v`curl -s https://semver.io/node/stable`
+NODEJS_VERSION=v`curl -s https://semver.io/node/unstable`
+#NODEJS_VERSION=v0.10.35
+
+
+# Dependencies URLs
+
+#NODEJS_URL=http://nodejs.org/dist/latest/node-$NODEJS_VERSION.tar.gz
+NODEJS_URL=http://nodejs.org/dist/v0.11.14/node-v0.11.14.tar.gz
+
+
+#
+# Node.js
+#
+
+SRC_DIR=$DEPS/node
+if [[ ! -d $SRC_DIR ]]; then
+  mkdir -p $SRC_DIR                                                &&
+  curl -L $NODEJS_URL | tar xzf - -C $SRC_DIR --strip-components=1 || exit 10
+
+  # Patch OpenSSL to work with musl
+  curl -L https://raw.githubusercontent.com/maximeh/buildroot/master/package/openssl/openssl-004-musl-termios.patch \
+  | patch -N -d $SRC_DIR/deps/openssl/openssl/crypto/ui || exit 11
+fi

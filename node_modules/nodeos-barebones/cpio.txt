@@ -4,10 +4,10 @@
 
 dir /        0111 0 0
 dir /dev     0000 0 0
-dir /lib     0111 0 0
+#dir /lib     0111 0 0
 dir /usr     0111 0 0
 dir /usr/bin 0555 0 0
-dir /usr/lib 0111 0 0
+#dir /usr/lib 0111 0 0
 
 
 #
@@ -23,35 +23,24 @@ nod /dev/console 0600 0 0 c 5 1
 
 # glibc
 
-file  /lib/ld-2.20.so    ../../out/ia32/lib/ld-2.20.so 0555 0 0
-slink /lib/ld-linux.so.2 ld-2.20.so                    0555 0 0
-
-file  /lib/libc-2.20.so       ../../out/ia32/lib/libc-2.20.so       0555 0 0
-file  /lib/libdl-2.20.so      ../../out/ia32/lib/libdl-2.20.so      0444 0 0
-file  /lib/libm-2.20.so       ../../out/ia32/lib/libm-2.20.so       0444 0 0
-file  /lib/libpthread-2.20.so ../../out/ia32/lib/libpthread-2.20.so 0555 0 0
-file  /lib/librt-2.20.so      ../../out/ia32/lib/librt-2.20.so      0444 0 0
-
-slink /lib/libc.so.6       libc-2.20.so       0555 0 0
-slink /lib/libdl.so.2      libdl-2.20.so      0444 0 0
-slink /lib/libm.so.6       libm-2.20.so       0444 0 0
-slink /lib/libpthread.so.0 libpthread-2.20.so 0555 0 0
-slink /lib/librt.so.1      librt-2.20.so      0444 0 0
+#file  /lib/libc.so   ../../cross-tools/i686-nodeos-linux-musl/lib/libc.so 0555 0 0
+#slink /lib/libc.so.6 libc.so                                              0555 0 0
 
 # gcc
 
-file  /usr/lib/libgcc_s.so.1 ../../out/ia32/usr/lib/libgcc_s.so.1 0444 0 0
-slink /lib/libgcc_s.so.1     /usr/lib/libgcc_s.so.1               0444 0 0
+#file  /usr/lib/libgcc_s.so.1 ../../cross-tools/i686-nodeos-linux-musl/lib/libgcc_s.so.1 0444 0 0
+#slink /lib/libgcc_s.so.1     /usr/lib/libgcc_s.so.1                                     0444 0 0
 
-file  /usr/lib/libstdc++.so.6.0.20 ../../out/ia32/usr/lib/libstdc++.so.6.0.20 0444 0 0
-slink /usr/lib/libstdc++.so.6      libstdc++.so.6.0.20                        0444 0 0
+#file  /usr/lib/libstdc++.so.6.0.17 ../../cross-tools/i686-nodeos-linux-musl/lib/libstdc++.so.6.0.17 0444 0 0
+#slink /usr/lib/libstdc++.so.6      libstdc++.so.6.0.17                                              0444 0 0
 
 
 #
 # Node.js binary
 #
 
-file /usr/bin/node ../../out/ia32/usr/bin/node 0555 0 0
+#file /usr/bin/node ../../../nodeos-barebones/out/ia32/usr/bin/node 0555 0 0
+file /usr/bin/node ../../../nodeos-barebones/deps/node/node 0555 0 0
 
 
 #

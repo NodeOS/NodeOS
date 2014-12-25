@@ -1,0 +1,11 @@
+{
+  "name": "nodeos-barebones",
+  "version": "0.0.0",
+  "scripts": {
+    "install": "scripts/install",
+    "preinstall": "scripts/preinstall",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jesús Leganés Combarro \"piranna\"",
+  "license": "MIT"
+}

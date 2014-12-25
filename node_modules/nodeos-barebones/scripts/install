@@ -1,0 +1,173 @@
+#!/usr/bin/env bash
+
+# This script compiles from scratch a Node.js executable and its needed
+# libraries and shell utils to offer a Node.js REPL from cold boot
+
+GRN="\e[32m"
+CLR="\e[0m"
+
+
+NUM_JOBS=$((`nproc` + 1))
+
+if [[ -z "$name" ]]; then name=barebones; fi
+
+CPU=ia32
+
+# case $CPU in
+#   arm)
+#     HOST=arm-linux
+#   ;;
+#   ia32)
+#     HOST=i486-linux-gnu
+#   ;;
+#   x64)
+#     HOST=x86_64-linux-gnu
+#   ;;
+#   *)
+#     exit 100
+#   ;;
+# esac
+
+TARGET=i686-nodeos-linux-musl
+ARCH="x86"
+
+BAREBONES=`pwd`
+TOOLCHAIN=`pwd`/../nodeos-cross-toolchain
+SOURCES=$TOOLCHAIN/sources
+OUT_DIR=`pwd`/out/$CPU
+PATH=${TOOLCHAIN}/cross-tools/bin:/bin:/usr/bin
+
+PREFIX=/usr
+
+MAKE="make --jobs=$NUM_JOBS"
+
+rm -rf $OUT_DIR
+
+
+# #
+# # gcc
+# #
+#
+# SRC_DIR=$SOURCES/gcc
+# OBJ_DIR=`pwd`/obj/$CPU/gcc
+#
+# # Configure & compile
+# if [[ ! -d $OBJ_DIR ]]; then
+#   mkdir -p $OBJ_DIR &&
+#   (
+#     cd $OBJ_DIR                                                             &&
+# #    $SRC_DIR/configure --host=$HOST \
+#     $SRC_DIR/configure $HOST --prefix=$PREFIX \
+#         --disable-bootstrap --disable-sanity-checks -enable-languages=c,c++ &&
+#     $MAKE
+#   ) || exit 111
+# fi
+#
+# # Install
+# ( cd $OBJ_DIR && make --jobs=$NUM_JOBS DESTDIR=$OUT_DIR install-strip ) || exit 112
+#
+#
+# #
+# # glibc
+# #
+#
+# SRC_DIR=$SOURCES/libc
+# OBJ_DIR=`pwd`/obj/$CPU/libc
+#
+# # Configure & compile
+# if [[ ! -d $OBJ_DIR ]]; then
+#   mkdir -p $OBJ_DIR &&
+#   (
+#     cd $OBJ_DIR                                                       &&
+#     $SRC_DIR/configure $HOST --prefix=$PREFIX --disable-sanity-checks &&
+# #    $SRC_DIR/configure --host=$HOST --disable-sanity-checks &&
+#     $MAKE
+#   ) || exit 121
+# fi
+#
+# # Install
+# ( cd $OBJ_DIR && make --jobs=$NUM_JOBS DESTDIR=$OUT_DIR install ) || exit 122
+#
+#
+# #if [ $(uname -m) == 'x86_64' ]; then
+# #  mkdir -p $ROOT/lib64                                            &&
+# #  cp -f /lib/$HOST/ld-linux.so.2 $ROOT/lib/$HOST/                 &&
+# #  ln -s /lib/$HOST/ld-linux.so.2 $ROOT/lib64/ld-linux-x86-64.so.2 || exit 123
+# #fi
+
+
+#
+# Node.js
+#
+
+SRC_DIR=`pwd`/deps/node
+
+# Configure & compile
+(
+  cd $SRC_DIR
+
+  CC=${TARGET}-gcc       \
+  CXX=${TARGET}-g++      \
+  ./configure            \
+      --dest-cpu=$CPU    \
+      --prefix=$PREFIX   \
+      --fully-static     \
+      --dest-os=linux    \
+      --without-dtrace   \
+      --without-npm      \
+      --without-snapshot || exit 131
+
+  $MAKE || exit 132
+
+  $TARGET-strip node
+)
+
+# Install
+#( cd $SRC_DIR && $MAKE DESTDIR=$OUT_DIR install ) || exit 133
+
+
+#
+# Strip libraries and binaries
+#
+
+#mkdir -p $OUT_DIR/lib                                         || exit 140
+#cp -vP $TOOLCHAIN/cross-tools/$TARGET/lib/*.so* $OUT_DIR/lib/ || exit 141
+#
+#$TARGET-strip                  $OUT_DIR/{,usr/}lib/*
+#$TARGET-strip --strip-unneeded $OUT_DIR/{,usr/}bin/*
+#
+#rm -rf $OUT_DIR/{,share}/{info,man,doc} || exit 1423
+
+
+#
+# Wrap the system up and pack it
+#
+
+SRC_DIR=$SOURCES/linux
+OBJ_DIR=`pwd`/obj/$CPU/linux
+
+case $PLATFORM in
+  docker)
+    ( cd $SRC_DIR/usr && $MAKE O=$OBJ_DIR gen_init_cpio ) || exit 150
+    `$OBJ_DIR/usr/gen_init_cpio cpio.txt` | tar -cf - --format ustar @- | docker import - $name || exit 151
+  ;;
+  qemu)
+    mkdir -p $OBJ_DIR             &&
+    cp -v config $SRC_DIR/.config || exit 152
+#    cp -v config $OBJ_DIR/.config || exit 152
+
+    (
+      cd $SRC_DIR
+
+      make  oldnoconfig                       || exit 153
+      $MAKE ARCH=$ARCH CROSS_COMPILE=$TARGET- || exit 154
+#      make  O=$OBJ_DIR oldnoconfig                       || exit 153
+#      $MAKE O=$OBJ_DIR ARCH=$ARCH CROSS_COMPILE=$TARGET- || exit 154
+
+      cp arch/$ARCH/boot/bzImage $BAREBONES || exit 155
+    )
+  ;;
+esac
+
+
+echo -e "${GRN}Successfully built '$name'${CLR}"
