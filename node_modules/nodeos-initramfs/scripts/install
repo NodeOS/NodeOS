@@ -47,7 +47,8 @@ ln -fs ../bin/nodeos-mount-rootfs $ROOT/sbin/init || exit 212
 # /usr/bin/env
 #
 
-cp env.js $OUT_DIR/usr/bin/env || exit 220
+mkdir -p $ROOT/usr/bin      &&
+cp env.js $ROOT/usr/bin/env || exit 220
 
 
 #

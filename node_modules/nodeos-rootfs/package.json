@@ -1,0 +1,17 @@
+{
+  "name": "nodeos-rootfs",
+  "version": "0.0.0",
+  "scripts": {
+    "install": "scripts/install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jesús Leganés Combarro \"piranna\"",
+  "license": "MIT",
+  "globalDependencies": {
+    "forever-monitor": "piranna/forever-monitor",
+    "forever": "piranna/forever#starter",
+    "node-bin-getty": "piranna/node-bin-getty",
+    "nodeos-mount-usersfs": "*",
+    "logon": "*"
+  }
+}

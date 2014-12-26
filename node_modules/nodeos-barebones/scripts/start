@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+qemu-system-i386 -enable-kvm -nographic \
+  --kernel bzImage                      \
+  -append "console=ttyS0"

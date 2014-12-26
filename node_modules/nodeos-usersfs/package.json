@@ -1,0 +1,20 @@
+{
+  "name": "nodeos-usersfs",
+  "version": "0.0.0",
+  "scripts": {
+    "install": "scripts/install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jesús Leganés Combarro \"piranna\"",
+  "license": "MIT",
+  "globalDependencies": {
+    "npm": "*",
+    "bin-ip": "*",
+    "bin-sh": "*",
+    "bin-nsh": "*",
+    "bin-man": "*",
+    "bin-fs": "*",
+    "bin-pwd": "*",
+    "bin-ifconfig": "*"
+  }
+}

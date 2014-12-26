@@ -21,27 +21,27 @@ mkdir -p $HOME               || exit 301
 mkdir -p $(pwd)/ROOT/workdir || exit 302
 
 
+# #
+# # glibc & gcc libraries and binaries
+# #
+# #
+# # *** WARNING ***
+# #
+# # This consume A LOT of space (about 173mb) since it includes gcc and other
+# # binaries, so it's useful if you want to install later compiled modules, but
+# # it's not the best option if you are building a minimalistic NodeOS image
+# #
 #
-# glibc & gcc libraries and binaries
-#
-#
-# *** WARNING ***
-#
-# This consume A LOT of space (about 173mb) since it includes gcc and other
-# binaries, so it's useful if you want to install later compiled modules, but
-# it's not the best option if you are building a minimalistic NodeOS image
-#
-
-cp -a ../nodeos-barebones/out/ia32/* $ROOT &&
-(
-  cd $ROOT
-  rm -df lib/ld-2.20.so lib/ld-linux.so.2 lib/libc-2.20.so lib/libdl-2.20.so \
-         lib/libm-2.20.so lib/libpthread-2.20.so lib/librt-2.20.so \
-         lib/libc.so.6 lib/libdl.so.2 lib/libm.so.6 lib/libpthread.so.0 \
-         lib/librt.so.1 usr/lib/libgcc_s.so.1 lib/libgcc_s.so.1 \
-         usr/lib/libstdc++.so.6.0.20 usr/lib/libstdc++.so.6 usr/bin/env \
-         usr/bin/node
-) || exit 310
+# cp -a ../nodeos-barebones/out/ia32/* $ROOT &&
+# (
+#   cd $ROOT
+#   rm -df lib/ld-2.20.so lib/ld-linux.so.2 lib/libc-2.20.so lib/libdl-2.20.so \
+#          lib/libm-2.20.so lib/libpthread-2.20.so lib/librt-2.20.so \
+#          lib/libc.so.6 lib/libdl.so.2 lib/libm.so.6 lib/libpthread.so.0 \
+#          lib/librt.so.1 usr/lib/libgcc_s.so.1 lib/libgcc_s.so.1 \
+#          usr/lib/libstdc++.so.6.0.20 usr/lib/libstdc++.so.6 usr/bin/env \
+#          usr/bin/node
+# ) || exit 310
 
 
 #
@@ -80,8 +80,9 @@ cp forever-starter.json $HOME/etc/ || exit 340
 #
 
 # Set rootfs files ONLY readable
-chmod -R u-w,go-rw "$ROOT"         &&
-chmod -R go+r      "$ROOT/usr/bin" || exit 350
+chmod -R u-w,go-rw "$ROOT" || exit 350
+#chmod -R u-w,go-rw "$ROOT"         &&
+#chmod -R go+r      "$ROOT/usr/bin" || exit 350
 
 case $PLATFORM in
   docker)
@@ -95,8 +96,8 @@ case $PLATFORM in
 
     # Create the disk image
 
-#    DISK_SIZE=32  # Size in MB
-    DISK_SIZE=192  # Size in MB
+    DISK_SIZE=32  # Size in MB
+#    DISK_SIZE=192  # Size in MB
 
     genext2fs -b $((DISK_SIZE*1024)) --root "$(pwd)/ROOT" --bytes-per-inode 8192 --reserved-percentage 0 --squash-uids $name.img || exit 352
   ;;

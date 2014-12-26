@@ -1,0 +1,15 @@
+{
+  "name": "nodeos-initramfs",
+  "version": "0.0.0",
+  "description": "The included script generate a initramfs image that boots a NodeOS rootfs given as a ROOT parameter on boot time. If it fails to do so, it boots to a Node.js [REPL](http://nodejs.org/api/repl.html) prompt.",
+  "scripts": {
+    "install": "scripts/install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jesús Leganés Combarro \"piranna\"",
+  "license": "MIT",
+  "globalDependencies": {
+    "century": "piranna/node-century#patch-2",
+    "nodeos-mount-rootfs": "*"
+  }
+}

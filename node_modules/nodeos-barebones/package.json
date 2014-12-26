@@ -4,6 +4,7 @@
   "scripts": {
     "install": "scripts/install",
     "preinstall": "scripts/preinstall",
+    "start": "scripts/start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Jesús Leganés Combarro \"piranna\"",
