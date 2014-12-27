@@ -101,18 +101,19 @@ case $PLATFORM in
   ;;
   qemu)
     mkdir -p $OBJ_DIR             &&
-    cp -v config $SRC_DIR/.config || exit 152
-#    cp -v config $OBJ_DIR/.config || exit 152
+#    cp -v config_inSource $SRC_DIR/.config || exit 152
+    cp -v config $OBJ_DIR/.config || exit 152
 
     (
       cd $SRC_DIR
 
-      make  oldnoconfig                       || exit 153
-      $MAKE ARCH=$ARCH CROSS_COMPILE=$TARGET- || exit 154
-#      make  O=$OBJ_DIR oldnoconfig                       || exit 153
-#      $MAKE O=$OBJ_DIR ARCH=$ARCH CROSS_COMPILE=$TARGET- || exit 154
+      make mrproper
+#      make  oldnoconfig                       || exit 153
+#      $MAKE ARCH=$ARCH CROSS_COMPILE=$TARGET- || exit 154
+      make  O=$OBJ_DIR oldnoconfig                       || exit 153
+      $MAKE O=$OBJ_DIR ARCH=$ARCH CROSS_COMPILE=$TARGET- || exit 154
 
-      cp arch/$ARCH/boot/bzImage $BAREBONES || exit 155
+      cp $OBJ_DIR/arch/$ARCH/boot/bzImage $BAREBONES || exit 155
     )
   ;;
 esac

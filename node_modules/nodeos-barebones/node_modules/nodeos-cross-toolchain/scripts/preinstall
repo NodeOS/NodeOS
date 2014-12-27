@@ -11,7 +11,7 @@ GCC_VERSION=4.7.3
 #GCC_VERSION=4.9.2
 LINUX_VERSION=3.18.1
 MUSL_VERSION=1.0.4
-GLIBC_VERSION=2.20
+#GLIBC_VERSION=2.20
 
 
 # Dependencies URLs
@@ -20,7 +20,7 @@ BINUTILS_URL=http://ftpmirror.gnu.org/binutils/binutils-$BINUTILS_VERSION.tar.gz
 GCC_URL=http://ftpmirror.gnu.org/gcc/gcc-$GCC_VERSION/gcc-$GCC_VERSION.tar.gz
 LINUX_URL=https://www.kernel.org/pub/linux/kernel/v3.x/linux-$LINUX_VERSION.tar.xz
 MUSL_URL=http://www.musl-libc.org/releases/musl-$MUSL_VERSION.tar.gz
-GLIBC_URL=http://ftpmirror.gnu.org/glibc/glibc-$GLIBC_VERSION.tar.xz
+#GLIBC_URL=http://ftpmirror.gnu.org/glibc/glibc-$GLIBC_VERSION.tar.xz
 
 
 #
@@ -54,32 +54,32 @@ if [[ ! -d $SRC_DIR ]]; then
     mkdir -p gmp  && curl -L https://gmplib.org/download/gmp/gmp-6.0.0a.tar.xz  | tar xJf - -C gmp  --strip-components=1 &&
     mkdir -p mpc  && curl -L ftp://ftp.gnu.org/gnu/mpc/mpc-1.0.2.tar.gz         | tar xzf - -C mpc  --strip-components=1 || exit 21
 
-    #########################################################################
-    # Here will be dragons. Should't it be included in GCC ./configure? :-( #
-    #########################################################################
-
-    # Change location of GCC's default dynamic linker
-    for file in \
-     $(find gcc/config -name linux64.h -o -name linux.h -o -name sysv4.h)
-    do
-      cp -uv $file{,.orig}
-      sed -e 's@/lib\(64\)\?\(32\)\?/ld@/tools&@g' \
-          -e 's@/usr@/tools@g' $file.orig > $file
-      echo '
-#undef STANDARD_STARTFILE_PREFIX_1
-#undef STANDARD_STARTFILE_PREFIX_2
-#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
-#define STANDARD_STARTFILE_PREFIX_2 ""' >> $file
-      touch $file.orig
-    done
-
-    # Fix stack protection detection
-    sed -i '/k prot/agcc_cv_libc_provides_ssp=yes' gcc/configure
-
-    # Fix problem identified upstream
-    sed -i 's/if \((code.*))\)/if (\1 \&\& \!DEBUG_INSN_P (insn))/' gcc/sched-deps.c
-
-    #########################################################################
+#     #########################################################################
+#     # Here will be dragons. Should't it be included in GCC ./configure? :-( #
+#     #########################################################################
+#
+#     # Change location of GCC's default dynamic linker
+#     for file in \
+#      $(find gcc/config -name linux64.h -o -name linux.h -o -name sysv4.h)
+#     do
+#       cp -uv $file{,.orig}
+#       sed -e 's@/lib\(64\)\?\(32\)\?/ld@/tools&@g' \
+#           -e 's@/usr@/tools@g' $file.orig > $file
+#       echo '
+# #undef STANDARD_STARTFILE_PREFIX_1
+# #undef STANDARD_STARTFILE_PREFIX_2
+# #define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
+# #define STANDARD_STARTFILE_PREFIX_2 ""' >> $file
+#       touch $file.orig
+#     done
+#
+#     # Fix stack protection detection
+#     sed -i '/k prot/agcc_cv_libc_provides_ssp=yes' gcc/configure
+#
+#     # Fix problem identified upstream
+#     sed -i 's/if \((code.*))\)/if (\1 \&\& \!DEBUG_INSN_P (insn))/' gcc/sched-deps.c
+#
+#     #########################################################################
   ) || exit 22
 fi
 

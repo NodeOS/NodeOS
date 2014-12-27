@@ -6,7 +6,7 @@
     "install": "scripts/install",
     "postinstall": "scripts/postinstall",
     "preinstall": "scripts/preinstall",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "scripts/preinstall"
   },
   "keywords": [
     "NodeOS",

@@ -23,16 +23,16 @@ CLFS=`pwd`
 SOURCES=`pwd`/sources
 OBJECTS=`pwd`/obj/$CPU
 OUT_DIR=`pwd`/out/$CPU
-PATH=${CLFS}/cross-tools/bin:/bin:/usr/bin
+PATH=$CLFS/cross-tools/bin:/bin:/usr/bin
 
 MAKE="make --jobs=$NUM_JOBS"
 
 export LC_ALL CLFS PATH
 export HOST TARGET CPU ARCH
-export NUM_JOBS SOURCES OBJECTS OUT_DIR TOOLS MAKE
+export NUM_JOBS SOURCES OBJECTS OUT_DIR MAKE
 
-mkdir -p   cross-tools/${TARGET}     &&
-ln -sfnv . cross-tools/${TARGET}/usr || exit 1
+mkdir -p   cross-tools/$TARGET     &&
+ln -sfnv . cross-tools/$TARGET/usr || exit 1
 
 
 scripts/install-pass1.sh || exit $?

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+
+TARGET=i686-nodeos-linux-musl
+TOOLS=`pwd`/cross-tools
+
+PATH=`pwd`/cross-tools/bin:/bin:/usr/bin
+
+echo 'main(){}' > dummy.c          || exit 1
+$TARGET-gcc dummy.c                || exit 2
+#readelf -l a.out | grep ': '$TOOLS || exit 3
+#rm -v dummy.c a.out                || exit 4

@@ -39,8 +39,8 @@ nod /dev/console 0600 0 0 c 5 1
 # Node.js binary
 #
 
-#file /usr/bin/node ../../../../out/ia32/usr/bin/node 0555 0 0
-file /usr/bin/node ../../../../deps/node/node 0555 0 0
+#file /usr/bin/node ../../../out/ia32/usr/bin/node 0555 0 0
+file /usr/bin/node ../../../deps/node/node 0555 0 0
 
 
 #
