@@ -31,11 +31,19 @@ mkdir -p $ROOT || exit 201
 # Install system dependencies
 #
 
-NODE_DIR=`pwd`/../nodeos-barebones/deps/node
-NPM="node $NODE_DIR/deps/npm/cli.js"
-npmi="npm_config_prefix=$ROOT $NPM i -g"
+TARGET=i686-nodeos-linux-musl
 
-eval $npmi `grep -v "^#" packages.txt` || exit 210
+BAREBONES=`pwd`/../nodeos-barebones
+
+TOOLCHAIN=$BAREBONES/node_modules/nodeos-cross-toolchain
+PATH=$TOOLCHAIN/cross-tools/bin:/bin:/usr/bin
+
+CC=$TARGET-gcc                       \
+CXX=$TARGET-g++                      \
+npm_config_prefix=$ROOT              \
+$BAREBONES/deps/node/deps/npm/cli.js \
+    install -g                       \
+    `grep -v "^#" packages.txt`      || exit 210
 
 ln -fs bin/century $ROOT/init || exit 211
 
@@ -47,7 +55,7 @@ ln -fs ../bin/nodeos-mount-rootfs $ROOT/sbin/init || exit 212
 # /usr/bin/env
 #
 
-mkdir -p $ROOT/usr/bin      &&
+mkdir -p  $ROOT/usr/bin     &&
 cp env.js $ROOT/usr/bin/env || exit 220
 
 

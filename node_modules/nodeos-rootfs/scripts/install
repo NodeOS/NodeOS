@@ -56,12 +56,19 @@ cp    -f resolv.conf $ROOT/etc/ || exit 320
 # Install system dependencies
 #
 
-NODE_DIR=`pwd`/../nodeos-barebones/deps/node
-NPM="node $NODE_DIR/deps/npm/cli.js"
-npmi="npm_config_prefix=$HOME $NPM i -g"
+TARGET=i686-nodeos-linux-musl
 
-eval $npmi `grep -v "^#" packages.txt` &&
-rm -rf $HOME/.npm $HOME/.node-gyp      || exit 330
+BAREBONES=`pwd`/../nodeos-barebones
+
+TOOLCHAIN=$BAREBONES/node_modules/nodeos-cross-toolchain
+PATH=$TOOLCHAIN/cross-tools/bin:/bin:/usr/bin
+
+CC=$TARGET-gcc                       \
+CXX=$TARGET-g++                      \
+npm_config_prefix=$HOME              \
+$BAREBONES/deps/node/deps/npm/cli.js \
+    install -g                       \
+    `grep -v "^#" packages.txt`      || exit 330
 
 ln -sf bin/nodeos-mount-usersfs $HOME/init || exit 331
 ln -sf root/init                $ROOT/init || exit 332
