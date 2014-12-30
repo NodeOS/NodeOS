@@ -21,18 +21,17 @@ nod /dev/console 0600 0 0 c 5 1
 # Node.js required shared libraries
 #
 
-# glibc
+# musl
 
-#file  /lib/libc.so   ../../cross-tools/i686-nodeos-linux-musl/lib/libc.so 0555 0 0
-#slink /lib/libc.so.6 libc.so                                              0555 0 0
+file  /lib/libc.so           ../../../node_modules/nodeos-cross-toolchain/cross-tools/i686-nodeos-linux-musl/lib/libc.so 0555 0 0
+slink /lib/ld-musl-i386.so.1 libc.so                                                                                     0555 0 0
 
 # gcc
 
-#file  /usr/lib/libgcc_s.so.1 ../../cross-tools/i686-nodeos-linux-musl/lib/libgcc_s.so.1 0444 0 0
-#slink /lib/libgcc_s.so.1     /usr/lib/libgcc_s.so.1                                     0444 0 0
+file /lib/libgcc_s.so.1       ../../../node_modules/nodeos-cross-toolchain/cross-tools/i686-nodeos-linux-musl/lib/libgcc_s.so.1       0444 0 0
+file /lib/libstdc++.so.6.0.17 ../../../node_modules/nodeos-cross-toolchain/cross-tools/i686-nodeos-linux-musl/lib/libstdc++.so.6.0.17 0444 0 0
 
-#file  /usr/lib/libstdc++.so.6.0.17 ../../cross-tools/i686-nodeos-linux-musl/lib/libstdc++.so.6.0.17 0444 0 0
-#slink /usr/lib/libstdc++.so.6      libstdc++.so.6.0.17                                              0444 0 0
+slink /lib/libstdc++.so.6 libstdc++.so.6.0.17 0444 0 0
 
 
 #

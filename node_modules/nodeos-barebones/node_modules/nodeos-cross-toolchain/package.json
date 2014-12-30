@@ -2,6 +2,7 @@
   "name": "nodeos-cross-toolchain",
   "version": "0.0.0",
   "description": "Cross-toolchain to build NodeOS based on Linux From Scratch",
+  "main": "./cross-tools",
   "scripts": {
     "install": "scripts/install",
     "postinstall": "scripts/postinstall",

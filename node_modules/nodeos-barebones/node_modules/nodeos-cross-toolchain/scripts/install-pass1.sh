@@ -120,6 +120,7 @@ if [[ ! -d $OBJ_DIR ]]; then
 
     CC=$TARGET-gcc $SRC_DIR/configure \
         --prefix=/                    \
+        --disable-static              \
         --target=$TARGET              || exit 131
 
     CC=$TARGET-gcc $MAKE || exit 132
@@ -127,8 +128,8 @@ if [[ ! -d $OBJ_DIR ]]; then
 fi
 
 # Install
-#( cd $OBJ_DIR && DESTDIR=$TOOLS/$TARGET $MAKE install ) || exit 133
-( cd $SRC_DIR && DESTDIR=$TOOLS/$TARGET $MAKE install ) || exit 133
+#( cd $OBJ_DIR && DESTDIR=$TOOLS/$TARGET make install ) || exit 133
+( cd $SRC_DIR && DESTDIR=$TOOLS/$TARGET make install ) || exit 133
 
 
 #

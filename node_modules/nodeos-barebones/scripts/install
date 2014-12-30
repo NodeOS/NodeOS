@@ -59,7 +59,6 @@ SRC_DIR=`pwd`/deps/node
   ./configure            \
       --dest-cpu=$CPU    \
       --prefix=$PREFIX   \
-      --fully-static     \
       --dest-os=linux    \
       --without-dtrace   \
       --without-npm      \
@@ -71,7 +70,7 @@ SRC_DIR=`pwd`/deps/node
 )
 
 # Install
-#( cd $SRC_DIR && $MAKE DESTDIR=$OUT_DIR install ) || exit 133
+( cd $SRC_DIR && $MAKE DESTDIR=$OUT_DIR install ) || exit 133
 
 
 #

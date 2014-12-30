@@ -31,6 +31,7 @@ export LC_ALL CLFS PATH
 export HOST TARGET CPU ARCH
 export NUM_JOBS SOURCES OBJECTS OUT_DIR MAKE
 
+rm -rf     cross-tools/$TARGET     &&
 mkdir -p   cross-tools/$TARGET     &&
 ln -sfnv . cross-tools/$TARGET/usr || exit 1
 
