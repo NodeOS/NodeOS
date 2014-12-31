@@ -64,6 +64,7 @@ fi
 
 SRC_DIR=$SOURCES/gcc
 OBJ_DIR=$OBJECTS/gcc-static
+#OBJ_DIR=$OBJECTS/gcc
 
 # Configure & compile
 if [[ ! -d $OBJ_DIR ]]; then
@@ -93,7 +94,7 @@ if [[ ! -d $OBJ_DIR ]]; then
         --with-mpfr-include=$SRC_DIR/mpfr/src \
         --with-mpfr-lib=`pwd`/mpfr/src/.libs  \
         --with-arch=$CPU                      \
-        --enable-languages=c,c++              || exit 121
+        --enable-languages=c                  || exit 121
 
     $MAKE all-gcc all-target-libgcc || exit 122
   )
@@ -138,9 +139,11 @@ fi
 
 SRC_DIR=$SOURCES/gcc
 OBJ_DIR=$OBJECTS/gcc-final
+#OBJ_DIR=$OBJECTS/gcc
 
 # Configure & compile
 if [[ ! -d $OBJ_DIR ]]; then
+#  rm -rf $OBJ_DIR
   mkdir -p $OBJ_DIR &&
   (
     cd $OBJ_DIR                               &&
@@ -151,6 +154,7 @@ if [[ ! -d $OBJ_DIR ]]; then
         --target=$TARGET                      \
         --with-sysroot=$TOOLS/$TARGET         \
         --disable-nls                         \
+        --disable-static                      \
         --enable-c99                          \
         --enable-long-long                    \
         --disable-libmudflap                  \

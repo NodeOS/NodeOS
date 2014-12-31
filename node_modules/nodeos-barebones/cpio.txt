@@ -4,7 +4,7 @@
 
 dir /        0111 0 0
 dir /dev     0000 0 0
-#dir /lib     0111 0 0
+dir /lib     0111 0 0
 dir /usr     0111 0 0
 dir /usr/bin 0555 0 0
 #dir /usr/lib 0111 0 0
