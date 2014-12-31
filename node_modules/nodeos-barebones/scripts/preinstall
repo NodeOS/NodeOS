@@ -7,13 +7,12 @@ DEPS=`pwd`/deps
 
 #NODEJS_VERSION=v`curl -s https://semver.io/node/stable`
 NODEJS_VERSION=v`curl -s https://semver.io/node/unstable`
-#NODEJS_VERSION=v0.10.35
 
 
 # Dependencies URLs
 
 #NODEJS_URL=http://nodejs.org/dist/latest/node-$NODEJS_VERSION.tar.gz
-NODEJS_URL=http://nodejs.org/dist/v0.11.14/node-v0.11.14.tar.gz
+NODEJS_URL=http://nodejs.org/dist/$NODEJS_VERSION/node-$NODEJS_VERSION.tar.gz
 
 
 #

@@ -24,14 +24,17 @@ TARGET=i686-nodeos-linux-musl
 BAREBONES=`pwd`/../nodeos-barebones
 
 TOOLCHAIN=$BAREBONES/node_modules/nodeos-cross-toolchain
+NODE_DIR=$BAREBONES/deps/node
+
 PATH=$TOOLCHAIN/cross-tools/bin:/bin:/usr/bin
 
-CC=$TARGET-gcc                       \
-CXX=$TARGET-g++                      \
-npm_config_prefix=$HOME              \
-$BAREBONES/deps/node/deps/npm/cli.js \
-    install -g                       \
-    `grep -v "^#" packages.txt`      || exit 410
+CC=$TARGET-gcc                  \
+CXX=$TARGET-g++                 \
+npm_config_prefix=$HOME         \
+$NODE_DIR/deps/npm/cli.js       \
+    install -g                  \
+    --nodedir=$NODE_DIR         \
+    `grep -v "^#" packages.txt` || exit 410
 
 
 #
