@@ -3,10 +3,14 @@
   "version": "0.0.0",
   "scripts": {
     "install": "scripts/install",
+    "start": "scripts/start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Jesús Leganés Combarro \"piranna\"",
   "license": "MIT",
+  "peerDependencies": {
+    "nodeos-rootfs": "^0.0.0"
+  },
   "globalDependencies": {
     "npm": "*",
     "bin-ip": "*",

@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+
+var spawn = require('child_process').spawn
+
+var args =
+[
+  '-enable-kvm',
+  '-nographic',
+  '--kernel', '../nodeos-barebones/bzImage',
+  '--initrd', '../nodeos-initramfs/initramfs.cpio.gz',
+  '-hda',     'rootfs.img',
+  '-append',  'console=ttyS0 ROOT=/dev/sda'
+]
+
+spawn('qemu-system-i386', args, {stdio: 'inherit'})

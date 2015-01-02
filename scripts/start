@@ -1,8 +1,16 @@
-#!/usr/bin/env bash
+#!/usr/bin/env node
 
-qemu-system-i386 -enable-kvm -nographic                    \
-  --kernel node_modules/nodeos-barebones/bzImage           \
-  --initrd node_modules/nodeos-initramfs/initramfs.cpio.gz \
-  -hda     node_modules/nodeos-rootfs/rootfs.img           \
-  -hdb     node_modules/nodeos-usersfs/usersfs.img         \
-  -append "console=ttyS0 ROOT=/dev/sda USERS=/dev/sdb"
+var spawn = require('child_process').spawn
+
+var args =
+[
+  '-enable-kvm',
+  '-nographic',
+  '--kernel', 'node_modules/nodeos-barebones/bzImage',
+  '--initrd', 'node_modules/nodeos-initramfs/initramfs.cpio.gz',
+  '-hda',     'node_modules/nodeos-rootfs/rootfs.img',
+  '-hdb',     'node_modules/nodeos-usersfs/usersfs.img',
+  '-append',  'console=ttyS0 ROOT=/dev/sda USERS=/dev/sdb'
+]
+
+spawn('qemu-system-i386', args, {stdio: 'inherit'})
