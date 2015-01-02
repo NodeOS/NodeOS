@@ -1,7 +1,7 @@
 {
   "name": "nodeos-cross-toolchain",
   "version": "0.0.0",
-  "description": "Cross-toolchain to build NodeOS based on Linux From Scratch",
+  "description": "Cross-toolchain to build NodeOS based on Compressed Linux From Scratch Embedded",
   "main": "./cross-tools",
   "scripts": {
     "install": "scripts/install",
@@ -11,7 +11,8 @@
   },
   "keywords": [
     "NodeOS",
-    "LFS",
+    "CLFS",
+    "embedded",
     "toolchain",
     "cross"
   ],
