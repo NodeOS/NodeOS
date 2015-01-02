@@ -2,12 +2,10 @@
 # Basic directories
 #
 
-dir /        0111 0 0
-dir /dev     0000 0 0
-dir /lib     0111 0 0
-dir /usr     0111 0 0
-dir /usr/bin 0555 0 0
-#dir /usr/lib 0111 0 0
+dir /    0111 0 0
+dir /bin 0555 0 0
+dir /dev 0000 0 0
+dir /lib 0111 0 0
 
 
 #
@@ -38,12 +36,11 @@ slink /lib/libstdc++.so.6 libstdc++.so.6.0.17 0444 0 0
 # Node.js binary
 #
 
-#file /usr/bin/node ../../../out/ia32/usr/bin/node 0555 0 0
-file /usr/bin/node ../../../deps/node/node 0555 0 0
+file /bin/node ../../../deps/node/node 0555 0 0
 
 
 #
 # Set Node.js as /init
 #
 
-slink /init usr/bin/node 0100 0 0
+slink /init bin/node 0100 0 0
