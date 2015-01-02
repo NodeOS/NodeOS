@@ -8,16 +8,87 @@ umask 022
 export LC_ALL=POSIX
 unset CFLAGS
 
-GRN="\e[32m"
-CLR="\e[0m"
+
+# Platform aliases
+case $PLATFORM in
+  pc|qemu)
+    PLATFORM=pc_qemu
+  ;;
+  image)
+    PLATFORM=pc_image
+  ;;
+
+  qemu_32)
+    PLATFORM=pc_qemu_32
+  ;;
+  image_32)
+    PLATFORM=pc_image_32
+  ;;
+
+  qemu_64)
+    PLATFORM=pc_qemu_64
+  ;;
+  image_64)
+    PLATFORM=pc_image_64
+  ;;
+
+  raspberry)
+    PLATFORM=raspberry_qemu
+  ;;
+esac
+
+# default CPU for each platform
+if [[ -z "$CPU" ]]; then
+  case $PLATFORM in
+    docker)
+      CPU=`uname -m`
+    ;;
+    docker_32)
+      CPU=i686
+    ;;
+    docker_64)
+      CPU=x86_64
+    ;;
+
+    pc_qemu|pc_image)
+      CPU=`uname -m`
+    ;;
+    pc_qemu_32|pc_image_32)
+      CPU=i686
+    ;;
+    pc_qemu_64|pc_image_64)
+      CPU=x86_64
+    ;;
+
+    raspberry_qemu|raspberry_image)
+      CPU=armv6
+    ;;
+  esac
+fi
+
+case $CPU in
+  armv6)
+    TARGET=$CPU-nodeos-linux-musleabihf
+    ARCH="arm"
+  ;;
+  i[456]86)
+    TARGET=$CPU-nodeos-linux-musl
+    ARCH="x86"
+  ;;
+  x86_64)
+    TARGET=$CPU-nodeos-linux-musl
+    ARCH="x86"
+  ;;
+  *)
+    echo "Unknown CPU '$CPU'"
+    exit 1
+  ;;
+esac
+
+HOST=$(echo ${MACHTYPE} | sed "s/-[^-]*/-cross/")
 
 
 NUM_JOBS=$((`nproc` + 1))
-
-HOST=$(echo ${MACHTYPE} | sed "s/-[^-]*/-cross/")
-TARGET=i686-nodeos-linux-musl
-CPU=i686
-ARCH="x86"
 
 TOOLS=`pwd`/cross-tools
 
@@ -25,13 +96,12 @@ SOURCES=`pwd`/sources
 OBJECTS=`pwd`/obj/$CPU
 OUT_DIR=`pwd`/out/$CPU
 
-export PATH=`pwd`/cross-tools/bin:/bin:/usr/bin
+PATH=$TOOLS/bin:/bin:/usr/bin
 
 MAKE="make --jobs=$NUM_JOBS"
 
-rm -rf     $TOOLS/$TARGET     &&
 mkdir -p   $TOOLS/$TARGET     &&
-ln -sfnv . $TOOLS/$TARGET/usr || exit 1
+ln -sfnv . $TOOLS/$TARGET/usr || exit 2
 
 
 #
@@ -48,7 +118,7 @@ if [[ ! -d $TOOLS/$TARGET/include/linux ]]; then
     make mrproper                                             &&
     make ARCH=$ARCH headers_check                             &&
     make ARCH=$ARCH INSTALL_HDR_PATH=$TOOLS/$TARGET headers_install
-  ) || exit 100
+  ) || exit 10
 fi
 
 
@@ -59,23 +129,26 @@ fi
 SRC_DIR=$SOURCES/binutils
 OBJ_DIR=$OBJECTS/binutils
 
-# Configure & compile
 if [[ ! -d $OBJ_DIR ]]; then
-  mkdir -p $OBJ_DIR || exit 110
+  mkdir -p $OBJ_DIR || exit 20
 
   (
     cd $OBJ_DIR
 
+    # Configure
     $SRC_DIR/configure                \
         --prefix=$TOOLS               \
         --target=$TARGET              \
         --with-sysroot=$TOOLS/$TARGET \
         --disable-werror              \
         --disable-nls                 \
-        --disable-multilib            || exit 111
+        --disable-multilib            || exit 21
 
-    $MAKE configure-host || exit 112
-    $MAKE                || exit 113
+    # Compile
+    $MAKE configure-host && $MAKE || exit 22
+
+    # Install
+    $MAKE install || exit 23
   )
 
 #  case $(uname -m) in
@@ -85,25 +158,21 @@ if [[ ! -d $OBJ_DIR ]]; then
 #  esac
 fi
 
-# Install
-( cd $OBJ_DIR && $MAKE install ) || exit 114
-
 
 #
 # gcc static
 #
 
 SRC_DIR=$SOURCES/gcc
-OBJ_DIR=$OBJECTS/gcc-static
-#OBJ_DIR=$OBJECTS/gcc
+OBJ_DIR=$OBJECTS/gcc
 
-# Configure & compile
 if [[ ! -d $OBJ_DIR ]]; then
-  mkdir -p $OBJ_DIR || exit 120
+  mkdir -p $OBJ_DIR || exit 30
 
   (
     cd $OBJ_DIR
 
+    # Configure
     $SRC_DIR/configure                        \
         --prefix=$TOOLS                       \
         --build=$HOST                         \
@@ -125,14 +194,18 @@ if [[ ! -d $OBJ_DIR ]]; then
         --with-mpfr-include=$SRC_DIR/mpfr/src \
         --with-mpfr-lib=`pwd`/mpfr/src/.libs  \
         --with-arch=$CPU                      \
-        --enable-languages=c                  || exit 121
+        --enable-languages=c                  || exit 31
 
-    $MAKE all-gcc all-target-libgcc || exit 122
+    # Compile
+    $MAKE all-gcc all-target-libgcc || exit 32
+
+    # Install
+    $MAKE install-gcc install-target-libgcc || exit 33
   )
-fi
 
-# Install
-( cd $OBJ_DIR && $MAKE install-gcc install-target-libgcc ) || exit 123
+  # Remove object files
+  rm -rf $OBJ_DIR || exit 34
+fi
 
 
 #
@@ -142,26 +215,27 @@ fi
 SRC_DIR=$SOURCES/musl
 OBJ_DIR=$OBJECTS/musl
 
-# Configure & compile
 if [[ ! -d $OBJ_DIR ]]; then
-#  mkdir -p $OBJ_DIR || exit 130
+  mkdir -p $OBJ_DIR || exit 40
 
   (
 #    cd $OBJ_DIR
-    cd $SRC_DIR
+    cd $SRC_DIR  # musl don't support out-of-tree builds yet
 
-    CC=$TARGET-gcc $SRC_DIR/configure \
-        --prefix=/                    \
-        --disable-static              \
-        --target=$TARGET              || exit 131
+    # Configure
+    CROSS_COMPILE="$TARGET-" \
+    $SRC_DIR/configure       \
+        --prefix=/           \
+        --disable-static     \
+        --target=$TARGET     || exit 41
 
-    CC=$TARGET-gcc $MAKE || exit 132
+    # Compile
+    CROSS_COMPILE="$TARGET-" $MAKE || exit 42
+
+    # Install
+    DESTDIR=$TOOLS/$TARGET make install || exit 43
   )
 fi
-
-# Install
-#( cd $OBJ_DIR && DESTDIR=$TOOLS/$TARGET make install ) || exit 133
-( cd $SRC_DIR && DESTDIR=$TOOLS/$TARGET make install ) || exit 133
 
 
 #
@@ -169,15 +243,15 @@ fi
 #
 
 SRC_DIR=$SOURCES/gcc
-OBJ_DIR=$OBJECTS/gcc-final
-#OBJ_DIR=$OBJECTS/gcc
+OBJ_DIR=$OBJECTS/gcc
 
-# Configure & compile
 if [[ ! -d $OBJ_DIR ]]; then
-#  rm -rf $OBJ_DIR
-  mkdir -p $OBJ_DIR &&
+  mkdir -p $OBJ_DIR || exit 50
+
   (
-    cd $OBJ_DIR                               &&
+    cd $OBJ_DIR
+
+    # Configure
     $SRC_DIR/configure                        \
         --prefix=$TOOLS                       \
         --build=$HOST                         \
@@ -193,20 +267,12 @@ if [[ ! -d $OBJ_DIR ]]; then
         --with-mpfr-include=$SRC_DIR/mpfr/src \
         --with-mpfr-lib=`pwd`/mpfr/src/.libs  \
         --with-arch=$CPU                      \
-        --enable-languages=c,c++              &&
-    $MAKE
-  ) || exit 120
+        --enable-languages=c,c++              || exit 51
+
+    # Compile
+    $MAKE || exit 52
+
+    # Install
+    $MAKE install || exit 53
+  )
 fi
-
-# Install
-( cd $OBJ_DIR && $MAKE install ) || exit 121
-
-
-#
-# Check basic functions (compiling and linking) works as expected
-#
-
-scripts/test || exit $?
-
-
-echo -e "${GRN}Successfully built cross-toolchain for '$CPU'${CLR}"

@@ -1,8 +1,25 @@
 #!/usr/bin/env bash
 
+GRN="\e[32m"
+CLR="\e[0m"
+
+#
+# Check basic functions (compiling and linking) works as expected
+#
+
+scripts/test || exit $?
+
+
+#
+# Strip libraries and binaries
+#
+
 TOOLS=`pwd`/cross-tools
 
-strip --strip-debug    $TOOLS/lib/*
-strip --strip-unneeded $TOOLS/bin/*
+strip --strip-debug    $TOOLS/lib/* $TOOLS/*/lib/*
+strip --strip-unneeded $TOOLS/bin/* $TOOLS/*/bin/*
 
 rm -rf $TOOLS/{,share}/{info,man,doc}
+
+
+echo -e "${GRN}Successfully built cross-toolchain${CLR}"
