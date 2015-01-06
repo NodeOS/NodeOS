@@ -5,4 +5,4 @@ bin-nsh
 bin-man
 bin-fs
 bin-pwd
-bin-ifconfig
+netlovers/node-bin-ifconfig

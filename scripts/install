@@ -29,12 +29,15 @@ case $PLATFORM in
   ;;
 esac
 
+export PLATFORM
 
-# Build each layer up
-(cd node_modules/nodeos-barebones && PLATFORM=${PLATFORM} ./build ) &&
-(cd node_modules/nodeos-initramfs && PLATFORM=${PLATFORM} ./build ) &&
-(cd node_modules/nodeos-rootfs    && PLATFORM=${PLATFORM} ./build ) &&
-(cd node_modules/nodeos-usersfs   && PLATFORM=${PLATFORM} name=${NOSN} ./build ) || err $?
+
+## Build each layer up
+#(cd node_modules/nodeos-cross-toolchain              npm install ) &&
+#(cd node_modules/nodeos-barebones                    npm install ) &&
+#(cd node_modules/nodeos-initramfs                    npm install ) &&
+#(cd node_modules/nodeos-rootfs                       npm install ) &&
+#(cd node_modules/nodeos-usersfs         name=${NOSN} npm install ) || err $?
 
 echo -e "${GRY}------------------------------------------${CLR}"
 echo -e "${GRN}${BLD}Success!${CLR}"

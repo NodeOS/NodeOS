@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+rm -rf sources obj tools
