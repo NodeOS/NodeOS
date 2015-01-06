@@ -20,6 +20,7 @@ mkdir -p $HOME  || exit 400
 #
 
 TARGET=i686-nodeos-linux-musl
+NODE_ARCH=ia32
 
 BAREBONES=`pwd`/../nodeos-barebones
 
@@ -33,6 +34,7 @@ CXX=$TARGET-g++                 \
 npm_config_prefix=$HOME         \
 $NODE_DIR/deps/npm/cli.js       \
     install -g                  \
+    --arch=$NODE_ARCH           \
     --nodedir=$NODE_DIR         \
     `grep -v "^#" packages.txt` || exit 410
 
@@ -61,7 +63,7 @@ case $PLATFORM in
     chmod -R go= "$HOME"    &&
     docker build -t $name . || exit 441
   ;;
-  qemu)
+  qemu|qemu_32)
     DISK_SIZE=32  # Size in MB
 
     genext2fs -b $((DISK_SIZE*1024)) --root "$USERS" --bytes-per-inode 8192 --reserved-percentage 0 --squash-perms $name.img || exit 442

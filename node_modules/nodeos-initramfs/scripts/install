@@ -32,6 +32,7 @@ mkdir -p $ROOT || exit 201
 #
 
 TARGET=i686-nodeos-linux-musl
+NODE_ARCH=ia32
 
 BAREBONES=`pwd`/../nodeos-barebones
 
@@ -45,6 +46,7 @@ CXX=$TARGET-g++                 \
 npm_config_prefix=$ROOT         \
 $NODE_DIR/deps/npm/cli.js       \
     install -g                  \
+    --arch=$NODE_ARCH           \
     --nodedir=$NODE_DIR         \
     `grep -v "^#" packages.txt` || exit 210
 
@@ -74,7 +76,7 @@ case $PLATFORM in
   docker)
     docker build -t $name . || exit 231
   ;;
-  qemu)
+  qemu|qemu_32)
     (
       cd "$ROOT";
       find | cpio --owner root:root -o -H newc | gzip

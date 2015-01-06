@@ -34,6 +34,7 @@ cp    -f resolv.conf $ROOT/etc/ || exit 320
 #
 
 TARGET=i686-nodeos-linux-musl
+NODE_ARCH=ia32
 
 BAREBONES=`pwd`/../nodeos-barebones
 
@@ -47,6 +48,7 @@ CXX=$TARGET-g++                 \
 npm_config_prefix=$HOME         \
 $NODE_DIR/deps/npm/cli.js       \
     install -g                  \
+    --arch=$NODE_ARCH           \
     --nodedir=$NODE_DIR         \
     `grep -v "^#" packages.txt` || exit 330
 
@@ -75,7 +77,7 @@ case $PLATFORM in
   docker)
     docker build -t $name . || exit 351
   ;;
-  qemu)
+  qemu|qemu_32)
     # Copy kernel and initramfs on the disk image
 
     # cp vmlinuz $ROOT/vmlinuz &&

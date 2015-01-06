@@ -68,17 +68,17 @@ case $CPU in
   armv6)
     TARGET=$CPU-nodeos-linux-musleabihf
     ARCH="arm"
-    NODE_CPU=arm
+    NODE_ARCH=arm
   ;;
   i[456]86)
     TARGET=$CPU-nodeos-linux-musl
     ARCH="x86"
-    NODE_CPU=ia32
+    NODE_ARCH=ia32
   ;;
   x86_64)
     TARGET=$CPU-nodeos-linux-musl
     ARCH="x86"
-    NODE_CPU=x64
+    NODE_ARCH=x64
   ;;
   *)
     echo "Unknown CPU '$CPU'"
@@ -121,7 +121,7 @@ if [[ ! -d $OBJ_DIR ]]; then
     CC=$TARGET-gcc           \
     CXX=$TARGET-g++          \
     $SRC_DIR/configure       \
-        --dest-cpu=$NODE_CPU \
+        --dest-cpu=$NODE_ARCH \
         --prefix=$PREFIX     \
         --dest-os=linux      \
         --without-dtrace     \
