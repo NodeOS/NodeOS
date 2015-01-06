@@ -83,7 +83,7 @@ if(command)
   spawn(command, argv, {env: env, stdio: 'inherit'}).on('error',function(error)
   {
     console.error(error)
-    console.error(command, argv, env)
+    console.error(command, argv, env, process.env)
   })
 else
 {
