@@ -1,5 +1,3 @@
+cross-tools/
 obj/
 sources/
-tools/
-cross-tools/
-node_modules/

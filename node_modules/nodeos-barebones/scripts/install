@@ -87,7 +87,7 @@ case $CPU in
 esac
 
 
-NUM_JOBS=$((`nproc` + 1))
+NUM_JOBS=$((`getconf _NPROCESSORS_ONLN` + 1))
 
 if [[ -z "$name" ]]; then name=barebones; fi
 
@@ -148,9 +148,13 @@ OUT_DIR=out
 case $PLATFORM in
   docker|docker_32|docker_64)
     ( cd $SRC_DIR/usr && $MAKE O=$OBJ_DIR gen_init_cpio ) || exit 20
-    `$OBJ_DIR/usr/gen_init_cpio cpio.txt` | tar -cf - --format ustar @- | docker import - $name || exit 21
+
+    `$OBJ_DIR/usr/gen_init_cpio cpio.txt` | tar -cf - --format ustar @- | \
+        docker import - $name || exit 21
   ;;
-  pc_qemu|pc_qemu_32|pc_qemu_64|pc_image|pc_image_32|pc_image_64|raspberry_qemu|raspberry_image)
+  pc_qemu  | pc_qemu_32  | pc_qemu_64  | \
+  pc_image | pc_image_32 | pc_image_64 | \
+  raspberry_qemu | raspberry_image)
     if [[ ! -d $OBJ_DIR ]]; then
       mkdir -p $OBJ_DIR             &&
       cp -v config $OBJ_DIR/.config || exit 22
