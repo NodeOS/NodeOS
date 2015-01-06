@@ -1,4 +1,4 @@
 piranna/node-century#patch-2
 #/home/piranna/Dropbox/Proyectos/NodeOS/node-century
-#nodeos-mount-rootfs
-#/home/piranna/Dropbox/Proyectos/NodeOS/NodeOS-mount-rootfs
+nodeos-mount-rootfs
+#/home/piranna/Dropbox/Proyectos/NodeOS/nodeos-mount-rootfs

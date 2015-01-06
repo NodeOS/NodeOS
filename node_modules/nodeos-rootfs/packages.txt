@@ -1,7 +1,7 @@
 piranna/forever-monitor
 piranna/forever#starter
-piranna/node-bin-getty
+netlovers/node-bin-getty
 nodeos-mount-usersfs
-#/home/piranna/Dropbox/Proyectos/NodeOS/NodeOS-mount-usersfs
+#/home/piranna/Dropbox/Proyectos/NodeOS/nodeos-mount-usersfs
 logon
 #/home/piranna/Dropbox/Proyectos/NodeOS/logon

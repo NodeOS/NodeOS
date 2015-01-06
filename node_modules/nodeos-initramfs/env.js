@@ -1,4 +1,4 @@
-#!/usr/bin/node
+#!/bin/node
 
 var spawn = require('child_process').spawn
 
@@ -79,7 +79,12 @@ for(var arg; arg = argv[0]; argv.shift())
 var command = argv.shift()
 
 if(command)
-  spawn(command, argv, {env: env, stdio: 'inherit'})
+  // [ToDo] Change for https://github.com/jprichardson/node-kexec
+  spawn(command, argv, {env: env, stdio: 'inherit'}).on('error',function(error)
+  {
+    console.error(error)
+    console.error(command, argv, env)
+  })
 else
 {
   var endLine = endLinesWithNull ? '\0' : '\n'
