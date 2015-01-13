@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-SOURCES=`pwd`/sources
+SOURCES=`pwd`/deps
 TOOLS=`pwd`/tools
 
 

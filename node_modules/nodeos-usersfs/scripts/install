@@ -85,11 +85,11 @@ esac
 
 if [[ -z "$name" ]]; then name=usersfs; fi
 
-USERS=$(pwd)/USERS
-HOME=$USERS/nodeos
+OBJ_DIR=$(pwd)/obj/$CPU
+HOME=$OBJ_DIR/nodeos
 
-rm   -rf $USERS &&
-mkdir -p $HOME  || exit 400
+rm   -rf $OBJ_DIR &&
+mkdir -p $HOME    || exit 400
 
 
 #
@@ -103,7 +103,7 @@ BAREBONES=`pwd`/../nodeos-barebones
 TOOLCHAIN=$BAREBONES/node_modules/nodeos-cross-toolchain
 NODE_DIR=$BAREBONES/deps/node
 
-PATH=$TOOLCHAIN/cross-tools/bin:/bin:/usr/bin
+PATH=$TOOLCHAIN/out/bin:/bin:/usr/bin
 
 CC=$TARGET-gcc                  \
 CXX=$TARGET-g++                 \
@@ -145,7 +145,7 @@ case $PLATFORM in
   raspberry_qemu | raspberry_image)
     DISK_SIZE=32  # Size in MB
 
-    genext2fs -b $((DISK_SIZE*1024)) --root "$USERS" --bytes-per-inode 8192 \
+    genext2fs -b $((DISK_SIZE*1024)) --root "$OBJ_DIR" --bytes-per-inode 8192 \
       --reserved-percentage 0 --squash-perms $name.img || exit 442
   ;;
 esac

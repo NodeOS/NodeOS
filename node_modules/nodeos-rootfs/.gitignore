@@ -1,2 +1,3 @@
-ROOT/
 rootfs.img
+obj/
+out/

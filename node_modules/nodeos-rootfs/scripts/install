@@ -87,7 +87,8 @@ esac
 
 if [[ -z "$name" ]]; then name=rootfs; fi
 
-ROOT=$(pwd)/ROOT/rootfs
+OBJ_DIR=$(pwd)/obj/$CPU
+ROOT=$OBJ_DIR/rootfs
 HOME=$ROOT/root
 
 if [[ -d $ROOT ]]; then
@@ -95,7 +96,7 @@ if [[ -d $ROOT ]]; then
   rm    -rf    $ROOT || exit 300
 fi
 mkdir -p $HOME               || exit 301
-mkdir -p $(pwd)/ROOT/workdir || exit 302
+mkdir -p $OBJ_DIR/workdir || exit 302
 
 
 #
@@ -117,7 +118,7 @@ BAREBONES=`pwd`/../nodeos-barebones
 TOOLCHAIN=$BAREBONES/node_modules/nodeos-cross-toolchain
 NODE_DIR=$BAREBONES/deps/node
 
-PATH=$TOOLCHAIN/cross-tools/bin:/bin:/usr/bin
+PATH=$TOOLCHAIN/out/bin:/bin:/usr/bin
 
 CC=$TARGET-gcc                  \
 CXX=$TARGET-g++                 \
@@ -166,7 +167,7 @@ case $PLATFORM in
 
     DISK_SIZE=32  # Size in MB
 
-    genext2fs -b $((DISK_SIZE*1024)) --root $(pwd)/ROOT --bytes-per-inode 8192 \
+    genext2fs -b $((DISK_SIZE*1024)) --root $OBJ_DIR --bytes-per-inode 8192 \
       --reserved-percentage 0 --squash-uids $name.img || exit 352
   ;;
 esac

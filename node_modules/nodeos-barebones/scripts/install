@@ -93,9 +93,9 @@ if [[ -z "$name" ]]; then name=barebones; fi
 
 
 TOOLCHAIN=`pwd`/node_modules/nodeos-cross-toolchain
-SOURCES=$TOOLCHAIN/sources
+SOURCES=$TOOLCHAIN/deps
 OBJECTS=`pwd`/obj/$CPU
-PATH=$TOOLCHAIN/cross-tools/bin:/bin:/usr/bin
+PATH=$TOOLCHAIN/out/bin:/bin:/usr/bin
 
 PREFIX=/usr
 
@@ -133,7 +133,7 @@ if [[ ! -d $OBJ_DIR ]]; then
 
     # Strip binary
     $TARGET-strip node || exit 13
-  )
+  ) || exit $?
 fi
 
 
@@ -168,7 +168,7 @@ case $PLATFORM in
 
         # Compile
         $MAKE O=$OBJ_DIR ARCH=$ARCH CROSS_COMPILE=$TARGET- || exit 25
-      )
+      ) || exit $?
 
       # Install
       mkdir -p $OUT_DIR                                 || exit 26

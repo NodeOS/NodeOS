@@ -2,9 +2,9 @@
 
 
 TARGET=i686-nodeos-linux-musl
-#TOOLS=`pwd`/cross-tools
+#TOOLS=`pwd`/out
 
-PATH=`pwd`/cross-tools/bin:/bin:/usr/bin
+PATH=`pwd`/out/bin:/bin:/usr/bin
 
 echo 'main(){}' > dummy.c          || exit 1
 $TARGET-gcc dummy.c                || exit 2

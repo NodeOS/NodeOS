@@ -90,9 +90,9 @@ HOST=$(echo ${MACHTYPE} | sed "s/-[^-]*/-cross/")
 
 NUM_JOBS=$((`getconf _NPROCESSORS_ONLN` + 1))
 
-TOOLS=`pwd`/cross-tools
+TOOLS=`pwd`/out
 
-SOURCES=`pwd`/sources
+SOURCES=`pwd`/deps
 OBJECTS=`pwd`/obj/$CPU
 OUT_DIR=`pwd`/out/$CPU
 

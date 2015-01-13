@@ -85,19 +85,19 @@ esac
 
 if [[ -z "$name" ]]; then name=initramfs; fi
 
-ROOT=$(pwd)/ROOT
+OBJ_DIR=$(pwd)/obj/$CPU
 
-if [[ -d $ROOT ]]; then
-  chmod -R u+w $ROOT &&
-  rm    -rf    $ROOT || exit 200
+if [[ -d $OBJ_DIR ]]; then
+  chmod -R u+w $OBJ_DIR &&
+  rm    -rf    $OBJ_DIR || exit 200
 fi
-mkdir -p $ROOT || exit 201
+mkdir -p $OBJ_DIR || exit 201
 
 #case $PLATFORM in
 #  qemu)
 #    gunzip -c `pwd`/../barebones/barebones.cpio.gz |
 #    (
-#      cd "$ROOT";
+#      cd "$OBJ_DIR";
 #      cpio -i -d -H newc --no-absolute-filenames
 #    ) || exit 201
 #  ;;
@@ -115,11 +115,11 @@ BAREBONES=`pwd`/../nodeos-barebones
 TOOLCHAIN=$BAREBONES/node_modules/nodeos-cross-toolchain
 NODE_DIR=$BAREBONES/deps/node
 
-PATH=$TOOLCHAIN/cross-tools/bin:/bin:/usr/bin
+PATH=$TOOLCHAIN/out/bin:/bin:/usr/bin
 
 CC=$TARGET-gcc                  \
 CXX=$TARGET-g++                 \
-npm_config_prefix=$ROOT         \
+npm_config_prefix=$OBJ_DIR      \
 $NODE_DIR/deps/npm/cli.js       \
     install -g                  \
     --arch=$NODE_ARCH           \
@@ -127,18 +127,18 @@ $NODE_DIR/deps/npm/cli.js       \
     --jobs=$NUM_JOBS            \
     `grep -v "^#" packages.txt` || exit 210
 
-ln -fs bin/century $ROOT/init || exit 211
+ln -fs bin/century $OBJ_DIR/init || exit 211
 
-mkdir -p $ROOT/sbin                               &&
-ln -fs ../bin/nodeos-mount-rootfs $ROOT/sbin/init || exit 212
+mkdir -p $OBJ_DIR/sbin                               &&
+ln -fs ../bin/nodeos-mount-rootfs $OBJ_DIR/sbin/init || exit 212
 
 
 #
 # /usr/bin/env
 #
 
-mkdir -p  $ROOT/usr/bin     &&
-cp env.js $ROOT/usr/bin/env || exit 220
+mkdir -p  $OBJ_DIR/usr/bin     &&
+cp env.js $OBJ_DIR/usr/bin/env || exit 220
 
 
 #
@@ -146,8 +146,8 @@ cp env.js $ROOT/usr/bin/env || exit 220
 #
 
 # Set initramfs files only accesible to owner
-chmod -R u-w,go-rw "$ROOT"             &&
-chmod -R go+r      "$ROOT/usr/bin/env" || exit 230
+chmod -R u-w,go-rw "$OBJ_DIR"             &&
+chmod -R go+r      "$OBJ_DIR/usr/bin/env" || exit 230
 
 case $PLATFORM in
   docker|docker_32|docker_64)
@@ -157,7 +157,7 @@ case $PLATFORM in
   pc_image | pc_image_32 | pc_image_64 | \
   raspberry_qemu | raspberry_image)
     (
-      cd "$ROOT";
+      cd "$OBJ_DIR";
       find | cpio --owner root:root -o -H newc | gzip
     ) > $name.cpio.gz || exit 232
   ;;

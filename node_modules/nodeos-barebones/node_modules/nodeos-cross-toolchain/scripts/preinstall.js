@@ -33,9 +33,9 @@ function fetch(options, callback)
 
 var downloads =
 [
-  {url: BINUTILS_URL, dest: 'sources/binutils'},
-  {url: GCC_URL,      dest: 'sources/gcc'},
-  {url: GLIBC_URL,    dest: 'sources/glibc'}
+  {url: BINUTILS_URL, dest: 'deps/binutils'},
+  {url: GCC_URL,      dest: 'deps/gcc'},
+  {url: GLIBC_URL,    dest: 'deps/glibc'}
 ]
 
 eachSeries(downloads, fetch, function(error)

@@ -2,7 +2,7 @@
   "name": "nodeos-cross-toolchain",
   "version": "0.0.0",
   "description": "Cross-toolchain to build NodeOS based on Compressed Linux From Scratch Embedded",
-  "main": "./cross-tools",
+  "main": "./out",
   "scripts": {
     "install": "scripts/install",
     "postinstall": "scripts/postinstall",

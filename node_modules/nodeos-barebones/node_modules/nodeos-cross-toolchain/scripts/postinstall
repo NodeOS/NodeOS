@@ -14,7 +14,7 @@ scripts/test || exit $?
 # Strip libraries and binaries
 #
 
-TOOLS=`pwd`/cross-tools
+TOOLS=`pwd`/out
 
 strip --strip-debug    $TOOLS/lib/* $TOOLS/*/lib/*
 strip --strip-unneeded $TOOLS/bin/* $TOOLS/*/bin/*
