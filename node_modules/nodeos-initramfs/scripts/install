@@ -86,6 +86,7 @@ esac
 if [[ -z "$name" ]]; then name=initramfs; fi
 
 OBJ_DIR=$(pwd)/obj/$CPU
+OUT_DIR=$(pwd)/out/$CPU
 
 if [[ -d $OBJ_DIR ]]; then
   chmod -R u+w $OBJ_DIR &&
@@ -156,10 +157,12 @@ case $PLATFORM in
   pc_qemu  | pc_qemu_32  | pc_qemu_64  | \
   pc_image | pc_image_32 | pc_image_64 | \
   raspberry_qemu | raspberry_image)
+    mkdir -p `dirname $OUT_DIR`
     (
       cd "$OBJ_DIR";
       find | cpio --owner root:root -o -H newc | gzip
-    ) > $name.cpio.gz || exit 232
+    ) > $OUT_DIR || exit 232
+    ln -sfv $OUT_DIR $name.cpio.gz                      || exit 28
   ;;
 esac
 

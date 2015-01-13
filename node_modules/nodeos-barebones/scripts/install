@@ -143,7 +143,7 @@ fi
 
 SRC_DIR=$SOURCES/linux
 OBJ_DIR=$OBJECTS/linux
-OUT_DIR=out
+OUT_DIR=$(pwd)/out/$CPU
 
 case $PLATFORM in
   docker|docker_32|docker_64)
@@ -171,9 +171,9 @@ case $PLATFORM in
       ) || exit $?
 
       # Install
-      mkdir -p $OUT_DIR                                 || exit 26
-      cp $OBJ_DIR/arch/$ARCH/boot/bzImage $OUT_DIR/$CPU || exit 27
-      ln -sfv $OUT_DIR/$CPU bzImage                     || exit 28
+      mkdir -p `dirname $OUT_DIR`                  || exit 26
+      cp $OBJ_DIR/arch/$ARCH/boot/bzImage $OUT_DIR || exit 27
+      ln -sfv $OUT_DIR bzImage                     || exit 28
     fi
   ;;
 esac

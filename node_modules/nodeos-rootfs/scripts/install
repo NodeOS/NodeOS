@@ -88,6 +88,8 @@ esac
 if [[ -z "$name" ]]; then name=rootfs; fi
 
 OBJ_DIR=$(pwd)/obj/$CPU
+OUT_DIR=$(pwd)/out/$CPU
+
 ROOT=$OBJ_DIR/rootfs
 HOME=$ROOT/root
 
@@ -167,8 +169,10 @@ case $PLATFORM in
 
     DISK_SIZE=32  # Size in MB
 
+    mkdir -p `dirname $OUT_DIR`
     genext2fs -b $((DISK_SIZE*1024)) --root $OBJ_DIR --bytes-per-inode 8192 \
-      --reserved-percentage 0 --squash-uids $name.img || exit 352
+      --reserved-percentage 0 --squash-uids $OUT_DIR || exit 352
+    ln -sfv $OUT_DIR $name.img                       || exit 28
   ;;
 esac
 

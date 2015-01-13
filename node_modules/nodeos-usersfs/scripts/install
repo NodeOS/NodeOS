@@ -86,6 +86,8 @@ esac
 if [[ -z "$name" ]]; then name=usersfs; fi
 
 OBJ_DIR=$(pwd)/obj/$CPU
+OUT_DIR=$(pwd)/out/$CPU
+
 HOME=$OBJ_DIR/nodeos
 
 rm   -rf $OBJ_DIR &&
@@ -145,8 +147,10 @@ case $PLATFORM in
   raspberry_qemu | raspberry_image)
     DISK_SIZE=32  # Size in MB
 
-    genext2fs -b $((DISK_SIZE*1024)) --root "$OBJ_DIR" --bytes-per-inode 8192 \
-      --reserved-percentage 0 --squash-perms $name.img || exit 442
+    mkdir -p `dirname $OUT_DIR`
+    genext2fs -b $((DISK_SIZE*1024)) --root $OBJ_DIR --bytes-per-inode 8192 \
+      --reserved-percentage 0 --squash-perms $OUT_DIR || exit 442
+      ln -sfv $OUT_DIR $name.img                      || exit 28
   ;;
 esac
 
