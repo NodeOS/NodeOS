@@ -9,96 +9,11 @@ export LC_ALL=POSIX
 unset CFLAGS
 
 
-# Platform aliases
-case $PLATFORM in
-  pc|qemu)
-    PLATFORM=pc_qemu
-  ;;
-  image)
-    PLATFORM=pc_image
-  ;;
-
-  qemu_32)
-    PLATFORM=pc_qemu_32
-  ;;
-  image_32)
-    PLATFORM=pc_image_32
-  ;;
-
-  qemu_64)
-    PLATFORM=pc_qemu_64
-  ;;
-  image_64)
-    PLATFORM=pc_image_64
-  ;;
-
-  raspberry)
-    PLATFORM=raspberry_qemu
-  ;;
-esac
-
-# default CPU for each platform
-if [[ -z "$CPU" ]]; then
-  case $PLATFORM in
-    docker)
-      CPU=`uname -m`
-    ;;
-    docker_32)
-      CPU=i686
-    ;;
-    docker_64)
-      CPU=x86_64
-    ;;
-
-    pc_qemu|pc_image)
-      CPU=`uname -m`
-    ;;
-    pc_qemu_32|pc_image_32)
-      CPU=i686
-    ;;
-    pc_qemu_64|pc_image_64)
-      CPU=x86_64
-    ;;
-
-    raspberry_qemu|raspberry_image)
-      CPU=armv6
-    ;;
-  esac
-fi
-
-case $CPU in
-  armv6)
-    TARGET=$CPU-nodeos-linux-musleabihf
-    ARCH="arm"
-  ;;
-  i[456]86)
-    TARGET=$CPU-nodeos-linux-musl
-    ARCH="x86"
-  ;;
-  x86_64)
-    TARGET=$CPU-nodeos-linux-musl
-    ARCH="x86"
-  ;;
-  *)
-    echo "Unknown CPU '$CPU'"
-    exit 1
-  ;;
-esac
-
-HOST=$(echo ${MACHTYPE} | sed "s/-[^-]*/-cross/")
-
-
-NUM_JOBS=$((`getconf _NPROCESSORS_ONLN` + 1))
-
+DEPS=`pwd`/deps
 TOOLS=`pwd`/out
 
-SOURCES=`pwd`/deps
-OBJECTS=`pwd`/obj/$CPU
-OUT_DIR=`pwd`/out/$CPU
+source scripts/adjustEnvVars.sh || exit $?
 
-PATH=$TOOLS/bin:/bin:/usr/bin
-
-MAKE="make --jobs=$NUM_JOBS"
 
 mkdir -p   $TOOLS/$TARGET     &&
 ln -sfnv . $TOOLS/$TARGET/usr || exit 2
@@ -108,7 +23,7 @@ ln -sfnv . $TOOLS/$TARGET/usr || exit 2
 # Linux kernel headers
 #
 
-SRC_DIR=$SOURCES/linux
+SRC_DIR=$DEPS/linux
 
 if [[ ! -d $TOOLS/$TARGET/include/linux ]]; then
   (
@@ -126,7 +41,7 @@ fi
 # binutils
 #
 
-SRC_DIR=$SOURCES/binutils
+SRC_DIR=$DEPS/binutils
 OBJ_DIR=$OBJECTS/binutils
 
 if [[ ! -d $OBJ_DIR ]]; then
@@ -163,7 +78,7 @@ fi
 # gcc static
 #
 
-SRC_DIR=$SOURCES/gcc
+SRC_DIR=$DEPS/gcc
 OBJ_DIR=$OBJECTS/gcc
 
 if [[ ! -d $OBJ_DIR ]]; then
@@ -212,7 +127,7 @@ fi
 # musl
 #
 
-SRC_DIR=$SOURCES/musl
+SRC_DIR=$DEPS/musl
 OBJ_DIR=$OBJECTS/musl
 
 if [[ ! -d $OBJ_DIR ]]; then
@@ -242,7 +157,7 @@ fi
 # gcc final
 #
 
-SRC_DIR=$SOURCES/gcc
+SRC_DIR=$DEPS/gcc
 OBJ_DIR=$OBJECTS/gcc
 
 if [[ ! -d $OBJ_DIR ]]; then
