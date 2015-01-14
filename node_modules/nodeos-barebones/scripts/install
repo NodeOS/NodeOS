@@ -69,24 +69,34 @@ case $PLATFORM in
   ;;
   pc_qemu | pc_image | raspberry_qemu | raspberry_image)
     if [[ ! -d $OBJ_DIR ]]; then
-      mkdir -p $OBJ_DIR             &&
-      cp -v config $OBJ_DIR/.config || exit 22
+      mkdir -p $OBJ_DIR
 
       (
         cd $SRC_DIR
 
         # Configure
-        make mrproper               || exit 23
-        make O=$OBJ_DIR oldnoconfig || exit 24
+        make mrproper || exit 22
+
+        make O=$OBJ_DIR i386_defconfig || exit 23
+      ) || exit $?
+
+      # Set NodeOS custom configuration
+      cat config >> $OBJ_DIR/.config || exit 24
+
+      (
+        cd $SRC_DIR
+
+        # Fix configuration
+        make O=$OBJ_DIR oldnoconfig || exit 25
 
         # Compile
-        $MAKE O=$OBJ_DIR ARCH=$ARCH CROSS_COMPILE=$TARGET- || exit 25
+        $MAKE O=$OBJ_DIR ARCH=$ARCH CROSS_COMPILE=$TARGET- || exit 26
       ) || exit $?
 
       # Install
-      mkdir -p `dirname $OUT_DIR`                  || exit 26
-      cp $OBJ_DIR/arch/$ARCH/boot/bzImage $OUT_DIR || exit 27
-      ln -sfv $OUT_DIR bzImage                     || exit 28
+      mkdir -p `dirname $OUT_DIR`                  || exit 27
+      cp $OBJ_DIR/arch/$ARCH/boot/bzImage $OUT_DIR || exit 28
+      ln -sfv $OUT_DIR bzImage                     || exit 29
     fi
   ;;
 esac
