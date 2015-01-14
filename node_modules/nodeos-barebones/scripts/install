@@ -48,6 +48,10 @@ if [[ ! -d $OBJ_DIR ]]; then
     # Strip binary
     $TARGET-strip node || exit 13
   ) || exit $?
+
+  # Install
+  mkdir -p $OUT_DIR                          || exit 27
+  cp $SRC_DIR/out/Release/node $OUT_DIR/node || exit 28
 fi
 
 
@@ -101,6 +105,7 @@ case $PLATFORM in
 
       # Set NodeOS custom configuration
       cat config >> $OBJ_DIR/.config || exit 24
+      eval "echo \"$(< cpio.txt)\"" > $OBJ_DIR/cpio.txt
 
       (
         cd $SRC_DIR
@@ -113,9 +118,9 @@ case $PLATFORM in
       ) || exit $?
 
       # Install
-      mkdir -p `dirname $OUT_DIR`                  || exit 27
-      cp $OBJ_DIR/arch/$ARCH/boot/bzImage $OUT_DIR || exit 28
-      ln -sfv $OUT_DIR bzImage                     || exit 29
+      mkdir -p $OUT_DIR                                  || exit 27
+      cp $OBJ_DIR/arch/$ARCH/boot/bzImage $OUT_DIR/linux || exit 28
+      ln -sfv $OUT_DIR/linux bzImage                     || exit 29
     fi
   ;;
 esac

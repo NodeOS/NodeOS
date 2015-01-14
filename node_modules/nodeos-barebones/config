@@ -10,7 +10,7 @@
 CONFIG_BUILD_BIN2C=y  # n
 CONFIG_IKCONFIG=y     # n
 
-CONFIG_INITRAMFS_SOURCE="../../../cpio.txt"  # ""
+CONFIG_INITRAMFS_SOURCE="cpio.txt"  # ""
 
 
 #

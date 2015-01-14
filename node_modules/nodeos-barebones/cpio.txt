@@ -21,13 +21,13 @@ nod /dev/console 0600 0 0 c 5 1
 
 # musl
 
-file  /lib/libc.so           ../../../node_modules/nodeos-cross-toolchain/out/i686-nodeos-linux-musl/lib/libc.so 0555 0 0
-slink /lib/ld-musl-i386.so.1 libc.so                                                                                     0555 0 0
+file  /lib/libc.so           $TOOLS/$TARGET/lib/libc.so 0555 0 0
+slink /lib/ld-musl-i386.so.1 libc.so                    0555 0 0
 
 # gcc
 
-file /lib/libgcc_s.so.1       ../../../node_modules/nodeos-cross-toolchain/out/i686-nodeos-linux-musl/lib/libgcc_s.so.1       0444 0 0
-file /lib/libstdc++.so.6.0.17 ../../../node_modules/nodeos-cross-toolchain/out/i686-nodeos-linux-musl/lib/libstdc++.so.6.0.17 0444 0 0
+file /lib/libgcc_s.so.1       $TOOLS/$TARGET/lib/libgcc_s.so.1       0444 0 0
+file /lib/libstdc++.so.6.0.17 $TOOLS/$TARGET/lib/libstdc++.so.6.0.17 0444 0 0
 
 slink /lib/libstdc++.so.6 libstdc++.so.6.0.17 0444 0 0
 
@@ -36,7 +36,7 @@ slink /lib/libstdc++.so.6 libstdc++.so.6.0.17 0444 0 0
 # Node.js binary
 #
 
-file /bin/node ../../../deps/node/node 0555 0 0
+file /bin/node $OUT_DIR/node 0555 0 0
 
 
 #
