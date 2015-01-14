@@ -64,7 +64,7 @@ if [[ ! -d $OBJ_DIR ]]; then
 
     # Install
     $MAKE install || exit 23
-  )
+  ) || exit $?
 
 #  case $(uname -m) in
 #    x86_64)
@@ -116,7 +116,7 @@ if [[ ! -d $OBJ_DIR ]]; then
 
     # Install
     $MAKE install-gcc install-target-libgcc || exit 33
-  )
+  ) || exit $?
 
   # Remove object files
   rm -rf $OBJ_DIR || exit 34
@@ -135,7 +135,7 @@ if [[ ! -d $OBJ_DIR ]]; then
 
   (
 #    cd $OBJ_DIR
-    cd $SRC_DIR  # musl don't support out-of-tree builds yet
+    cd $SRC_DIR && make clean  # musl don't support out-of-tree builds yet
 
     # Configure
     CROSS_COMPILE="$TARGET-" \
@@ -149,7 +149,7 @@ if [[ ! -d $OBJ_DIR ]]; then
 
     # Install
     DESTDIR=$TOOLS/$TARGET make install || exit 43
-  )
+  ) || exit $?
 fi
 
 
@@ -189,5 +189,5 @@ if [[ ! -d $OBJ_DIR ]]; then
 
     # Install
     $MAKE install || exit 53
-  )
+  ) || exit $?
 fi

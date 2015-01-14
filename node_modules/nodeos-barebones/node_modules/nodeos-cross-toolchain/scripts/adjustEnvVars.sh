@@ -2,7 +2,7 @@
 
 # Platform aliases
 case $PLATFORM in
-  pc|qemu)
+  ""|pc|qemu)
     PLATFORM=pc_qemu
   ;;
   image)
@@ -36,14 +36,16 @@ esac
 if [[ -z "$CPU" ]]; then
   case $PLATFORM in
     pc_qemu|pc_image)
-      CPU=`uname -m`  # native  # https://gcc.gnu.org/onlinedocs/gcc-4.9.2/gcc/i386-and-x86-64-Options.html#i386-and-x86-64-Options
+#      CPU=`uname -m`
+      CPU=native  # native  # https://gcc.gnu.org/onlinedocs/gcc-4.9.2/gcc/i386-and-x86-64-Options.html#i386-and-x86-64-Options
     ;;
 
     docker_32|pc_qemu_32|pc_image_32)
       CPU=i686
     ;;
     docker_64|pc_qemu_64|pc_image_64)
-      CPU=x86_64
+#      CPU=x86_64
+      CPU=nocona
     ;;
 
     raspberry_qemu|raspberry_image)
@@ -65,9 +67,9 @@ case $PLATFORM in
     PLATFORM=pc_image
   ;;
 
-  raspberry_qemu)
-    PLATFORM=raspberry
-  ;;
+#  raspberry_qemu)
+#    PLATFORM=raspberry
+#  ;;
 esac
 
 # Set target and architecture for the selected CPU
@@ -82,8 +84,10 @@ case $CPU in
     ARCH="x86"
     NODE_ARCH=ia32
   ;;
-  x86_64)
-    TARGET=$CPU-nodeos-linux-musl
+#  x86_64)
+  nocona)
+#    TARGET=$CPU-nodeos-linux-musl
+    TARGET=x86_64-nodeos-linux-musl
     ARCH="x86"
     NODE_ARCH=x64
   ;;
