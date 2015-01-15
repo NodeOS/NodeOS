@@ -83,16 +83,7 @@ case $PLATFORM in
 
         case $PLATFORM in
           pc_qemu | pc_image)
-            case $CPU in
-              i[34567]86)
-                DEFCONFIG=i386_defconfig
-              ;;
-
-#              x86_64)
-              nocona)
-                DEFCONFIG=x86_64_defconfig
-              ;;
-            esac
+            DEFCONFIG=${CPU_FAMILY}_defconfig
           ;;
 
           raspberry_qemu | raspberry_image)
