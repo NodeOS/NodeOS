@@ -5,8 +5,11 @@
     "install": "scripts/install",
     "preinstall": "scripts/preinstall",
     "start": "scripts/start",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "scripts/test"
   },
   "author": "Jesús Leganés Combarro \"piranna\"",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "suppose": "NodeOS/node-suppose#patch-1"
+  }
 }

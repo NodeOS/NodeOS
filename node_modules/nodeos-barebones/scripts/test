@@ -1,0 +1,57 @@
+#!/usr/bin/env node
+
+var readlinkSync = require('fs').readlinkSync
+
+var suppose = require('suppose')
+
+
+var cpu = readlinkSync('bzImage').split('/');
+
+var cpu_family;
+switch(cpu[cpu.length-2])
+{
+  case 'armv6':
+    cpu_family = 'arm'
+  break
+
+  case 'i386':
+  case 'i486':
+  case 'i586':
+  case 'i686':
+  case 'i786':
+    cpu_family = 'i386'
+  break
+
+  case 'nocona':
+  case 'x86_64':
+    cpu_family = 'x86_64'
+  break
+}
+
+var command = 'qemu-system-'+cpu_family
+
+var args =
+[
+  '-enable-kvm',
+  '-nographic',
+  '--kernel', 'bzImage',
+  '-append',  'console=ttyS0'
+]
+
+suppose(command, args)
+  .debug(process.stdout)
+  .on(/> /).respond('setTimeout(console.log, 2000, "this is","a test")\n')
+  .on('this is a test', function(exe)
+  {
+    exe.kill()
+  })
+  .error(function(error)
+  {
+    if(error.message.indexOf('terminating on signal 15 from pid') < 0)
+      console.trace(error)
+  })
+  .end(function()
+  {
+    if(this.expects.length)
+      process.exit(1)
+  })

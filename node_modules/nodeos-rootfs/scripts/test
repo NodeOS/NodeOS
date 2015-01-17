@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+
+TOOLCHAIN=`pwd`/node_modules/nodeos-cross-toolchain
+TOOLS=$TOOLCHAIN/out
+
+source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?

@@ -4,14 +4,14 @@
   "scripts": {
     "install": "scripts/install",
     "start": "scripts/start",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "scripts/test"
   },
   "author": "Jesús Leganés Combarro \"piranna\"",
   "license": "MIT",
   "peerDependencies": {
     "nodeos-rootfs": "^0.0.0"
   },
-  "globalDependencies": {
+  "dependencies": {
     "npm": "*",
     "bin-ip": "*",
     "bin-sh": "*",
@@ -19,6 +19,6 @@
     "bin-man": "*",
     "bin-fs": "*",
     "bin-pwd": "*",
-    "bin-ifconfig": "*"
+    "bin-ifconfig": "netlovers/node-bin-ifconfig"
   }
 }
