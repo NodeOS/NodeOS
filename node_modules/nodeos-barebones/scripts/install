@@ -111,8 +111,9 @@ case $PLATFORM in
       # Install
       mkdir -p $OUT_DIR                                  || exit 27
       cp $OBJ_DIR/arch/$ARCH/boot/bzImage $OUT_DIR/linux || exit 28
-      ln -sfv $OUT_DIR/linux bzImage                     || exit 29
     fi
+
+    ln -sfv $OUT_DIR/linux bzImage || exit 29
   ;;
 esac
 

@@ -16,8 +16,10 @@ scripts/test || exit $?
 
 TOOLS=`pwd`/out
 
-strip --strip-debug    $TOOLS/lib/* $TOOLS/*/lib/*
-strip --strip-unneeded $TOOLS/bin/* $TOOLS/*/bin/*
+source scripts/adjustEnvVars.sh || exit $?
+
+strip --strip-debug    $TOOLS/{,$TARGET}/lib/*
+strip --strip-unneeded $TOOLS/{,$TARGET}/bin/*
 
 rm -rf $TOOLS/{,share}/{info,man,doc}
 
