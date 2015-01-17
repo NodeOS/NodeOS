@@ -1,6 +1,33 @@
 #!/usr/bin/env node
 
-var spawn = require('child_process').spawn
+var readlinkSync = require('fs').readlinkSync
+var spawn        = require('child_process').spawn
+
+
+var cpu = readlinkSync('bzImage').split('/');
+
+var cpu_family;
+switch(cpu[cpu.length-2])
+{
+  case 'armv6':
+    cpu_family = 'arm'
+  break
+
+  case 'i386':
+  case 'i486':
+  case 'i586':
+  case 'i686':
+  case 'i786':
+    cpu_family = 'i386'
+  break
+
+  case 'nocona':
+  case 'x86_64':
+    cpu_family = 'x86_64'
+  break
+}
+
+var command = 'qemu-system-'+cpu_family
 
 var args =
 [
@@ -10,4 +37,8 @@ var args =
   '-append',  'console=ttyS0'
 ]
 
-spawn('qemu-system-i386', args, {stdio: 'inherit'})
+spawn(command, args, {stdio: 'inherit'})
+.on('error', function(error)
+{
+  console.trace(error)
+})
