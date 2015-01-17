@@ -9,7 +9,7 @@ TOOLS=`pwd`/tools
 BINUTILS_VERSION=2.24
 GCC_VERSION=4.7.3
 #GCC_VERSION=4.9.2
-LINUX_VERSION=3.18.1
+LINUX_VERSION=3.18.3
 MUSL_VERSION=1.0.4
 #GLIBC_VERSION=2.20
 
@@ -50,9 +50,9 @@ if [[ ! -d $SRC_DIR ]]; then
 
     # Download source code of mpfr, gmp & mpc
 #    contrib/download_prerequisites
-    mkdir -p mpfr && curl -L http://www.mpfr.org/mpfr-current/mpfr-3.1.2.tar.xz | tar xJf - -C mpfr --strip-components=1 &&
-    mkdir -p gmp  && curl -L https://gmplib.org/download/gmp/gmp-6.0.0a.tar.xz  | tar xJf - -C gmp  --strip-components=1 &&
-    mkdir -p mpc  && curl -L ftp://ftp.gnu.org/gnu/mpc/mpc-1.0.2.tar.gz         | tar xzf - -C mpc  --strip-components=1 || exit 21
+    mkdir -p mpfr && curl -L http://ftpmirror.gnu.org/mpfr/mpfr-3.1.2.tar.xz | tar xJf - -C mpfr --strip-components=1 &&
+    mkdir -p gmp  && curl -L http://ftpmirror.gnu.org/gmp/gmp-6.0.0a.tar.xz  | tar xJf - -C gmp  --strip-components=1 &&
+    mkdir -p mpc  && curl -L http://ftpmirror.gnu.org/mpc/mpc-1.0.2.tar.gz   | tar xzf - -C mpc  --strip-components=1 || exit 21
 
 #     #########################################################################
 #     # Here will be dragons. Should't it be included in GCC ./configure? :-( #
