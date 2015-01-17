@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+
+PLATFORM=qemu_32 npm install &&
+PLATFORM=qemu_64 npm install || exit $?

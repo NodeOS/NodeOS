@@ -9,6 +9,7 @@
     "nodeos-usersfs"
   ],
   "scripts": {
+    "BigRedButton": "scripts/BigRedButton",
     "install": "scripts/install",
     "start": "scripts/start",
     "test": "echo \"Error: no test specified\" && exit 1",

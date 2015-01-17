@@ -7,9 +7,6 @@
 # RCU Subsystem
 #
 
-CONFIG_BUILD_BIN2C=y  # n
-CONFIG_IKCONFIG=y     # n
-
 CONFIG_INITRAMFS_SOURCE="cpio.txt"  # ""
 
 
@@ -35,13 +32,6 @@ CONFIG_UNIXWARE_DISKLABEL=n     # y
 CONFIG_SGI_PARTITION=n  # y
 
 CONFIG_SUN_PARTITION=n  # y
-
-
-#
-# Processor type and features
-#
-
-CONFIG_IOSF_MBI=y  # n
 
 
 #
