@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-GRN="\e[32m"
-CLR="\e[0m"
-
 #
 # Check basic functions (compiling and linking) works as expected
 #

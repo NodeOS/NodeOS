@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+RED="\e[31m"
+GRN="\e[32m"
+CLR="\e[0m"
+
 # Platform aliases
 case $PLATFORM in
   ""|pc|qemu)
@@ -121,3 +125,11 @@ OUT_DIR=`pwd`/out/$CPU
 PATH=$TOOLS/bin:/bin:/usr/bin
 
 MAKE="make --jobs=$JOBS --silent"
+
+
+# Clean object dir and return the input error
+function err(){
+  echo -e "${RED}Error compiling '${OBJ_DIR}'${CLR}"
+  rm -rf $OBJ_DIR
+  exit $1
+}

@@ -21,6 +21,8 @@ SRC_DIR=`pwd`/deps/node
 OBJ_DIR=$OBJECTS/node
 
 if [[ ! -d $OBJ_DIR ]]; then
+  echo -e "${WHT}${BLD}Compiling Node.js${CLR}"
+
   mkdir -p $OBJ_DIR || exit 10
 
   (
@@ -44,11 +46,13 @@ if [[ ! -d $OBJ_DIR ]]; then
 
     # Strip binary
     $TARGET-strip node || exit 13
-  ) || exit $?
+  ) || err $?
 
   # Install
   mkdir -p $OUT_DIR                          || exit 27
   cp $SRC_DIR/out/Release/node $OUT_DIR/node || exit 28
+
+  echo -e "${GRN}Successfully compiled Node.js${CLR}"
 fi
 
 
@@ -68,6 +72,8 @@ case $PLATFORM in
   ;;
   pc_qemu | pc_image | raspberry_qemu | raspberry_image)
     if [[ ! -d $OBJ_DIR ]]; then
+      echo -e "${WHT}${BLD}Compiling Linux${CLR}"
+
       mkdir -p $OBJ_DIR
 
       MAKE="$MAKE O=$OBJ_DIR ARCH=$ARCH CROSS_COMPILE=$TARGET-"
@@ -89,10 +95,10 @@ case $PLATFORM in
         esac
 
         $MAKE $DEFCONFIG || exit 23
-      ) || exit $?
+      ) || err $?
 
       # Set NodeOS custom configuration
-      cat config >> $OBJ_DIR/.config || exit 24
+      cat config >> $OBJ_DIR/.config || err 24
       eval "echo \"$(< cpio.txt)\"" > $OBJ_DIR/cpio.txt
 
       (
@@ -103,11 +109,13 @@ case $PLATFORM in
 
         # Compile
         $MAKE || exit 26
-      ) || exit $?
+      ) || err $?
 
       # Install
-      mkdir -p $OUT_DIR                                  || exit 27
-      cp $OBJ_DIR/arch/$ARCH/boot/bzImage $OUT_DIR/linux || exit 28
+      mkdir -p $OUT_DIR                                  || err 27
+      cp $OBJ_DIR/arch/$ARCH/boot/bzImage $OUT_DIR/linux || err 28
+
+      echo -e "${GRN}Successfully compiled Linux${CLR}"
     fi
 
     ln -sfv $OUT_DIR/linux bzImage || exit 29
