@@ -31,9 +31,9 @@ if [[ ! -d $TOOLS/$TARGET/include/linux ]]; then
     cd $SRC_DIR
 
     # Extract headers
-    make mrproper                                             &&
-    make ARCH=$ARCH headers_check                             &&
-    make ARCH=$ARCH INSTALL_HDR_PATH=$TOOLS/$TARGET headers_install
+    $MAKE mrproper                                             &&
+    $MAKE ARCH=$ARCH headers_check                             &&
+    $MAKE ARCH=$ARCH INSTALL_HDR_PATH=$TOOLS/$TARGET headers_install
   ) || exit 10
 fi
 
@@ -136,7 +136,7 @@ if [[ ! -d $OBJ_DIR ]]; then
 
   (
 #    cd $OBJ_DIR
-    cd $SRC_DIR && make clean  # musl don't support out-of-tree builds yet
+    cd $SRC_DIR && $MAKE clean  # musl don't support out-of-tree builds yet
 
     # Configure
     CROSS_COMPILE="$TARGET-" \
@@ -149,7 +149,7 @@ if [[ ! -d $OBJ_DIR ]]; then
     CROSS_COMPILE="$TARGET-" $MAKE || exit 42
 
     # Install
-    DESTDIR=$TOOLS/$TARGET make install || exit 43
+    DESTDIR=$TOOLS/$TARGET $MAKE install || exit 43
   ) || exit $?
 fi
 
