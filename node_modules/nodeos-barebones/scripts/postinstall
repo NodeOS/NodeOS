@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+GRN="\e[32m"
+CLR="\e[0m"
+
+#
+# Check basic functions (boot and Node.js REPL) works as expected
+#
+
+scripts/test || exit $?
+
+
+echo -e "${GRN}Successfully built barebones${CLR}"
