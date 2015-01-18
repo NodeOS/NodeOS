@@ -53,7 +53,7 @@ case $PLATFORM in
     echo -e "- Share your creation with:"
     echo -e "${WHT}    docker push $NOSN${CLR}"
   ;;
-  qemu)
+  pc_qemu|raspberry_qemu)
     echo -e "${WHT}    npm start${CLR}"
   ;;
 esac

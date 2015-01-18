@@ -3,9 +3,6 @@
 # This script compiles from scratch a Node.js executable and its needed
 # libraries and shell utils to offer a Node.js REPL from cold boot
 
-GRN="\e[32m"
-CLR="\e[0m"
-
 
 TOOLCHAIN=`pwd`/node_modules/nodeos-cross-toolchain
 TOOLS=$TOOLCHAIN/out
@@ -116,6 +113,3 @@ case $PLATFORM in
     ln -sfv $OUT_DIR/linux bzImage || exit 29
   ;;
 esac
-
-
-echo -e "${GRN}Successfully built '$name'${CLR}"
