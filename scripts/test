@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+cd node_modules/nodeos-barebones
+
+(
+  cd node_modules/nodeos-cross-toolchain
+
+  npm test || exit 1
+) || exit $?
+
+npm test || exit 2

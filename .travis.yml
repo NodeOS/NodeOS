@@ -1,0 +1,6 @@
+language: node_js
+node_js:
+  - "0.10"
+
+before_script:
+  - cd node_modules/nodeos-barebones && npm install NodeOS/node-suppose#patch-1

@@ -7,7 +7,7 @@
     "install": "scripts/install",
     "postinstall": "scripts/postinstall",
     "preinstall": "scripts/preinstall",
-    "test": "scripts/preinstall",
+    "test": "scripts/test",
     "uninstall": "scripts/uninstall"
   },
   "keywords": [

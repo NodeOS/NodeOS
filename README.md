@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/NodeOS/NodeOS.svg?branch=master)](https://travis-ci.org/NodeOS/NodeOS)
 [![Stories in Ready](https://badge.waffle.io/NodeOS/NodeOS.png?label=ready&title=Ready)](https://waffle.io/NodeOS/NodeOS)
 # NodeOS
 
