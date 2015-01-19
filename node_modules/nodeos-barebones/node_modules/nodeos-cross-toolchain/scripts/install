@@ -27,7 +27,7 @@ ln -sfnv lib $TOOLS/$TARGET/lib64 || exit 2
 SRC_DIR=$DEPS/linux
 
 if [[ ! -d $TOOLS/$TARGET/include/linux ]]; then
-  echo -e "${WHT}${BLD}Extracting Linux headers${CLR}"
+  echo -e "${WHT}Extracting Linux headers${CLR}"
 
   (
     cd $SRC_DIR
@@ -50,7 +50,7 @@ SRC_DIR=$DEPS/binutils
 OBJ_DIR=$OBJECTS/binutils
 
 if [[ ! -d $OBJ_DIR ]]; then
-  echo -e "${WHT}${BLD}Compiling binutils${CLR}"
+  echo -e "${WHT}Compiling binutils${CLR}"
 
   mkdir -p $OBJ_DIR || exit 20
 
@@ -59,6 +59,7 @@ if [[ ! -d $OBJ_DIR ]]; then
 
     # Configure
     $SRC_DIR/configure                \
+        --silent                      \
         --prefix=$TOOLS               \
         --target=$TARGET              \
         --with-sysroot=$TOOLS/$TARGET \
@@ -91,7 +92,7 @@ SRC_DIR=$DEPS/gcc
 OBJ_DIR=$OBJECTS/gcc
 
 if [[ ! -d $OBJ_DIR ]]; then
-  echo -e "${WHT}${BLD}Compiling GCC static${CLR}"
+  echo -e "${WHT}Compiling GCC static${CLR}"
 
   mkdir -p $OBJ_DIR || exit 30
 
@@ -100,6 +101,7 @@ if [[ ! -d $OBJ_DIR ]]; then
 
     # Configure
     $SRC_DIR/configure                        \
+        --silent                              \
         --prefix=$TOOLS                       \
         --build=$HOST                         \
         --host=$HOST                          \
@@ -144,7 +146,7 @@ SRC_DIR=$DEPS/musl
 OBJ_DIR=$OBJECTS/musl
 
 if [[ ! -d $OBJ_DIR ]]; then
-  echo -e "${WHT}${BLD}Compiling musl${CLR}"
+  echo -e "${WHT}Compiling musl${CLR}"
 
   mkdir -p $OBJ_DIR || exit 40
 
@@ -178,7 +180,7 @@ SRC_DIR=$DEPS/gcc
 OBJ_DIR=$OBJECTS/gcc
 
 if [[ ! -d $OBJ_DIR ]]; then
-  echo -e "${WHT}${BLD}Compiling GCC final${CLR}"
+  echo -e "${WHT}Compiling GCC final${CLR}"
 
   mkdir -p $OBJ_DIR || exit 50
 
@@ -187,6 +189,7 @@ if [[ ! -d $OBJ_DIR ]]; then
 
     # Configure
     $SRC_DIR/configure                        \
+        --silent                              \
         --prefix=$TOOLS                       \
         --build=$HOST                         \
         --host=$HOST                          \

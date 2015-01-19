@@ -2,6 +2,7 @@
 
 RED="\e[31m"
 GRN="\e[32m"
+WHT="\e[37m"
 CLR="\e[0m"
 
 # Platform aliases
@@ -124,7 +125,8 @@ OUT_DIR=`pwd`/out/$CPU
 
 PATH=$TOOLS/bin:/bin:/usr/bin
 
-MAKE="make --jobs=$JOBS --silent"
+SILENT="--silent LIBTOOLFLAGS=--silent"
+MAKE="make --jobs=$JOBS $SILENT"
 
 
 # Clean object dir and return the input error
