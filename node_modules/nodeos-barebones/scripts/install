@@ -26,7 +26,7 @@ if [[ ! -d $OBJ_DIR ]]; then
   mkdir -p $OBJ_DIR || exit 10
 
   (
-  #  cd $OBJ_DIR
+#    cd $OBJ_DIR
     cd $SRC_DIR && $MAKE clean  # Node.js don't support out-of-tree builds yet
 
     # Configure

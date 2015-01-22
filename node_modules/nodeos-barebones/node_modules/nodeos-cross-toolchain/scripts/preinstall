@@ -51,7 +51,7 @@ if [[ ! -d $SRC_DIR ]]; then
     mkdir -p mpfr && curl -L http://ftpmirror.gnu.org/mpfr/mpfr-3.1.2.tar.xz | tar xJf - -C mpfr --strip-components=1 &&
     mkdir -p gmp  && curl -L http://ftpmirror.gnu.org/gmp/gmp-6.0.0a.tar.xz  | tar xJf - -C gmp  --strip-components=1 &&
     mkdir -p mpc  && curl -L http://ftpmirror.gnu.org/mpc/mpc-1.0.2.tar.gz   | tar xzf - -C mpc  --strip-components=1 || exit 21
-  ) || exit 22
+  ) || exit $?
 fi
 
 
