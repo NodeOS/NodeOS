@@ -8,5 +8,8 @@ before_install:
   - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.9; fi
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
 
+install:
+  - JOBS=1 npm run BigRedButton
+
 before_script:
   - cd node_modules/nodeos-barebones && npm install NodeOS/node-suppose#patch-1
