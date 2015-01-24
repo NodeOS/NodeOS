@@ -32,7 +32,7 @@ var command = 'qemu-system-'+cpu_family
 
 var args =
 [
-  '-enable-kvm',
+//  '-enable-kvm',  // Give problems running inside VMs, like Travis-CI
   '-nographic',
   '--kernel', 'bzImage',
   '-append',  'console=ttyS0'
