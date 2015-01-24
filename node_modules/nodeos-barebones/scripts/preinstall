@@ -26,5 +26,5 @@ if [[ ! -d $SRC_DIR ]]; then
 
   # Patch OpenSSL to work with musl
   curl -L https://raw.githubusercontent.com/maximeh/buildroot/master/package/openssl/openssl-004-musl-termios.patch \
-  | patch -N -d $SRC_DIR/deps/openssl/openssl/crypto/ui || exit 11
+  | patch --silent -N -d $SRC_DIR/deps/openssl/openssl/crypto/ui || exit 11
 fi
