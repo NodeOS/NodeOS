@@ -82,7 +82,7 @@ case $PLATFORM in
         cd $SRC_DIR
 
         # Configure
-        $MAKE mrproper || exit 22
+        $MAKE1 mrproper || exit 22
 
         case $PLATFORM in
           pc_qemu | pc_image)

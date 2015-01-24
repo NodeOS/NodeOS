@@ -33,8 +33,8 @@ if [[ ! -d $TOOLS/$TARGET/include/linux ]]; then
     cd $SRC_DIR
 
     # Extract headers
-    $MAKE mrproper                                             &&
-    $MAKE ARCH=$ARCH headers_check                             &&
+    $MAKE mrproper                 &&
+    $MAKE ARCH=$ARCH headers_check &&
     $MAKE ARCH=$ARCH INSTALL_HDR_PATH=$TOOLS/$TARGET headers_install
   ) || exit 10
 

@@ -126,7 +126,8 @@ OUT_DIR=`pwd`/out/$CPU
 PATH=$TOOLS/bin:/bin:/usr/bin
 
 SILENT="--silent LIBTOOLFLAGS=--silent"
-MAKE="make --jobs=$JOBS $SILENT"
+MAKE1="make $SILENT"
+MAKE="$MAKE1 --jobs=$JOBS"
 
 
 # Clean object dir and return the input error
