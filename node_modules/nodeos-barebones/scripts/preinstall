@@ -6,7 +6,8 @@ DEPS=`pwd`/deps
 # Dependencies versions
 
 #NODEJS_VERSION=v`curl -s https://semver.io/node/stable`
-NODEJS_VERSION=v`curl -s https://semver.io/node/unstable`
+#NODEJS_VERSION=v`curl -s https://semver.io/node/unstable`
+NODEJS_VERSION=v0.11.14
 
 
 # Dependencies URLs
