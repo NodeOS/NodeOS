@@ -120,4 +120,5 @@ OUT_DIR=`pwd`/out/$CPU
 
 PATH=$TOOLS/bin:/bin:/usr/bin
 
-MAKE="make --jobs=$JOBS --silent"
+MAKE1="make --silent"
+MAKE="$MAKE1 --jobs=$JOBS"
