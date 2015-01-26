@@ -67,7 +67,7 @@ cp env.js $OBJECTS/usr/bin/env || exit 220
 # Wrap the system up and pack it
 #
 
-# Set initramfs files only accesible to owner
+# Set initramfs files only accesible to root
 chmod -R u-w,go-rw "$OBJECTS"             &&
 chmod -R go+r      "$OBJECTS/usr/bin/env" || exit 230
 
@@ -75,13 +75,14 @@ case $PLATFORM in
   docker)
     docker build -t $name . || exit 231
   ;;
-  pc_qemu | pc_image_ | raspberry_qemu | raspberry_image)
+  pc_qemu | pc_image | raspberry_qemu | raspberry_image)
     mkdir -p `dirname $OUT_DIR`
     (
       cd "$OBJECTS";
       find | cpio --owner root:root -o -H newc | gzip
     ) > $OUT_DIR || exit 232
-    ln -sfv $OUT_DIR $name.cpio.gz                      || exit 28
+
+    ln -sfv $OUT_DIR $name.cpio.gz || exit 28
   ;;
 esac
 

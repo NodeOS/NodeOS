@@ -9,6 +9,8 @@ CLR="\e[0m"
 
 
 BAREBONES=`pwd`/../nodeos-barebones
+INITRAMFS=`pwd`/../nodeos-initramfs
+
 NODE_DIR=$BAREBONES/deps/node
 
 TOOLCHAIN=$BAREBONES/node_modules/nodeos-cross-toolchain
@@ -70,29 +72,45 @@ cp forever-starter.json $HOME/etc/ || exit 340
 # Wrap the system up and pack it
 #
 
-# Set rootfs files ONLY readable
+# Set rootfs files ONLY executable
 chmod -R u-w,go-rw "$ROOT" || exit 350
-#chmod -R u-w,go-rw "$ROOT"         &&
-#chmod -R go+r      "$ROOT/usr/bin" || exit 350
 
 case $PLATFORM in
   docker)
     docker build -t $name . || exit 351
   ;;
-  pc_qemu | pc_image | raspberry_qemu | raspberry_image)
+
+  pc_qemu | raspberry_qemu | raspberry_image)
+    # Create the disk image
+
+    OUT_DIR=$OUT_DIR/qemu
+
+    mkdir -p `dirname $OUT_DIR`
+    genext2fs -b `du -ks $OBJECTS | cut -f1` \
+        --root $OBJECTS                      \
+        --bytes-per-inode 8192               \
+        --reserved-percentage 0              \
+        --squash-uids $OUT_DIR               || exit 352
+
+    ln -sfv $OUT_DIR $name.img || exit 353
+  ;;
+
+  pc_image)
     # Copy kernel and initramfs on the disk image
 
-    # cp vmlinuz $ROOT/vmlinuz &&
-    # cp initrd  $ROOT/initrd  || exit 330
+    mkdir -p    $OBJECTS/boot/grub &&
+    cp grub.cfg $OBJECTS/boot/grub || exit 354
+
+    cp $BAREBONES/bzImage           $OBJECTS/boot/bzImage           &&
+    cp $INITRAMFS/initramfs.cpio.gz $OBJECTS/boot/initramfs.cpio.gz || exit 355
 
     # Create the disk image
 
-    DISK_SIZE=32  # Size in MB
+    OUT_DIR=$OUT_DIR/image
 
     mkdir -p `dirname $OUT_DIR`
-    genext2fs -b $((DISK_SIZE*1024)) --root $OBJECTS --bytes-per-inode 8192 \
-      --reserved-percentage 0 --squash-uids $OUT_DIR || exit 352
-    ln -sfv $OUT_DIR $name.img                       || exit 28
+    grub-mkrescue /usr/lib/grub/i386-pc -o $OUT_DIR $OBJECTS || exit 356
+    ln -sfv $OUT_DIR $name.img                               || exit 357
   ;;
 esac
 
