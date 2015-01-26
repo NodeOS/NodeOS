@@ -85,12 +85,16 @@ case $PLATFORM in
 
     OUT_DIR=$OUT_DIR/qemu
 
+    # Size in MB
+#    DISK_SIZE=`du -ks $OBJECTS | cut -f1`
+    DISK_SIZE=$((32*1024))
+
     mkdir -p `dirname $OUT_DIR`
-    genext2fs -b `du -ks $OBJECTS | cut -f1` \
-        --root $OBJECTS                      \
-        --bytes-per-inode 8192               \
-        --reserved-percentage 0              \
-        --squash-uids $OUT_DIR               || exit 352
+    genext2fs -b $DISK_SIZE     \
+        --root $OBJECTS         \
+        --bytes-per-inode 8192  \
+        --reserved-percentage 0 \
+        --squash-uids $OUT_DIR  || exit 352
 
     ln -sfv $OUT_DIR $name.img || exit 353
   ;;
