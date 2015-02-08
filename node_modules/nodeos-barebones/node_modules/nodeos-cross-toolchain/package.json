@@ -18,5 +18,9 @@
     "cross"
   ],
   "author": "Jesús Leganés Combarro \"piranna\" <piranna@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "download": "^3.3.0",
+    "download-status": "^2.1.1"
+  }
 }
