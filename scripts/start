@@ -4,6 +4,9 @@ var readlinkSync = require('fs').readlinkSync
 var spawn        = require('child_process').spawn
 
 
+var nographic = false
+
+
 var cpu = readlinkSync('node_modules/nodeos-barebones/bzImage').split('/');
 
 var cpu_family;
@@ -32,15 +35,20 @@ var command = 'qemu-system-'+cpu_family
 var args =
 [
   '-enable-kvm',
-  '-nographic',
   '-m', '256',  // [Hack] x86_64 is giving "FATAL ERROR: Evacuation Allocation failed - process out of memory"
                 // Maybe it's related to the clean-up of kernel configuration
   '--kernel', 'node_modules/nodeos-barebones/bzImage',
   '--initrd', 'node_modules/nodeos-initramfs/initramfs.cpio.gz',
   '-hda',     'node_modules/nodeos-rootfs/rootfs.img',
   '-hdb',     'node_modules/nodeos-usersfs/usersfs.img',
-  '-append',  'console=ttyS0 ROOT=/dev/sda USERS=/dev/sdb'
+  '-append',  'ROOT=/dev/sda USERS=/dev/sdb LANG=es_ES.UTF-8 vga=0x318'  // 1024x768x24
 ]
+
+if(nographic)
+{
+  args[args.length-1] += ' console=ttyS0'
+  args.push('-nographic')
+}
 
 spawn(command, args, {stdio: 'inherit'})
 .on('error', function(error)

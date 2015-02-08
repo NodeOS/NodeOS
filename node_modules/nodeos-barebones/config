@@ -77,6 +77,15 @@ CONFIG_X86_PKG_TEMP_THERMAL=n  # m
 
 
 #
+# Frame buffer hardware drivers
+#
+
+#CONFIG_FB_CIRRUS=y  # n
+CONFIG_FB_VESA=y    # n
+CONFIG_FB_EFI=n     # y
+
+
+#
 # File systems
 #
 

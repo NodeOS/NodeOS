@@ -29,7 +29,7 @@ if [[ -d $ROOT ]]; then
   chmod -R u+w $ROOT &&
   rm    -rf    $ROOT || exit 300
 fi
-mkdir -p $HOME               || exit 301
+mkdir -p $HOME            || exit 301
 mkdir -p $OBJECTS/workdir || exit 302
 
 
@@ -39,6 +39,9 @@ mkdir -p $OBJECTS/workdir || exit 302
 
 mkdir -p $ROOT/etc              &&
 cp    -f resolv.conf $ROOT/etc/ || exit 320
+
+mkdir -p $ROOT/usr/share/terminfo/l &&
+cp /usr/share/terminfo/l/linux-vt $ROOT/usr/share/terminfo/l/linux
 
 
 #
@@ -74,6 +77,7 @@ cp forever-starter.json $HOME/etc/ || exit 340
 
 # Set rootfs files ONLY executable
 chmod -R u-w,go-rw "$ROOT" || exit 350
+chmod go+r "$ROOT/usr/share/terminfo/l/linux" || exit 350
 
 case $PLATFORM in
   docker)
