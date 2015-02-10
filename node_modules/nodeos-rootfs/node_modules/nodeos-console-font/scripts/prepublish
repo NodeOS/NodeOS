@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+DEPS=`pwd`/deps
+
+
+SIZE=512
+PSF=NodeOS-console-font_8x16.psfu
+
+REQUIRED_SET=/usr/share/bdf2psf/required.set
+USEFUL_SET=/usr/share/bdf2psf/useful.set
+
+
+# Dependencies versions
+
+UNIFONT_VERSION=7.0.06
+
+
+# Dependencies URLs
+
+UNIFONT_URL=http://unifoundry.com/pub/unifont-$UNIFONT_VERSION/font-builds/unifont-$UNIFONT_VERSION.bdf.gz
+
+#
+# Unifont
+#
+
+OBJ_DIR=obj
+UNIFONT=$DEPS/unifont.bdf
+if [[ ! -d $UNIFONT ]]; then
+  mkdir -p `dirname $UNIFONT`              &&
+  curl -L $UNIFONT_URL | gunzip > $UNIFONT || exit 10
+
+  BRAILLE_CLEAR=$OBJ_DIR/braille-clear.bdf
+
+  BDF="$BRAILLE_CLEAR+$UNIFONT"
+  EQUIVALENTS="/usr/share/bdf2psf/standard.equivalents+NodeOS.equivalents"
+  SYMBOLS="$REQUIRED_SET+braille.set+NodeOS.set+:$USEFUL_SET"
+
+  # Generate braille glyphs
+  mkdir -p $OBJ_DIR
+  bin/hexbraille | hex2bdf > $BRAILLE_CLEAR
+
+  # Generate screen font
+  bdf2psf $BDF $EQUIVALENTS $SYMBOLS $SIZE $PSF
+  gzip $PSF
+fi
