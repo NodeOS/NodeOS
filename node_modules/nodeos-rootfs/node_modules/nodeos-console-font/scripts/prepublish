@@ -38,6 +38,7 @@ if [[ ! -d $UNIFONT ]]; then
   # Generate braille glyphs
   mkdir -p $OBJ_DIR
   bin/hexbraille | hex2bdf > $BRAILLE_CLEAR
+  bin/brailleset > braille.set
 
   # Generate screen font
   bdf2psf $BDF $EQUIVALENTS $SYMBOLS $SIZE $PSF
