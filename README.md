@@ -46,20 +46,20 @@ single application.
 # Build NodeOS for QEmu from scratch in three steps
 
 1. Download the project source code and build NodeOS for QEmu
+   Requires genext2fs. Install with `sudo apt-get install genext2fs`
 
     ```bash
     git clone git@github.com:NodeOS/NodeOS.git
     cd NodeOS
-    PLATFORM=qemu ./build
+    PLATFORM=qemu_32 npm install
     ```
 
 2. Pick some microwave pop-corn and go to see a movie. No, really, do it.
 3. Exec your fresh compiled NodeOS image
 
     ```bash
-    qemu-system-i386 --kernel barebones/bzImage --initrd initramfs/initramfs.cpio.gz -hda rootfs/rootfs.img -hdb usersfs/usersfs.img -enable-kvm -nographic -append "console=ttyS0 ROOT=/dev/sda USERS=/dev/sdb"
+    npm start
     ```
-
 
 # NodeOS on Docker
 
