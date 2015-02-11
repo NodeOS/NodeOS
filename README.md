@@ -54,6 +54,7 @@ Requires genext2fs. Install with `sudo apt-get install genext2fs`
     cd NodeOS
     PLATFORM=qemu_32 npm install
     ```
+To build for 64 bits, use `PLATFORM=qemu_64 npm install`
 
 2. Pick some microwave pop-corn and go to see a movie. No, really, do it.
 3. Exec your fresh compiled NodeOS image
