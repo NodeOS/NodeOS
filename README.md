@@ -45,8 +45,9 @@ single application.
 
 # Build NodeOS for QEmu from scratch in three steps
 
-1. Download the project source code and build NodeOS for QEmu
-   Requires genext2fs. Install with `sudo apt-get install genext2fs`
+Requires genext2fs. Install with `sudo apt-get install genext2fs`
+
+1. Download the project source code and build NodeOS for QEmu.
 
     ```bash
     git clone git@github.com:NodeOS/NodeOS.git
