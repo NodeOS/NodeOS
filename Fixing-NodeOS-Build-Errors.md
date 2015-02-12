@@ -1,6 +1,7 @@
+
 > scripts/install: line 93: genext2fs: command not found
 
-You need to install genext2fs.
+You need to install genext2fs: `sudo apt-get install genext2fs`
 
 > cannnot find a C compiler
 
@@ -19,7 +20,5 @@ Try
 sudo apt-get update      
 sudo apt-get dist-upgrade
 ```
-
-> 
 
 If you have any other errors when building NodeOS, check if there is an issue for the error.  If there isn't please create [a new issue](https://github.com/NodeOS/NodeOS/issues/new).
