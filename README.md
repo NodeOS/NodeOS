@@ -63,7 +63,7 @@ To build for 64 bits, use `PLATFORM=qemu_64 npm install`
     npm start
     ```
     
-+If you have an error when building or running NodeOS, take a look at [this page](https://github.com/NodeOS/NodeOS/wiki/Fixing-NodeOS-Build-Errors)
+If you encounter an error when building NodeOS, take a look at [this page](https://github.com/NodeOS/NodeOS/wiki/Fixing-NodeOS-Build-Errors)
 
 # NodeOS on Docker
 
