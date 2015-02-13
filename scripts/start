@@ -61,7 +61,6 @@ try
   throw(e);
 }
 
-console.log(kvm.test(contents));
 if(kvm.test(contents) === false)
 {
   // disable kvm
