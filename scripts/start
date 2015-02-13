@@ -2,7 +2,7 @@
 
 var readlinkSync = require('fs').readlinkSync
 var spawn        = require('child_process').spawn
-
+var exec         = require('child_process').exec
 
 var nographic = false
 
@@ -50,8 +50,19 @@ if(nographic)
   args.push('-nographic')
 }
 
-spawn(command, args, {stdio: 'inherit'})
-.on('error', function(error)
-{
-  console.trace(error)
-})
+// check for kvm before starting
+exec("egrep -c '(vmx|svm)' /proc/cpuinfo", function(err, stdout){
+  stdout = stdout.trim();
+  
+  if(stdout === "0")
+  {
+  // disable kvm
+    console.log("Your computer does not support kvm. NodeOS will be much slower without it.");
+    args.shift();
+  }
+  spawn(command, args, {stdio: 'inherit'})
+  .on('error', function(error)
+  {
+    console.trace(error);
+  })
+});
