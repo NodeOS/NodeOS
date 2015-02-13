@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 
-var readlinkSync = require('fs').readlinkSync
-var spawn        = require('child_process').spawn
-var exec         = require('child_process').exec
-var fs           = require('fs');
+var fs = require('fs');
+
+var spawn = require('child_process').spawn
+
+
 var nographic = false
 
 
-var cpu = readlinkSync('node_modules/nodeos-barebones/bzImage').split('/');
+var cpu = fs.readlinkSync('node_modules/nodeos-barebones/bzImage').split('/');
 
 var cpu_family;
 switch(cpu[cpu.length-2])
