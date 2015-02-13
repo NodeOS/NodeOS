@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+
+function toHex(c)
+{
+  return ("0"+(c.toString(16))).slice(-2)
+}
+
+
+for(var c = 0; c < 256; ++c)
+  console.log("U+28"+toHex(c));

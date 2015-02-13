@@ -4,7 +4,8 @@
   "description": "Console font based on Unifont with a lot of graphic characters",
   "main": "NodeOS-console-font_8x16.psfu",
   "scripts": {
-    "prepublish": "scripts/prepublish",
+    "preinstall": "scripts/preinstall",
+    "install": "scripts/prepublish",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
