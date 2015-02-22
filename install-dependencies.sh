@@ -5,6 +5,9 @@
 # The dependencies of one level would be also needed for the next ones
 #
 
+# cross-compiler
+sudo apt-get install -qq -y texinfo
+
 # barebones
 sudo apt-get install -qq -y bc qemu-system
 
