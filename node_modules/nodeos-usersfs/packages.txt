@@ -5,6 +5,6 @@ bin-nsh
 bin-man
 bin-fs
 bin-pwd
-netlovers/node-bin-ifconfig
+#netlovers/node-bin-ifconfig
 blessed
 blessed-contrib

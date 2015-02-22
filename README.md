@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/NodeOS/NodeOS.svg?branch=master)](https://travis-ci.org/NodeOS/NodeOS)
+[![Build Status](https://semaphoreapp.com/api/v1/projects/71d72807-779a-40d3-a8d4-523cd0a52eb3/356164/shields_badge.svg)](https://semaphoreapp.com/nodeos/nodeos)
 [![Stories in Ready](https://badge.waffle.io/NodeOS/NodeOS.png?label=ready&title=Ready)](https://waffle.io/NodeOS/NodeOS)
 # NodeOS
 
@@ -62,7 +62,7 @@ To build for 64 bits, use `PLATFORM=qemu_64 npm install`
     ```bash
     npm start
     ```
-    
+
 If you encounter an error when building NodeOS, take a look at [this page](https://github.com/NodeOS/NodeOS/wiki/Fixing-NodeOS-Build-Errors)
 
 # NodeOS on Docker
