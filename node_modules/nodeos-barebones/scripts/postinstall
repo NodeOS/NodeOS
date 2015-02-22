@@ -7,7 +7,9 @@ CLR="\e[0m"
 # Check basic functions (boot and Node.js REPL) works as expected
 #
 
-#scripts/test || exit $?
+npm install NodeOS/node-suppose#patch-1
+
+scripts/test || exit $?
 
 
 echo -e "${GRN}Successfully built barebones${CLR}"
