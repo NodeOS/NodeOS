@@ -64,6 +64,14 @@ cp env.js $OBJECTS/usr/bin/env || exit 220
 
 
 #
+# /etc/filesystems
+#
+
+mkdir -p  $OBJECTS/etc                      &&
+cp filesystems.txt $OBJECTS/etc/filesystems || exit 221
+
+
+#
 # Wrap the system up and pack it
 #
 
