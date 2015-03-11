@@ -6,14 +6,14 @@
 #
 
 # cross-compiler
-sudo apt-get install -qq -y texinfo
+apt-get install -qq -y texinfo
 
 # barebones
-sudo apt-get install -qq -y bc qemu-system
+apt-get install -qq -y bc qemu-system
 
 # initramfs
-sudo apt-get install -qq -y nodejs-legacy
+apt-get install -qq -y nodejs-legacy
 
 # rootfs
-sudo apt-get install -qq -y genext2fs grub-pc-bin ncurses-term
-sudo apt-get install -qq -y bdf2psf unifont-bin
+apt-get install -qq -y genext2fs grub-pc-bin ncurses-term
+apt-get install -qq -y bdf2psf unifont-bin
