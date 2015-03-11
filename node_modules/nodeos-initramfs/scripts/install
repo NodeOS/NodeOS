@@ -51,8 +51,8 @@ $NODE_DIR/deps/npm/cli.js       \
 
 ln -fs bin/century $OBJECTS/init || exit 211
 
-mkdir -p $OBJECTS/sbin                               &&
-ln -fs ../bin/nodeos-mount-rootfs $OBJECTS/sbin/init || exit 212
+mkdir -p $OBJECTS/sbin                                    &&
+ln -fs ../bin/nodeos-mount-filesystems $OBJECTS/sbin/init || exit 212
 
 
 #
@@ -61,14 +61,6 @@ ln -fs ../bin/nodeos-mount-rootfs $OBJECTS/sbin/init || exit 212
 
 mkdir -p  $OBJECTS/usr/bin     &&
 cp env.js $OBJECTS/usr/bin/env || exit 220
-
-
-#
-# /etc/filesystems
-#
-
-mkdir -p  $OBJECTS/etc                      &&
-cp filesystems.txt $OBJECTS/etc/filesystems || exit 221
 
 
 #

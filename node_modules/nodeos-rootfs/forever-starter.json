@@ -1,8 +1,0 @@
-[
-  {
-    "command": "/root/bin/getty",
-    "args": ["/root/bin/logon"],
-    "minUptime": 2000,
-    "enabled": true
-  }
-]

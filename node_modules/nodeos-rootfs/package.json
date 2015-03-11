@@ -10,12 +10,5 @@
   "license": "MIT",
   "peerDependencies": {
     "nodeos-initramfs": "^0.0.0"
-  },
-  "dependencies": {
-    "forever-monitor": "piranna/forever-monitor",
-    "forever": "piranna/forever#starter",
-    "node-bin-getty": "netlovers/node-bin-getty",
-    "nodeos-mount-usersfs": "*",
-    "logon": "*"
   }
 }

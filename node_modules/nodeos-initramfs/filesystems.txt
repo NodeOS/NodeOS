@@ -1,9 +1,0 @@
-# Define prefered filesystem detection order
-
-ext4
-ext3
-ext2
-
-# If last line is a single asterisk (*),
-# continue checking using /proc/filesystems
-*

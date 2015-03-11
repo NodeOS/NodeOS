@@ -22,53 +22,23 @@ source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
 if [[ -z "$name" ]]; then name=rootfs; fi
 
 
-ROOT=$OBJECTS/rootfs
-HOME=$ROOT/root
-
-if [[ -d $ROOT ]]; then
-  chmod -R u+w $ROOT &&
-  rm    -rf    $ROOT || exit 300
+if [[ -d $OBJECTS ]]; then
+  chmod -R u+w $OBJECTS &&
+  rm    -rf    $OBJECTS || exit 300
 fi
-mkdir -p $HOME            || exit 301
-mkdir -p $OBJECTS/workdir || exit 302
+mkdir -p $OBJECTS || exit 301
 
 
 #
-# Use a well-known DNS server for now, we do not yet support DHCP
+# Well-known DNS server (we do not yet support DHCP)
+# VT-100 terminfo
 #
 
-mkdir -p $ROOT/etc              &&
-cp    -f resolv.conf $ROOT/etc/ || exit 320
+mkdir -p $OBJECTS/etc              &&
+cp    -f resolv.conf $OBJECTS/etc/ || exit 320
 
-mkdir -p $ROOT/usr/share/terminfo/l &&
-cp /usr/share/terminfo/l/linux-vt $ROOT/usr/share/terminfo/l/linux
-
-
-#
-# Install system dependencies
-#
-
-CC=$TARGET-gcc                  \
-CXX=$TARGET-g++                 \
-npm_config_prefix=$HOME         \
-$NODE_DIR/deps/npm/cli.js       \
-    install -g                  \
-    --loglevel warn             \
-    --arch=$NODE_ARCH           \
-    --nodedir=$NODE_DIR         \
-    --jobs=$JOBS                \
-    `grep -v "^#" packages.txt` || exit 330
-
-ln -sf bin/nodeos-mount-usersfs $HOME/init || exit 331
-ln -sf root/init                $ROOT/init || exit 332
-
-
-#
-# Services to be started at boot
-#
-
-mkdir -p $HOME/etc                 &&
-cp forever-starter.json $HOME/etc/ || exit 340
+mkdir -p $OBJECTS/usr/share/terminfo/l &&
+cp /usr/share/terminfo/l/linux-vt $OBJECTS/usr/share/terminfo/l/linux
 
 
 #
@@ -76,8 +46,8 @@ cp forever-starter.json $HOME/etc/ || exit 340
 #
 
 # Set rootfs files ONLY executable
-chmod -R u-w,go-rw "$ROOT" || exit 350
-chmod go+r "$ROOT/usr/share/terminfo/l/linux" || exit 350
+chmod -R u-w,go-rw "$OBJECTS" || exit 350
+chmod go+r "$OBJECTS/usr/share/terminfo/l/linux" || exit 350
 
 case $PLATFORM in
   docker)
@@ -96,7 +66,6 @@ case $PLATFORM in
     mkdir -p `dirname $OUT_DIR`
     genext2fs -b $DISK_SIZE     \
         --root $OBJECTS         \
-        --bytes-per-inode 8192  \
         --reserved-percentage 0 \
         --squash-uids $OUT_DIR  || exit 352
 

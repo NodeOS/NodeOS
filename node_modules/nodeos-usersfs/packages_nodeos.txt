@@ -8,3 +8,4 @@ bin-pwd
 #netlovers/node-bin-ifconfig
 blessed
 blessed-contrib
+slap

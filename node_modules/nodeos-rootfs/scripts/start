@@ -36,7 +36,7 @@ var args =
   '--kernel', '../nodeos-barebones/bzImage',
   '--initrd', '../nodeos-initramfs/initramfs.cpio.gz',
   '-hda',     'rootfs.img',
-  '-append',  'console=ttyS0 ROOT=/dev/sda'
+  '-append',  'console=ttyS0 root=/dev/sda'
 ]
 
 spawn(command, args, {stdio: 'inherit'})

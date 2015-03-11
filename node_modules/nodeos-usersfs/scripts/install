@@ -18,10 +18,60 @@ source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
 if [[ -z "$name" ]]; then name=usersfs; fi
 
 
+if [[ -d $OBJECTS ]]; then
+  chmod -R u+w $OBJECTS &&
+  rm    -rf    $OBJECTS || exit 300
+fi
+mkdir -p $OBJECTS/.workdirs || exit 301
+
+
+#
+# root home
+#
+
+HOME=$OBJECTS/root
+
+mkdir -p $HOME || exit 301
+
+
+#
+# Install system dependencies
+#
+
+CC=$TARGET-gcc                  \
+CXX=$TARGET-g++                 \
+npm_config_prefix=$HOME         \
+$NODE_DIR/deps/npm/cli.js       \
+    install -g                  \
+    --loglevel warn             \
+    --arch=$NODE_ARCH           \
+    --nodedir=$NODE_DIR         \
+    --jobs=$JOBS                \
+    `grep -v "^#" packages_root.txt` || exit 330
+
+
+#
+# Services to be started at boot
+#
+
+mkdir -p $HOME/etc                 &&
+cp forever-starter.json $HOME/etc/ || exit 340
+
+
+#
+# Init file for the user
+#
+
+ln -sf bin/forever-starter $HOME/init || exit 420
+
+
+#
+# nodeos home
+#
+
 HOME=$OBJECTS/nodeos
 
-rm   -rf $OBJECTS &&
-mkdir -p $HOME    || exit 400
+mkdir -p $HOME || exit 400
 
 
 #
@@ -37,7 +87,7 @@ $NODE_DIR/deps/npm/cli.js       \
     --arch=$NODE_ARCH           \
     --nodedir=$NODE_DIR         \
     --jobs=$JOBS                \
-    `grep -v "^#" packages.txt` || exit 410
+    `grep -v "^#" packages_nodeos.txt` || exit 410
 
 
 #
@@ -65,11 +115,12 @@ case $PLATFORM in
     docker build -t $name . || exit 441
   ;;
   pc_qemu | pc_image | raspberry_qemu | raspberry_image)
-    DISK_SIZE=32  # Size in MB
+    DISK_SIZE=64  # Size in MB
 
     mkdir -p `dirname $OUT_DIR`
     genext2fs -b $((DISK_SIZE*1024)) --root $OBJECTS --bytes-per-inode 8192 \
-      --reserved-percentage 0 --squash-perms $OUT_DIR || exit 442
+      --reserved-percentage 0 --squash $OUT_DIR || exit 442
+#      --reserved-percentage 0 --squash-perms $OUT_DIR || exit 442
       ln -sfv $OUT_DIR $name.img                      || exit 28
   ;;
 esac

@@ -5,7 +5,7 @@ var fs = require('fs');
 var spawn = require('child_process').spawn
 
 
-var nographic = false
+var nographic = true
 
 
 var cpu = fs.readlinkSync('node_modules/nodeos-barebones/bzImage').split('/');
@@ -42,7 +42,7 @@ var args =
   '--initrd', 'node_modules/nodeos-initramfs/initramfs.cpio.gz',
   '-hda',     'node_modules/nodeos-rootfs/rootfs.img',
   '-hdb',     'node_modules/nodeos-usersfs/usersfs.img',
-  '-append',  'ROOT=/dev/sda USERS=/dev/sdb LANG=es_ES.UTF-8 vga=0x318'  // 1024x768x24
+  '-append',  'root=/dev/sda users=/dev/sdb LANG=es_ES.UTF-8 vga=0x318'  // 1024x768x24
 ]
 
 var kvm = /(vmx|svm)/;
