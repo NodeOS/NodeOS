@@ -16,4 +16,3 @@ apt-get install -qq -y nodejs-legacy
 
 # rootfs
 apt-get install -qq -y genext2fs grub-pc-bin ncurses-term
-apt-get install -qq -y bdf2psf unifont-bin
