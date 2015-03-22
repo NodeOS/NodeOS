@@ -24,37 +24,34 @@ if [[ -z "$name" ]]; then name=rootfs; fi
 
 if [[ -d $OBJECTS ]]; then
   chmod -R u+w $OBJECTS &&
-  rm    -rf    $OBJECTS || exit 300
+  rm    -rf    $OBJECTS || exit 10
 fi
-mkdir -p $OBJECTS || exit 301
-
-
-#
-# Well-known DNS server (we do not yet support DHCP)
-# VT-100 terminfo
-#
-
-mkdir -p $OBJECTS/etc              &&
-cp    -f resolv.conf $OBJECTS/etc/ || exit 320
-
-mkdir -p $OBJECTS/usr/share/terminfo/l &&
-cp /usr/share/terminfo/l/linux-vt $OBJECTS/usr/share/terminfo/l/linux
+mkdir -p $OBJECTS || exit 11
 
 
 #
 # Wrap the system up and pack it
 #
 
-# Set rootfs files ONLY executable
-chmod -R u-w,go-rw "$OBJECTS" || exit 350
-chmod go+r "$OBJECTS/usr/share/terminfo/l/linux" || exit 350
-
 case $PLATFORM in
   docker)
-    docker build -t $name . || exit 351
+    docker build -t $name . || exit 20
   ;;
 
-  pc_qemu | raspberry_qemu | raspberry_image)
+  raspberry_image)
+    # genfatfs
+
+    GENFATFS=deps/genfatfs/genfatfs
+
+    if [[ ! -f $GENFATFS ]]; then
+      git clone git@github.com:NodeOS/genfatfs.git `dirname $GENFATFS` || exit 21
+      (
+        cd `dirname $GENFATFS` &&
+        $MAKE                  || exit 22
+      ) || exit $?
+    fi
+
+
     # Create the disk image
 
     OUT_DIR=$OUT_DIR/qemu
@@ -64,30 +61,29 @@ case $PLATFORM in
     DISK_SIZE=$((32*1024))
 
     mkdir -p `dirname $OUT_DIR`
-    genext2fs -b $DISK_SIZE     \
-        --root $OBJECTS         \
-        --reserved-percentage 0 \
-        --squash-uids $OUT_DIR  || exit 352
+    $GENFATFS -b $DISK_SIZE \
+        --root $OBJECTS     \
+        $OUT_DIR            || exit 23
 
-    ln -sfv $OUT_DIR $name.img || exit 353
+    ln -sfv $OUT_DIR $name.img || exit 24
   ;;
 
   pc_image)
     # Copy kernel and initramfs on the disk image
 
     mkdir -p    $OBJECTS/boot/grub &&
-    cp grub.cfg $OBJECTS/boot/grub || exit 354
+    cp grub.cfg $OBJECTS/boot/grub || exit 25
 
     cp $BAREBONES/bzImage           $OBJECTS/boot/bzImage           &&
-    cp $INITRAMFS/initramfs.cpio.gz $OBJECTS/boot/initramfs.cpio.gz || exit 355
+    cp $INITRAMFS/initramfs.cpio.gz $OBJECTS/boot/initramfs.cpio.gz || exit 26
 
     # Create the disk image
 
     OUT_DIR=$OUT_DIR/image
 
     mkdir -p `dirname $OUT_DIR`
-    grub-mkrescue /usr/lib/grub/i386-pc -o $OUT_DIR $OBJECTS || exit 356
-    ln -sfv $OUT_DIR $name.img                               || exit 357
+    grub-mkrescue /usr/lib/grub/i386-pc -o $OUT_DIR $OBJECTS || exit 27
+    ln -sfv $OUT_DIR $name.img                               || exit 28
   ;;
 esac
 

@@ -1,3 +1,4 @@
 rootfs.img
+deps/
 obj/
 out/

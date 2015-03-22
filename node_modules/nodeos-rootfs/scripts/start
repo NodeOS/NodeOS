@@ -33,14 +33,9 @@ var args =
 [
   '-enable-kvm',
   '-nographic',
-  '--kernel', '../nodeos-barebones/bzImage',
-  '--initrd', '../nodeos-initramfs/initramfs.cpio.gz',
-  '-hda',     'rootfs.img',
-  '-append',  'console=ttyS0 root=/dev/sda'
+  '-hda',    'rootfs.img',
+  '-append', 'console=ttyS0'
 ]
 
 spawn(command, args, {stdio: 'inherit'})
-.on('error', function(error)
-{
-  console.trace(error)
-})
+.on('error', console.trace.bind(console))

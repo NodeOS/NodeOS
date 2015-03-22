@@ -20,9 +20,8 @@ if [[ -z "$name" ]]; then name=usersfs; fi
 
 if [[ -d $OBJECTS ]]; then
   chmod -R u+w $OBJECTS &&
-  rm    -rf    $OBJECTS || exit 300
+  rm    -rf    $OBJECTS || exit 10
 fi
-mkdir -p $OBJECTS/.workdirs || exit 301
 
 
 #
@@ -31,7 +30,7 @@ mkdir -p $OBJECTS/.workdirs || exit 301
 
 HOME=$OBJECTS/root
 
-mkdir -p $HOME || exit 301
+mkdir -p $HOME || exit 20
 
 
 #
@@ -47,7 +46,7 @@ $NODE_DIR/deps/npm/cli.js       \
     --arch=$NODE_ARCH           \
     --nodedir=$NODE_DIR         \
     --jobs=$JOBS                \
-    `grep -v "^#" packages_root.txt` || exit 330
+    `grep -v "^#" packages_root.txt` || exit 21
 
 
 #
@@ -55,14 +54,14 @@ $NODE_DIR/deps/npm/cli.js       \
 #
 
 mkdir -p $HOME/etc                 &&
-cp forever-starter.json $HOME/etc/ || exit 340
+cp forever-starter.json $HOME/etc/ || exit 22
 
 
 #
 # Init file for the user
 #
 
-ln -sf bin/forever-starter $HOME/init || exit 420
+ln -sf bin/forever-starter $HOME/init || exit 23
 
 
 #
@@ -71,7 +70,7 @@ ln -sf bin/forever-starter $HOME/init || exit 420
 
 HOME=$OBJECTS/nodeos
 
-mkdir -p $HOME || exit 400
+mkdir -p $HOME || exit 30
 
 
 #
@@ -87,14 +86,14 @@ $NODE_DIR/deps/npm/cli.js       \
     --arch=$NODE_ARCH           \
     --nodedir=$NODE_DIR         \
     --jobs=$JOBS                \
-    `grep -v "^#" packages_nodeos.txt` || exit 410
+    `grep -v "^#" packages_nodeos.txt` || exit 31
 
 
 #
 # Dummy init file for the user
 #
 
-cp init.js $HOME/init || exit 420
+cp init.js $HOME/init || exit 32
 
 
 #
@@ -102,7 +101,7 @@ cp init.js $HOME/init || exit 420
 #
 
 mkdir -p $HOME/etc       &&
-cp logon.json $HOME/etc/ || exit 430
+cp logon.json $HOME/etc/ || exit 33
 
 
 #
@@ -112,16 +111,16 @@ cp logon.json $HOME/etc/ || exit 430
 case $PLATFORM in
   docker)
     chmod -R go= "$HOME"    &&
-    docker build -t $name . || exit 441
+    docker build -t $name . || exit 40
   ;;
   pc_qemu | pc_image | raspberry_qemu | raspberry_image)
     DISK_SIZE=64  # Size in MB
 
     mkdir -p `dirname $OUT_DIR`
     genext2fs -b $((DISK_SIZE*1024)) --root $OBJECTS --bytes-per-inode 8192 \
-      --reserved-percentage 0 --squash $OUT_DIR || exit 442
-#      --reserved-percentage 0 --squash-perms $OUT_DIR || exit 442
-      ln -sfv $OUT_DIR $name.img                      || exit 28
+      --reserved-percentage 0 --squash $OUT_DIR || exit 41
+#      --reserved-percentage 0 --squash-perms $OUT_DIR || exit 41
+    ln -sfv $OUT_DIR $name.img                      || exit 42
   ;;
 esac
 

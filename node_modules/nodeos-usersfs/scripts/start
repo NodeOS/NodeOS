@@ -33,15 +33,10 @@ var args =
 [
   '-enable-kvm',
   '-nographic',
-  '--kernel', '../nodeos-barebones/bzImage',
-  '--initrd', '../nodeos-initramfs/initramfs.cpio.gz',
-  '-hda',     '../nodeos-rootfs/rootfs.img',
-  '-hdb',     'usersfs.img',
-  '-append',  'console=ttyS0 root=/dev/sda users=/dev/sdb'
+  '-hda',    '../nodeos-rootfs/rootfs.img',
+  '-hdb',    'usersfs.img',
+  '-append', 'console=ttyS0 users=/dev/sdb'
 ]
 
 spawn(command, args, {stdio: 'inherit'})
-.on('error', function(error)
-{
-  console.trace(error)
-})
+.on('error', console.trace.bind(console))

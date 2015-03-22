@@ -40,9 +40,8 @@ var args =
                 // Maybe it's related to the clean-up of kernel configuration
   '--kernel', 'node_modules/nodeos-barebones/bzImage',
   '--initrd', 'node_modules/nodeos-initramfs/initramfs.cpio.gz',
-  '-hda',     'node_modules/nodeos-rootfs/rootfs.img',
-  '-hdb',     'node_modules/nodeos-usersfs/usersfs.img',
-  '-append',  'root=/dev/sda users=/dev/sdb LANG=es_ES.UTF-8 vga=0x318'  // 1024x768x24
+  '-hda',     'node_modules/nodeos-usersfs/usersfs.img',
+  '-append',  'users=/dev/sda LANG=es_ES.UTF-8 vga=0x318'  // 1024x768x24
 ]
 
 var kvm = /(vmx|svm)/;
@@ -70,7 +69,4 @@ if(kvm.test(contents) === false)
 }
 
 spawn(command, args, {stdio: 'inherit'})
-.on('error', function(error)
-{
-  console.trace(error);
-});
+.on('error', console.trace.bind(console));
