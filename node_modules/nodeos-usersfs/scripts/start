@@ -35,7 +35,7 @@ var args =
   '-nographic',
   '-hda',    '../nodeos-rootfs/rootfs.img',
   '-hdb',    'usersfs.img',
-  '-append', 'console=ttyS0 users=/dev/sdb'
+  '-append', 'console=ttyS0 root=/dev/sdb'
 ]
 
 spawn(command, args, {stdio: 'inherit'})

@@ -41,7 +41,7 @@ var args =
   '--kernel', 'node_modules/nodeos-barebones/bzImage',
   '--initrd', 'node_modules/nodeos-initramfs/initramfs.cpio.gz',
   '-hda',     'node_modules/nodeos-usersfs/usersfs.img',
-  '-append',  'users=/dev/sda LANG=es_ES.UTF-8 vga=0x318'  // 1024x768x24
+  '-append',  'root=/dev/sda LANG=es_ES.UTF-8 vga=0x318'  // 1024x768x24
 ]
 
 var kvm = /(vmx|svm)/;
