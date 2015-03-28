@@ -44,9 +44,6 @@ var args =
   '-append',  'root=/dev/sda LANG=es_ES.UTF-8 vga=0x318'  // 1024x768x24
 ]
 
-var kvm = /(vmx|svm)/;
-var contents = "";
-
 if(nographic)
 {
   args[args.length-1] += ' console=ttyS0'
@@ -54,6 +51,9 @@ if(nographic)
 }
 
 // check if kvm is supported
+var kvm = /(vmx|svm)/;
+var contents = "";
+
 try
 {
   contents = fs.readFileSync('/proc/cpuinfo');

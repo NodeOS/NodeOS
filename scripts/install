@@ -9,13 +9,9 @@ WHT="\e[37m"
 CLR="\e[0m"
 
 
-if [[ -z "$PLATFORM" ]]; then PLATFORM=docker; fi
+TOOLCHAIN=`pwd`/node_modules/nodeos-barebones/node_modules/nodeos-cross-toolchain
 
-
-function err(){
-  echo -e "${RED}Error Building Image${CLR}"
-  exit $1
-}
+source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
 
 
 case $PLATFORM in

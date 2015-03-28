@@ -4,10 +4,13 @@ var readlinkSync = require('fs').readlinkSync
 var spawn        = require('child_process').spawn
 
 
+var nographic = false
+
+
 var cpu = readlinkSync('usersfs.img').split('/');
 
 var cpu_family;
-switch(cpu[cpu.length-2])
+switch(cpu[cpu.length-1])
 {
   case 'armv6':
     cpu_family = 'arm'
@@ -32,11 +35,11 @@ var command = 'qemu-system-'+cpu_family
 var args =
 [
   '-enable-kvm',
-  '-nographic',
   '-hda',    '../nodeos-rootfs/rootfs.img',
-  '-hdb',    'usersfs.img',
-  '-append', 'console=ttyS0 root=/dev/sdb'
+  '-hdb',    'usersfs.img'
 ]
+
+if(nographic) args.push('-nographic')
 
 spawn(command, args, {stdio: 'inherit'})
 .on('error', console.trace.bind(console))

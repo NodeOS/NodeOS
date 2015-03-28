@@ -117,10 +117,16 @@ case $PLATFORM in
     DISK_SIZE=64  # Size in MB
 
     mkdir -p `dirname $OUT_DIR`
-    genext2fs -b $((DISK_SIZE*1024)) --root $OBJECTS --bytes-per-inode 8192 \
-      --reserved-percentage 0 --squash $OUT_DIR || exit 41
-#      --reserved-percentage 0 --squash-perms $OUT_DIR || exit 41
-    ln -sfv $OUT_DIR $name.img                      || exit 42
+
+    genext2fs -b $((DISK_SIZE*1024)) \
+        --root $OBJECTS              \
+        --bytes-per-inode 8192       \
+        --reserved-percentage 0      \
+        --squash $OUT_DIR            || exit 41
+
+#    scripts/debugfs.chownr $OUT_DIR 1 nodeos
+
+    ln -sfv $OUT_DIR $name.img || exit 42
   ;;
 esac
 
