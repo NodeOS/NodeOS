@@ -28,6 +28,15 @@ switch(cpu[cpu.length-2])
   break
 }
 
+var exe
+var timeout = setTimeout(function()
+{
+  exe.kill()
+
+  console.error('Timeout while waiting an answer')
+  process.exit(-1)
+}, 15*1000)
+
 var command = 'qemu-system-'+cpu_family
 
 var args =
@@ -38,7 +47,7 @@ var args =
   '-append',  'console=ttyS0'
 ]
 
-suppose(command, args)
+exe = suppose(command, args)
   .on(/> /).respond('setTimeout(console.log, 2000, "this is","a test")\n')
   .on(/this is a test/, function(exe)
   {
@@ -51,6 +60,8 @@ suppose(command, args)
   })
   .end(function()
   {
-    if(this.expects.length)
-      process.exit(1)
+    clearTimeout(timeout)
+
+    var expects = this.expects.length
+    if(expects) process.exit(expects)
   })
