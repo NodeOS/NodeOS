@@ -1,11 +1,18 @@
 # NodeOS usersfs
 
-The included script creates a disk image with a basic user with some
-pre-installed packages and npm. To fill the disk image without ```sudo``` it's
-needed to use genext2fs. You can install them on Ubuntu by executing:
+This package generates a read-write users filesystem for NodeOS for demo
+purposses. It has a *root* user (used to initialize some sub-systems) and a
+logable *nodeos* user with some basic pre-installed packages like a shell
+([nsh](https://github.com/groundwater/node-bin-nsh)) and some basic tools and
+demo commands. You can login using password *nodeos*.
 
-```sh
-  sudo apt-get install genext2fs
-```
+To create you own users filesystem, its structure is just that each folder on
+root directory will be considered a valid user, and each one must have unique
+UIDs & GIDs diferent from the others, being this ones different of zero, and
+ideally set with an umask 0077 (access only to owner).
 
-NodeOS is incredibly lean, leaving most of the system configuration up to the installed packages.
+The system will craft a per-user root filesystem on top of each one of the users
+directories. If there's a (non mandadory) user folder with UID & GID equal to
+zero (normally *root* user), this will be considered specially and will have a
+*home* mount point with the root of the partition, so it can access to the users
+home folders for administrative purposses.

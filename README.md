@@ -62,6 +62,13 @@ or craft a system without global services (no ```root``` user) or also dedicate
 a full NodeOS instance to a single application.
 
 
+# Pre-build images
+
+Ready to use [pre-build images](https://github.com/NodeOS/NodeOS/releases) are
+automatically generated after each commit in master branch that sucessfully
+[pass the tests](https://semaphoreapp.com/nodeos/nodeos). To exec them, you'll
+need to have [QEmu](http://wiki.qemu.org/Main_Page) installed on your system.
+
 # Build NodeOS in three steps
 
 NodeOS require to have first installed some build tools, on a Ubuntu based

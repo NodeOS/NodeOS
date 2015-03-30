@@ -1,8 +1,6 @@
 # NodeOS barebones
 
-The included script download and compile [Node.js](http://nodejs.org)
-
-It can be able to boots to a Node.js [REPL](http://nodejs.org/api/repl.html)
-prompt.
-
-Executables written in Node should always use as *shebang* `#!/usr/bin/env node`
+This package will compile both [Node.js](http://nodejs.org) and
+[Linux kernel](https://www.kernel.org/) using a cross-compiler for the desired
+target. Used alone, it will generate a Linux image that by default will boots to
+a Node.js [REPL](http://nodejs.org/api/repl.html) prompt.

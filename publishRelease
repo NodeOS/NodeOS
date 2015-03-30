@@ -9,13 +9,14 @@ const token = process.env.GITHUB_TOKEN
 if(!token)
   return console.error('GITHUB_TOKEN environment variable is not defined')
 
+const tag = (new Date()).toISOString().substr(0,10)
 
 var opts =
 {
   token: token,
   owner: 'NodeOS',
   repo: 'NodeOS',
-  tag: Date.now().toString(),
+  tag: tag,
   prerelease: true,
   assets:
   [

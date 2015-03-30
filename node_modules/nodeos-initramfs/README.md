@@ -1,9 +1,6 @@
 # NodeOS initramfs
 
-The included script generate a initramfs image that boots a NodeOS rootfs given
-as a ROOT parameter on boot time. If it fails to do so, it boots to a Node.js
-[REPL](http://nodejs.org/api/repl.html) prompt.
-
-Executables written in Node should always use as *shebang* `#!/usr/bin/env node`
-rather than hard-code the executable path to `/usr/local/bin/node` or
-`/usr/bin/node`.
+This package generate a initramfs image that will try to mount the users
+filesystem, set on the *root=* flag on Linux command line. If it fails to do so,
+it boots to a Node.js [REPL](http://nodejs.org/api/repl.html) prompt using an
+on-memory root filesystem.
