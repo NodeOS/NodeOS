@@ -1,7 +1,7 @@
 npm
 bin-ip
 bin-sh
-bin-nsh
+piranna/nsh#patch-1
 bin-man
 bin-fs
 bin-pwd

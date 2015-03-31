@@ -1,16 +1,13 @@
 #!/bin/node
 
-var spawn = require('child_process').spawn
-
-
 var ignoreEnvironment = false
 var endLinesWithNull = false
-var env = {}
+var env = process.env
 
 
 function unset(key)
 {
-  if(!key)
+  if(env[key] == undefined)
   {
     console.error('Unknown environment key:',key)
     process.exit(2)
@@ -61,8 +58,8 @@ for(var arg; arg = argv[0]; argv.shift())
 
 
 // Environment variabless
-if(!ignoreEnvironment)
-  env.__proto__ = process.env
+if(ignoreEnvironment)
+  process.env = env = {}
 
 for(var arg; arg = argv[0]; argv.shift())
 {
@@ -79,12 +76,28 @@ for(var arg; arg = argv[0]; argv.shift())
 var command = argv.shift()
 
 if(command)
+{
+  if(command === 'node')
+  {
+    // We are trying to execute a Node.js script, re-use the current instance.
+    // This require that the Node.js script don't use any execution trick like
+    // checking "!module.parent" or "require.main === module". If you want your
+    // package to work both as a library and an executable, define it in two
+    // diferent scripts and use package.json "main" and "bin" entries.
+    process.argv = [command].concat(argv)
+
+    return require(argv[0])
+  }
+
   // [ToDo] Change for https://github.com/jprichardson/node-kexec
-  spawn(command, argv, {env: env, stdio: 'inherit'}).on('error',function(error)
+  require('child_process')
+  .spawn(command, argv, {stdio: 'inherit'})
+  .on('error',function(error)
   {
     console.error(error)
-    console.error(command, argv, env, process.env)
+    console.error(command, argv, env)
   })
+}
 else
 {
   var endLine = endLinesWithNull ? '\0' : '\n'

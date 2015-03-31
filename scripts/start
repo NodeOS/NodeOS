@@ -36,8 +36,6 @@ var command = 'qemu-system-'+cpu_family
 var args =
 [
   '-enable-kvm',
-  '-m', '256',  // [Hack] x86_64 is giving "FATAL ERROR: Evacuation Allocation failed - process out of memory"
-                // Maybe it's related to the clean-up of kernel configuration
   '--kernel', 'node_modules/nodeos-barebones/bzImage',
   '--initrd', 'node_modules/nodeos-initramfs/initramfs.cpio.gz',
   '-hda',     'node_modules/nodeos-usersfs/usersfs.img',
