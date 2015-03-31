@@ -37,6 +37,7 @@ export PLATFORM
 
 
 if [[ ! -z "$RELEASE" ]]; then
+  OUT_DIR=`pwd`/out/$CPU_FAMILY
   ZIP_FILE=$OUT_DIR-$PLATFORM.zip
 
   mkdir -p `dirname $OUT_DIR`

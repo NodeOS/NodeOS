@@ -22,8 +22,8 @@ var opts =
   [
     'out/i386-pc_image.zip',
     'out/i386-pc_qemu.zip',
-    'out/nocona-pc_image.zip',
-    'out/nocona-pc_qemu.zip'
+    'out/x86_64-pc_image.zip',
+    'out/x86_64-pc_qemu.zip'
   ]
 }
 
