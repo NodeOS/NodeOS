@@ -17,7 +17,13 @@ source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
 
 SRC_DIR=$DEPS/genfatfs
 if [[ ! -d $SRC_DIR ]]; then
-  git clone git@github.com:NodeOS/genfatfs.git $SRC_DIR || exit 21
+  mkdir -p `dirname $SRC_DIR`
+
+  curl -L https://github.com/NodeOS/genfatfs/archive/master.zip > master.zip &&
+  unzip master.zip                                                           &&
+  mv genfatfs-master $SRC_DIR                                                &&
+  rm master.zip                                                              || exit 10
+
   (
     cd $SRC_DIR &&
     $MAKE       || exit 22
