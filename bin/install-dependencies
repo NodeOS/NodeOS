@@ -6,7 +6,17 @@
 #
 
 # Update cache
-apt-get update
+apt-get update -qq
+
+
+# Ubuntu 14.04 LTS has an old version of syslinux (4.05), install the Utopic one
+apt-get install -qq -y mtools
+
+wget -P deps \
+  http://mirrors.kernel.org/ubuntu/pool/main/s/syslinux/syslinux_6.03~pre18+dfsg-1ubuntu1_amd64.deb \
+  http://mirrors.kernel.org/ubuntu/pool/main/s/syslinux/syslinux-common_6.03~pre18+dfsg-1ubuntu1_all.deb
+dpkg -i deps/*.deb
+
 
 # cross-compiler
 apt-get install -qq -y gcc texinfo
