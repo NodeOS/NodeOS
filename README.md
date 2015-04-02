@@ -72,7 +72,7 @@ need to have [QEmu](http://wiki.qemu.org/Main_Page) installed on your system.
 # Build NodeOS in three steps
 
 NodeOS require to have first installed some build tools, on a Ubuntu based
-system you can install them by executing the file ```install-dependencies.sh```.
+system you can install them by executing the file ```bin/install-dependencies```
 
 1. Download the project source code and build NodeOS for QEmu:
 
