@@ -17,7 +17,7 @@ dd if=$IMAGE of=$DEVICE bs=1M || exit 10
 
 # Resize usersfs partition
 
-cat bin/fdisk-resize.txt | fdisk $DEVICE || exit 11
+cat fdisk-resize.txt | fdisk $DEVICE || exit 11
 
 e2fsck -f -y $PARTITION
 resize2fs -p $PARTITION || exit 12
