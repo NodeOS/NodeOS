@@ -9,7 +9,10 @@ WHT="\e[37m"
 CLR="\e[0m"
 
 
-TOOLCHAIN=`pwd`/node_modules/nodeos-barebones/node_modules/nodeos-cross-toolchain
+BAREBONES=`pwd`/node_modules/nodeos-barebones
+INITRAMFS=`pwd`/node_modules/nodeos-initramfs
+
+TOOLCHAIN=$BAREBONES/node_modules/nodeos-cross-toolchain
 
 source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
 
@@ -36,6 +39,50 @@ export PLATFORM
 #(cd node_modules/nodeos-usersfs         name=${NOSN} npm install ) || err $?
 
 
+#
+# Wrap the system up and pack it
+#
+
+# Disk images are a composition of rootfs and usersfs
+function createDiskImage() {
+  mkdir -p `dirname $OBJECTS`
+
+  # ToDo: sizes would need to be on cylinders and retain DOS compatibility
+  # http://elinux.org/RPi_Advanced_Setup#Advanced_SD_card_setup
+
+  ROOTFS=node_modules/nodeos-rootfs/rootfs.img
+  USERSFS=node_modules/nodeos-usersfs/usersfs.img
+
+  SIZE_MBR=$((2*1024))
+  SIZE_ROOTFS=$(stat -L -c%s "$ROOTFS")
+  SIZE_ROOTFS=$(($SIZE_ROOTFS/512))
+  START_USERSFS=$(($SIZE_MBR+$SIZE_ROOTFS))
+
+  dd if=/dev/zero of=$OBJECTS count=$SIZE_MBR &&
+  cat $ROOTFS  >> $OBJECTS                    &&
+  cat $USERSFS >> $OBJECTS                    || exit 10
+
+  eval "echo \"$(< fdisk.txt)\"" | /sbin/fdisk $OBJECTS || exit 11
+}
+
+case $PLATFORM in
+  pc_image)
+    createDiskImage || $?
+
+    # Install SysLinux
+
+    OFFSET=$(($SIZE_MBR*512))
+
+    dd if=/usr/lib/SYSLINUX/mbr.bin of=$OBJECTS conv=notrunc   &&
+    syslinux --offset $OFFSET --install --directory=/ $OBJECTS || exit 12
+  ;;
+
+  raspberry_image)
+    createDiskImage || exit $?
+  ;;
+esac
+
+
 if [[ ! -z "$RELEASE" ]]; then
   OUT_DIR=`pwd`/out/$CPU_FAMILY
   ZIP_FILE=$OUT_DIR-$PLATFORM.zip
@@ -53,11 +100,16 @@ if [[ ! -z "$RELEASE" ]]; then
       eval "echo -e \"$(< runners/qemu.sh)\"" > /tmp/run.sh
     ;;
     pc_image)
-      zip -j $ZIP_FILE                          \
-        node_modules/nodeos-rootfs/rootfs.img   \
-        node_modules/nodeos-usersfs/usersfs.img || exit 11
+      zip -j $ZIP_FILE $OBJECTS || exit 11
 
       eval "echo -e \"$(< runners/image.sh)\"" > /tmp/run.sh
+    ;;
+    pc_iso)
+      zip -j $ZIP_FILE                          \
+        node_modules/nodeos-rootfs/rootfs.iso   \
+        node_modules/nodeos-usersfs/usersfs.img || exit 11
+
+      eval "echo -e \"$(< runners/iso.sh)\"" > /tmp/run.sh
     ;;
   esac
 

@@ -113,7 +113,7 @@ case $PLATFORM in
     chmod -R go= "$HOME"    &&
     docker build -t $name . || exit 40
   ;;
-  pc_qemu | pc_image | raspberry_qemu | raspberry_image)
+  pc_qemu | pc_image | pc_iso | raspberry_qemu | raspberry_image)
     DISK_SIZE=64  # Size in MB
 
     mkdir -p `dirname $OUT_DIR`

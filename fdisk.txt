@@ -1,0 +1,17 @@
+o
+n
+p
+1
+$SIZE_MBR
++$SIZE_ROOTFS
+a
+1
+t
+c
+n
+p
+2
+$START_USERSFS
+
+p
+w

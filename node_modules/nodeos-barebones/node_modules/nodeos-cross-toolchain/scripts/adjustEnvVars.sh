@@ -13,6 +13,9 @@ case $PLATFORM in
   image)
     PLATFORM=pc_image
   ;;
+  iso)
+    PLATFORM=pc_iso
+  ;;
 
   docker)
     PLATFORM=docker_64
@@ -24,12 +27,18 @@ case $PLATFORM in
   image_32)
     PLATFORM=pc_image_32
   ;;
+  iso_32)
+    PLATFORM=pc_iso_32
+  ;;
 
   qemu_64)
     PLATFORM=pc_qemu_64
   ;;
   image_64)
     PLATFORM=pc_image_64
+  ;;
+  iso_64)
+    PLATFORM=pc_iso_64
   ;;
 
   raspberry)
@@ -40,15 +49,15 @@ esac
 # default CPU for each platform
 if [[ -z "$CPU" ]]; then
   case $PLATFORM in
-    pc_qemu|pc_image)
+    pc_qemu|pc_image|pc_iso)
 #      CPU=native  # https://gcc.gnu.org/onlinedocs/gcc-4.9.2/gcc/i386-and-x86-64-Options.html#i386-and-x86-64-Options
       CPU=`uname -m`
     ;;
 
-    docker_32|pc_qemu_32|pc_image_32)
+    docker_32|pc_qemu_32|pc_image_32|pc_iso_32)
       CPU=i686
     ;;
-    docker_64|pc_qemu_64|pc_image_64)
+    docker_64|pc_qemu_64|pc_image_64|pc_iso_64)
       CPU=x86_64
     ;;
 
@@ -76,6 +85,9 @@ case $PLATFORM in
   ;;
   pc_image_32|pc_image_64)
     PLATFORM=pc_image
+  ;;
+  pc_iso_32|pc_iso_64)
+    PLATFORM=pc_iso
   ;;
 
 #  raspberry_qemu)

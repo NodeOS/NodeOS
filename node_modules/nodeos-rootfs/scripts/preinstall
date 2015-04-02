@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+DEPS=`pwd`/deps
+
+
+BAREBONES=`pwd`/../nodeos-barebones
+
+TOOLCHAIN=$BAREBONES/node_modules/nodeos-cross-toolchain
+TOOLS=$TOOLCHAIN/out
+
+source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
+
+
+#
+# genfatfs
+#
+
+SRC_DIR=$DEPS/genfatfs
+if [[ ! -d $SRC_DIR ]]; then
+  git clone git@github.com:NodeOS/genfatfs.git $SRC_DIR || exit 21
+  (
+    cd $SRC_DIR &&
+    $MAKE       || exit 22
+  ) || exit $?
+fi
