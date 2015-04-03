@@ -3,3 +3,5 @@ deps/
 obj/
 out/
 rootfs.iso
+efiboot
+efiboot.img

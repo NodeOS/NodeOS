@@ -30,7 +30,7 @@ apt-get install -qq -y bc qemu-system
 apt-get install -qq -y nodejs-legacy
 
 # rootfs
-apt-get install -qq -y genisoimage isolinux syslinux xorriso
+apt-get install -qq -y genisoimage isolinux syslinux syslinux-efi xorriso
 
 # usersfs
 apt-get install -qq -y genext2fs
