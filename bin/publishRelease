@@ -20,9 +20,9 @@ var opts =
   prerelease: true,
   assets:
   [
-    'out/i386-pc_image.zip',
+    'out/i386-pc_iso.zip',
     'out/i386-pc_qemu.zip',
-    'out/x86_64-pc_image.zip',
+    'out/x86_64-pc_iso.zip',
     'out/x86_64-pc_qemu.zip'
   ]
 }

@@ -75,7 +75,7 @@ case $PLATFORM in
   docker)
     docker build -t $name . || exit 231
   ;;
-  pc_qemu | pc_image | raspberry_qemu | raspberry_image)
+  pc_qemu | pc_iso | raspberry_qemu | raspberry_image)
     mkdir -p `dirname $OUT_DIR`
     (
       cd "$OBJECTS";

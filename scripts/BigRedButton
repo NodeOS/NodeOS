@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
 
-PLATFORM=image_32  npm install || exit $?
-PLATFORM=image_64  npm install || exit $?
 PLATFORM=iso_32    npm install || exit $?
 PLATFORM=iso_64    npm install || exit $?
 PLATFORM=qemu_32   npm install || exit $?

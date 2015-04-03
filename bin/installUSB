@@ -1,23 +1,30 @@
 #!/usr/bin/env bash
 
 
-if [ "$#" -ne 2 ]; then
-  echo "Illegal number of parameters"
+if [ "$#" -ne 3 ]; then
+  echo "Usage: $0 <DEVICE> <ROOTFS> <USERSFS>"
+  exit 10
 fi
 
-IMAGE=$1
-DEVICE=$2
+DEVICE=$1
 PARTITION=${DEVICE}2
+
+ROOTFS=$2
+USERSFS=$3
 
 
 # Install disk image on USB
 
-dd if=$IMAGE of=$DEVICE bs=1M || exit 10
+SIZE_ROOTFS=$(stat -L -c%s "$ROOTFS")
+SIZE_ROOTFS=$(($SIZE_ROOTFS/512))
+
+dd if=$ROOTFS  of=$DEVICE                   &&
+dd if=$USERSFS of=$DEVICE seek=$SIZE_ROOTFS || exit 11
 
 
 # Resize usersfs partition
 
-cat fdisk-resize.txt | fdisk $DEVICE || exit 11
+cat fdisk-installUSB.txt | fdisk $DEVICE || exit 12
 
 e2fsck -f -y $PARTITION
-resize2fs -p $PARTITION || exit 12
+resize2fs -p $PARTITION || exit 13

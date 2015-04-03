@@ -35,6 +35,15 @@ mkdir -p $OBJECTS || exit 11
 
 GENFATFS=deps/genfatfs/genfatfs
 
+case $CPU_FAMILY in
+  i386)
+    BITS=32
+  ;;
+  x86_64)
+    BITS=64
+  ;;
+esac
+
 function createPartitionImage() {
   # Copy kernel and initramfs on the partition image
 
@@ -70,9 +79,9 @@ function createEfiImage() {
 
   # Copy SysLinux files
 
-  cp /usr/lib/SYSLINUX.EFI/efi32/syslinux.efi    \
-     /usr/lib/syslinux/modules/efi32/ldlinux.e32 \
-     efiboot                                     || exit 31
+  cp /usr/lib/SYSLINUX.EFI/efi$BITS/syslinux.efi       \
+     /usr/lib/syslinux/modules/efi$BITS/ldlinux.e$BITS \
+     efiboot                                           || exit 31
 
   # Create EFI disk image
 
@@ -96,9 +105,9 @@ function createIsoImage() {
 
   # Copy IsoLinux files
 
-  cp /usr/lib/ISOLINUX/isolinux.bin             \
-     /usr/lib/syslinux/modules/bios/ldlinux.c32 \
-     $OBJECTS                                   || exit 31
+  cp /usr/lib/ISOLINUX/isolinux.bin                \
+     /usr/lib/syslinux/modules/bios/ldlinux.c$BITS \
+     $OBJECTS                                      || exit 31
 
   # Create ISO image
 
@@ -123,12 +132,6 @@ function createIsoImage() {
 case $PLATFORM in
   docker)
     docker build -t $name . || exit 40
-  ;;
-
-  pc_image)
-    cp syslinux.cfg $OBJECTS || exit 41
-
-    createPartitionImage || exit $?
   ;;
 
   pc_iso)

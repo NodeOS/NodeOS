@@ -2,3 +2,7 @@ npm-debug.log
 out/
 obj/
 deps/
+bzImage
+initramfs.cpio.gz
+rootfs.iso
+usersfs.img

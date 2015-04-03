@@ -3,10 +3,6 @@
 REV=$(tput rev)
 BLD=$(tput bold)
 GRY="\e[90m"
-RED="\e[31m"
-GRN="\e[32m"
-WHT="\e[37m"
-CLR="\e[0m"
 
 
 BAREBONES=`pwd`/node_modules/nodeos-barebones
@@ -66,22 +62,15 @@ function createDiskImage() {
 }
 
 case $PLATFORM in
-  pc_image)
-    createDiskImage || $?
-
-    # Install SysLinux
-
-    OFFSET=$(($SIZE_MBR*512))
-
-    dd if=/usr/lib/SYSLINUX/mbr.bin of=$OBJECTS conv=notrunc   &&
-    syslinux --offset $OFFSET --install --directory=/ $OBJECTS || exit 12
-  ;;
-
   raspberry_image)
     createDiskImage || exit $?
   ;;
 esac
 
+ln -sfv node_modules/nodeos-barebones/bzImage           .
+ln -sfv node_modules/nodeos-initramfs/initramfs.cpio.gz .
+ln -sfv node_modules/nodeos-rootfs/rootfs.iso           .
+ln -sfv node_modules/nodeos-usersfs/usersfs.img         .
 
 if [[ ! -z "$RELEASE" ]]; then
   OUT_DIR=`pwd`/out/$CPU_FAMILY
@@ -98,11 +87,6 @@ if [[ ! -z "$RELEASE" ]]; then
         node_modules/nodeos-usersfs/usersfs.img         || exit 10
 
       eval "echo -e \"$(< runners/qemu.sh)\"" > /tmp/run.sh
-    ;;
-    pc_image)
-      zip -j $ZIP_FILE $OBJECTS || exit 11
-
-      eval "echo -e \"$(< runners/image.sh)\"" > /tmp/run.sh
     ;;
     pc_iso)
       zip -j $ZIP_FILE                          \
@@ -134,7 +118,7 @@ case $PLATFORM in
     echo -e "- Share your creation with:"
     echo -e "${WHT}    docker push $NOSN${CLR}"
   ;;
-  pc_qemu|pc_image|raspberry_qemu)
+  pc_qemu|raspberry_qemu)
     echo -e "${WHT}    npm start${CLR}"
   ;;
 esac
