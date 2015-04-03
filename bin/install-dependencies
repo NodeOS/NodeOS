@@ -13,6 +13,7 @@ apt-get update -qq
 apt-get install -qq -y mtools
 
 wget -P deps \
+  http://mirrors.kernel.org/ubuntu/pool/main/s/syslinux/isolinux_6.03~pre18+dfsg-1ubuntu1_amd64.deb \
   http://mirrors.kernel.org/ubuntu/pool/main/s/syslinux/syslinux_6.03~pre18+dfsg-1ubuntu1_amd64.deb \
   http://mirrors.kernel.org/ubuntu/pool/main/s/syslinux/syslinux-common_6.03~pre18+dfsg-1ubuntu1_all.deb
 dpkg -i deps/*.deb
@@ -28,7 +29,7 @@ apt-get install -qq -y bc qemu-system
 apt-get install -qq -y nodejs-legacy
 
 # rootfs
-apt-get install -qq -y genext2fs grub-pc-bin ncurses-term xorriso
+apt-get install -qq -y isolinux syslinux xorriso
 
-# disk images
-apt-get install -qq -y syslinux
+# usersfs
+apt-get install -qq -y genext2fs

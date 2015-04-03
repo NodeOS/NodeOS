@@ -34,70 +34,73 @@ mkdir -p $OBJECTS || exit 11
 #
 
 function createPartitionImage() {
-  GENFATFS=deps/genfatfs/genfatfs
+  # Copy kernel and initramfs on the partition image
+
+  cp $BAREBONES/bzImage           $OBJECTS/kernel.img &&
+  cp $INITRAMFS/initramfs.cpio.gz $OBJECTS/initram.gz || exit 20
 
   OUT_DIR=$OUT_DIR/image
+  mkdir -p `dirname $OUT_DIR`
 
   # Size in MB
 #    DISK_SIZE=`du -ks $OBJECTS | cut -f1`
   DISK_SIZE=$((16*1024))
 
-  mkdir -p `dirname $OUT_DIR`
+  GENFATFS=deps/genfatfs/genfatfs
   $GENFATFS -b $DISK_SIZE \
       --root $OBJECTS     \
-      $OUT_DIR            || exit 23
+      $OUT_DIR            || exit 21
 
-  ln -sfv $OUT_DIR $name.img || exit 24
+  ln -sfv $OUT_DIR $name.img || exit 22
+}
+
+function createIsoImage() {
+  # Copy kernel and initramfs on the ISO image
+
+  cp $BAREBONES/bzImage           $OBJECTS/kernel.img &&
+  cp $INITRAMFS/initramfs.cpio.gz $OBJECTS/initram.gz || exit 30
+
+  OUT_DIR=$OUT_DIR/iso
+  mkdir -p `dirname $OUT_DIR`
+
+  cp /usr/lib/ISOLINUX/isolinux.bin             \
+     /usr/lib/syslinux/modules/bios/ldlinux.c32 \
+     $OBJECTS                                   || exit 31
+  mkisofs -o $OUT_DIR   \
+      -b isolinux.bin   \
+      -c boot.cat       \
+      -no-emul-boot     \
+      -boot-load-size 4 \
+      -boot-info-table  \
+      $OBJECTS          || exit 32
+
+  ln -sfv $OUT_DIR $name.iso || exit 33
 }
 
 case $PLATFORM in
   docker)
-    docker build -t $name . || exit 20
+    docker build -t $name . || exit 40
   ;;
 
   pc_image)
-    # Copy kernel and initramfs on the partition image
+    cp syslinux.cfg $OBJECTS || exit 41
 
-#    mkdir -p    $OBJECTS/grub &&
-#    cp grub.cfg $OBJECTS/grub || exit 25
-    cp syslinux.cfg $OBJECTS || exit 25
-
-    cp $BAREBONES/bzImage           $OBJECTS/bzImage           &&
-    cp $INITRAMFS/initramfs.cpio.gz $OBJECTS/initramfs.cpio.gz || exit 26
-
-    createPartitionImage
+    createPartitionImage || exit $?
   ;;
 
   pc_iso)
-    # Copy kernel and initramfs on the disk image
+    cp syslinux.cfg $OBJECTS || exit 42
 
-    mkdir -p    $OBJECTS/grub &&
-    cp grub.cfg $OBJECTS/grub || exit 25
-
-    cp $BAREBONES/bzImage           $OBJECTS/bzImage           &&
-    cp $INITRAMFS/initramfs.cpio.gz $OBJECTS/initramfs.cpio.gz || exit 26
-
-    # Create the iso image
-
-    OUT_DIR=$OUT_DIR/iso
-
-    mkdir -p `dirname $OUT_DIR`
-    grub-mkrescue /usr/lib/grub/i386-pc -o $OUT_DIR $OBJECTS || exit 27
-    ln -sfv $OUT_DIR $name.iso                               || exit 28
+    createIsoImage || exit $?
   ;;
 
   raspberry_image)
-    # Copy kernel and initramfs on the partition image
-
-    cp $BAREBONES/bzImage           $OBJECTS/kernel.img        &&
-    cp $INITRAMFS/initramfs.cpio.gz $OBJECTS/initramfs.cpio.gz || exit 26
-
     # Copy Raspberry PI extra files
     # http://elinux.org/RPi_Advanced_Setup#Setting_up_the_boot_partition
     #
     # bootcode.bin, start.elf, cmdline.txt
 
-    createPartitionImage
+    createPartitionImage || exit $?
   ;;
 esac
 

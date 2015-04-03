@@ -4,6 +4,9 @@ var readlinkSync = require('fs').readlinkSync
 var spawn        = require('child_process').spawn
 
 
+var nographic = true
+
+
 var cpu = readlinkSync('rootfs.img').split('/');
 
 var cpu_family;
@@ -32,10 +35,10 @@ var command = 'qemu-system-'+cpu_family
 var args =
 [
   '-enable-kvm',
-  '-nographic',
-  '-hda',    'rootfs.img',
-  '-append', 'console=ttyS0'
+  '-hda', 'rootfs.img'
 ]
+
+if(nographic) args.push('-nographic')
 
 spawn(command, args, {stdio: 'inherit'})
 .on('error', console.trace.bind(console))

@@ -4,10 +4,13 @@ var readlinkSync = require('fs').readlinkSync
 var spawn        = require('child_process').spawn
 
 
+var nographic = false
+
+
 var cpu = readlinkSync('initramfs.cpio.gz').split('/');
 
 var cpu_family;
-switch(cpu[cpu.length-2])
+switch(cpu[cpu.length-1])
 {
   case 'armv6':
     cpu_family = 'arm'
@@ -38,8 +41,7 @@ var args =
   '-append',  'console=ttyS0'
 ]
 
+if(nographic) args.push('-nographic')
+
 spawn(command, args, {stdio: 'inherit'})
-.on('error', function(error)
-{
-  console.trace(error)
-})
+.on('error', console.trace.bind(console))

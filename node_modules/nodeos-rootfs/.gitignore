@@ -2,3 +2,4 @@ rootfs.img
 deps/
 obj/
 out/
+rootfs.iso

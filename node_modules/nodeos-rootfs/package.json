@@ -4,7 +4,8 @@
   "scripts": {
     "install": "scripts/install",
     "preinstall": "scripts/preinstall",
-    "start": "scripts/start",
+    "startImage": "scripts/startImage",
+    "startIso": "scripts/startIso",
     "test": "scripts/test"
   },
   "author": "Jesús Leganés Combarro \"piranna\"",
