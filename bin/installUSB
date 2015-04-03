@@ -28,3 +28,5 @@ cat fdisk-installUSB.txt | fdisk $DEVICE || exit 12
 
 e2fsck -f -y $PARTITION
 resize2fs -p $PARTITION || exit 13
+
+sync

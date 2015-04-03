@@ -13,10 +13,11 @@ apt-get update -qq
 apt-get install -qq -y mtools
 
 wget -P deps \
-  http://mirrors.kernel.org/ubuntu/pool/main/s/syslinux/isolinux_6.03~pre18+dfsg-1ubuntu1_amd64.deb      \
-  http://mirrors.kernel.org/ubuntu/pool/main/s/syslinux/syslinux_6.03~pre18+dfsg-1ubuntu1_amd64.deb      \
-  http://mirrors.kernel.org/ubuntu/pool/main/s/syslinux/syslinux-common_6.03~pre18+dfsg-1ubuntu1_all.deb \
-  http://mirrors.kernel.org/ubuntu/pool/main/s/syslinux/syslinux-utils_6.03~pre18+dfsg-1ubuntu1_amd64.deb
+  http://mirrors.kernel.org/ubuntu/pool/main/s/syslinux/isolinux_6.03~pre18+dfsg-1ubuntu1_amd64.deb       \
+  http://mirrors.kernel.org/ubuntu/pool/main/s/syslinux/syslinux_6.03~pre18+dfsg-1ubuntu1_amd64.deb       \
+  http://mirrors.kernel.org/ubuntu/pool/main/s/syslinux/syslinux-common_6.03~pre18+dfsg-1ubuntu1_all.deb  \
+  http://mirrors.kernel.org/ubuntu/pool/main/s/syslinux/syslinux-utils_6.03~pre18+dfsg-1ubuntu1_amd64.deb \
+  http://mirrors.kernel.org/ubuntu/pool/universe/s/syslinux/syslinux-efi_6.03~pre18+dfsg-1ubuntu1_amd64.deb
 dpkg -i deps/*.deb
 
 
