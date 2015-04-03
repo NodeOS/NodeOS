@@ -4,7 +4,7 @@ var readlinkSync = require('fs').readlinkSync
 var spawn        = require('child_process').spawn
 
 
-var nographic = false
+var nographic = true
 
 
 var cpu = readlinkSync('bzImage').split('/');
@@ -36,11 +36,10 @@ var args =
 [
   '-enable-kvm',
   '-nographic',
-  '--kernel', 'bzImage',
-  '-append',  'console=ttyS0'
+  '--kernel', 'bzImage'
 ]
 
-if(nographic) args.push('-nographic')
+if(nographic) args.push('-append', 'console=ttyS0', '-nographic')
 
 spawn(command, args, {stdio: 'inherit'})
 .on('error', console.trace.bind(console))

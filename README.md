@@ -69,6 +69,15 @@ automatically generated after each commit in master branch that sucessfully
 [pass the tests](https://semaphoreapp.com/nodeos/nodeos). To exec them, you'll
 need to have [QEmu](http://wiki.qemu.org/Main_Page) installed on your system.
 
+The *iso* can be written to a CD-R, but will only provide the read-only rootfs
+and the changes will be done in memory, loosing them after reboot, so you'll
+need to set manually a read-write usersfs partition if you want to persist them.
+
+On the other hand, the *image* images can be flashed to an USB pendrive and have
+both a read-only rootfs and a read-write usersfs partitions, so your changes
+will persist. It's recomended to flash it by using ```bin/istallUSB``` command
+so it will increase the usersfs partition to fill up the whole USB space.
+
 # Build NodeOS in three steps
 
 NodeOS require to have first installed some build tools, on a Ubuntu based

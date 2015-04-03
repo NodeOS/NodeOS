@@ -4,7 +4,7 @@ var readlinkSync = require('fs').readlinkSync
 var spawn        = require('child_process').spawn
 
 
-var nographic = false
+var nographic = true
 
 
 var cpu = readlinkSync('initramfs.cpio.gz').split('/');
@@ -37,11 +37,10 @@ var args =
   '-enable-kvm',
   '-nographic',
   '--kernel', '../nodeos-barebones/bzImage',
-  '--initrd', 'initramfs.cpio.gz',
-  '-append',  'console=ttyS0'
+  '--initrd', 'initramfs.cpio.gz'
 ]
 
-if(nographic) args.push('-nographic')
+if(nographic) args.push('-append', 'console=ttyS0', '-nographic')
 
 spawn(command, args, {stdio: 'inherit'})
 .on('error', console.trace.bind(console))

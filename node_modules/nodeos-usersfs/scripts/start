@@ -38,10 +38,14 @@ var args =
   '--kernel', '../nodeos-barebones/bzImage',
   '--initrd', '../nodeos-initramfs/initramfs.cpio.gz',
   '-hda',     'usersfs.img',
-  '-append',  'root=/dev/sda console=ttyS0'  // QEmu don't want root= at the end
-]                                            // if there are more arguments
+  '-append',  'root=/dev/sda'
+]
 
-if(nographic) args.push('-nographic')
+if(nographic)
+{
+  args[args.length-1] += ' console=ttyS0'
+  args.push('-nographic')
+}
 
 spawn(command, args, {stdio: 'inherit'})
 .on('error', console.trace.bind(console))
