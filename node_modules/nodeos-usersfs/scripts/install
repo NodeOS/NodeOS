@@ -18,90 +18,98 @@ source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
 if [[ -z "$name" ]]; then name=usersfs; fi
 
 
-if [[ -d $OBJECTS ]]; then
-  chmod -R u+w $OBJECTS &&
-  rm    -rf    $OBJECTS || exit 10
-fi
-
-
 #
 # root home
 #
 
-HOME=$OBJECTS/root
+OBJ_DIR=$OBJECTS/root
 
-mkdir -p $HOME || exit 20
+if [[ ! -d $OBJ_DIR ]]; then
+  echo -e "${WHT}Generating root user folder${CLR}"
 
+  mkdir -p $OBJ_DIR || exit 10
 
-#
-# Install system dependencies
-#
+  (
+    #
+    # Install system dependencies
+    #
 
-CC=$TARGET-gcc                  \
-CXX=$TARGET-g++                 \
-npm_config_prefix=$HOME         \
-$NODE_DIR/deps/npm/cli.js       \
-    install -g                  \
-    --loglevel warn             \
-    --arch=$NODE_ARCH           \
-    --nodedir=$NODE_DIR         \
-    --jobs=$JOBS                \
-    `grep -v "^#" packages_root.txt` || exit 21
-
-
-#
-# Services to be started at boot
-#
-
-mkdir -p $HOME/etc                 &&
-cp forever-starter.json $HOME/etc/ || exit 22
+    CC=$TARGET-gcc                  \
+    CXX=$TARGET-g++                 \
+    npm_config_prefix=$OBJ_DIR      \
+    $NODE_DIR/deps/npm/cli.js       \
+        install -g                  \
+        --loglevel warn             \
+        --arch=$NODE_ARCH           \
+        --nodedir=$NODE_DIR         \
+        --jobs=$JOBS                \
+        `grep -v "^#" packages_root.txt` || exit 11
 
 
-#
-# Init file for the user
-#
+    #
+    # Services to be started at boot
+    #
 
-ln -sf bin/forever-starter $HOME/init || exit 23
+    mkdir -p $OBJ_DIR/etc                 &&
+    cp forever-starter.json $OBJ_DIR/etc/ || exit 12
+
+
+    #
+    # Init file for the user
+    #
+
+    ln -sf bin/forever-starter $OBJ_DIR/init || exit 13
+  ) || err $?
+
+  echo -e "${GRN}Successfully generated root user folder${CLR}"
+fi
 
 
 #
 # nodeos home
 #
 
-HOME=$OBJECTS/nodeos
+OBJ_DIR=$OBJECTS/nodeos
 
-mkdir -p $HOME || exit 30
+if [[ ! -d $OBJ_DIR ]]; then
+  echo -e "${WHT}Generating nodeos user folder${CLR}"
 
+  mkdir -p $OBJ_DIR || exit 30
 
-#
-# Install user dependencies
-#
+  (
+    #
+    # Install user dependencies
+    #
 
-CC=$TARGET-gcc                  \
-CXX=$TARGET-g++                 \
-npm_config_prefix=$HOME         \
-$NODE_DIR/deps/npm/cli.js       \
-    install -g                  \
-    --loglevel warn             \
-    --arch=$NODE_ARCH           \
-    --nodedir=$NODE_DIR         \
-    --jobs=$JOBS                \
-    `grep -v "^#" packages_nodeos.txt` || exit 31
-
-
-#
-# Dummy init file for the user
-#
-
-cp init.js $HOME/init || exit 32
+    CC=$TARGET-gcc                  \
+    CXX=$TARGET-g++                 \
+    npm_config_prefix=$OBJ_DIR      \
+    $NODE_DIR/deps/npm/cli.js       \
+        install -g                  \
+        --loglevel warn             \
+        --arch=$NODE_ARCH           \
+        --nodedir=$NODE_DIR         \
+        --jobs=$JOBS                \
+        `grep -v "^#" packages_nodeos.txt` || exit 31
 
 
-#
-# Copy nodeos user login info
-#
+    #
+    # Dummy init file for the user
+    #
 
-mkdir -p $HOME/etc       &&
-cp logon.json $HOME/etc/ || exit 33
+    cp init.js $OBJ_DIR/init || exit 32
+
+
+    #
+    # Copy nodeos user login info
+    #
+
+    mkdir -p $OBJ_DIR/etc       &&
+    cp logon.json $OBJ_DIR/etc/ || exit 33
+  ) || err $?
+
+  echo -e "${GRN}Successfully generated nodeos user folder${CLR}"
+fi
 
 
 #

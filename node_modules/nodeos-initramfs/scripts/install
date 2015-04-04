@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# This script prepares a initramfs that can boot a NodeOS rootfs
+# This script prepares a initramfs that can boot a NodeOS usersfs
 
 GRN="\e[32m"
 CLR="\e[0m"
@@ -17,50 +17,57 @@ source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
 
 if [[ -z "$name" ]]; then name=initramfs; fi
 
-if [[ -d $OBJECTS ]]; then
-  chmod -R u+w $OBJECTS &&
-  rm    -rf    $OBJECTS || exit 200
+
+if [[ ! -d $OBJECTS ]]; then
+  echo -e "${WHT}Generating initramfs${CLR}"
+
+  mkdir -p $OBJECTS || exit 201
+
+  (
+    OBJ_DIR=$OBJECTS
+
+    #case $PLATFORM in
+    #  qemu)
+    #    gunzip -c $BAREBONES/barebones.cpio.gz |
+    #    (
+    #      cd "$OBJECTS";
+    #      cpio -i -d -H newc --no-absolute-filenames
+    #    ) || exit 201
+    #  ;;
+    #esac
+
+
+    #
+    # Install system dependencies
+    #
+
+    CC=$TARGET-gcc                  \
+    CXX=$TARGET-g++                 \
+    npm_config_prefix=$OBJECTS      \
+    $NODE_DIR/deps/npm/cli.js       \
+        install -g                  \
+        --loglevel warn             \
+        --arch=$NODE_ARCH           \
+        --nodedir=$NODE_DIR         \
+        --jobs=$JOBS                \
+        `grep -v "^#" packages.txt` || exit 210
+
+    ln -fs bin/century $OBJECTS/init || exit 211
+
+    mkdir -p $OBJECTS/sbin                                    &&
+    ln -fs ../bin/nodeos-mount-filesystems $OBJECTS/sbin/init || exit 212
+
+
+    #
+    # /usr/bin/env
+    #
+
+    mkdir -p  $OBJECTS/usr/bin     &&
+    cp env.js $OBJECTS/usr/bin/env || exit 220
+  ) || err $?
+
+  echo -e "${GRN}Successfully generated initramfs${CLR}"
 fi
-mkdir -p $OBJECTS || exit 201
-
-#case $PLATFORM in
-#  qemu)
-#    gunzip -c $BAREBONES/barebones.cpio.gz |
-#    (
-#      cd "$OBJECTS";
-#      cpio -i -d -H newc --no-absolute-filenames
-#    ) || exit 201
-#  ;;
-#esac
-
-
-#
-# Install system dependencies
-#
-
-CC=$TARGET-gcc                  \
-CXX=$TARGET-g++                 \
-npm_config_prefix=$OBJECTS      \
-$NODE_DIR/deps/npm/cli.js       \
-    install -g                  \
-    --loglevel warn             \
-    --arch=$NODE_ARCH           \
-    --nodedir=$NODE_DIR         \
-    --jobs=$JOBS                \
-    `grep -v "^#" packages.txt` || exit 210
-
-ln -fs bin/century $OBJECTS/init || exit 211
-
-mkdir -p $OBJECTS/sbin                                    &&
-ln -fs ../bin/nodeos-mount-filesystems $OBJECTS/sbin/init || exit 212
-
-
-#
-# /usr/bin/env
-#
-
-mkdir -p  $OBJECTS/usr/bin     &&
-cp env.js $OBJECTS/usr/bin/env || exit 220
 
 
 #
