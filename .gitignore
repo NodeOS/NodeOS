@@ -6,3 +6,4 @@ bzImage
 initramfs.cpio.gz
 rootfs.iso
 usersfs.img
+node_modules/

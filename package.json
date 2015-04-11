@@ -2,12 +2,6 @@
   "name": "NodeOS",
   "version": "0.0.0",
   "description": "Lightweight operating system using Node.js as userspace",
-  "bundleDependencies": [
-    "nodeos-barebones",
-    "nodeos-initramfs",
-    "nodeos-rootfs",
-    "nodeos-usersfs"
-  ],
   "scripts": {
     "BigRedButton": "scripts/BigRedButton",
     "install": "scripts/install",
@@ -31,7 +25,10 @@
   "homepage": "http://node-os.com",
   "private": true,
   "dependencies": {
-    "nodeos-barebones": "^0.0.0"
+    "nodeos-barebones": "^0.0.0",
+    "nodeos-initramfs": "^0.0.1",
+    "nodeos-rootfs": "^0.0.0",
+    "nodeos-usersfs": "^0.0.16"
   },
   "devDependencies": {
     "publish-release": "^1.0.2"
