@@ -9,6 +9,8 @@ CLR="\e[0m"
 BAREBONES=`pwd`/../nodeos-barebones
 NODE_DIR=$BAREBONES/deps/node
 
+GENEXT2FS=`pwd`/deps/genext2fs/genext2fs
+
 TOOLCHAIN=$BAREBONES/node_modules/nodeos-cross-toolchain
 TOOLS=$TOOLCHAIN/out
 
@@ -126,12 +128,10 @@ case $PLATFORM in
 
     mkdir -p `dirname $OUT_DIR`
 
-    genext2fs -b $((DISK_SIZE*1024)) \
+    $GENEXT2FS -b $((DISK_SIZE*1024)) \
         --root $OBJECTS              \
-        --block-size          1024   \
         --bytes-per-inode     4096   \
         --reserved-percentage    0   \
-        --creator-os linux           \
         --allow-holes                \
         --squash $OUT_DIR            || exit 41
 

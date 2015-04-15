@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+DEPS=`pwd`/deps
+
+# Dependencies versions
+GENEXT2FS_VERSION=1.4.1
+
+# Dependencies URLs
+
+GENEXT2FS_URL=http://downloads.sourceforge.net/project/genext2fs/genext2fs/1.4.1/genext2fs-1.4.1.tar.gz
+
+#
+# genext2fs
+#
+
+SRC_DIR=$DEPS/genext2fs
+if [[ ! -d $SRC_DIR ]]; then
+  mkdir -p $SRC_DIR &&
+  curl -L $GENEXT2FS_URL | tar xzf - -C $SRC_DIR --strip-components=1 || exit 10
+
+  cd $SRC_DIR
+  ./configure
+  make
+
+  echo -e "${GRN}Successfully compiled genext2fs${CLR}"
+fi
+
