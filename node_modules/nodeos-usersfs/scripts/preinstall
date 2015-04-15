@@ -7,7 +7,7 @@ GENEXT2FS_VERSION=1.4.1
 
 # Dependencies URLs
 
-GENEXT2FS_URL=http://downloads.sourceforge.net/project/genext2fs/genext2fs/1.4.1/genext2fs-1.4.1.tar.gz
+GENEXT2FS_URL=http://downloads.sourceforge.net/project/genext2fs/genext2fs/$GENEXT2FS_VERSION/genext2fs-$GENEXT2FS_VERSION.tar.gz
 
 #
 # genext2fs
