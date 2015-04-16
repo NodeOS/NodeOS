@@ -130,8 +130,10 @@ case $PLATFORM in
 
     $GENEXT2FS -b $((DISK_SIZE*1024)) \
         --root $OBJECTS              \
+        --block-size          1024   \
         --bytes-per-inode     4096   \
         --reserved-percentage    0   \
+        --creator-os linux           \
         --allow-holes                \
         --squash $OUT_DIR            || exit 41
 
