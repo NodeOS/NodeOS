@@ -16,6 +16,7 @@ GENEXT2FS_URL=https://github.com/5paceManSpiff/genext2fs/archive/nodeos-$GENEXT2
 
 SRC_DIR=$DEPS/genext2fs
 if [[ ! -d $SRC_DIR ]]; then
+  echo -e "Downloading genext2fs"
   mkdir -p $SRC_DIR &&
   curl -L $GENEXT2FS_URL | tar xzf - -C $SRC_DIR --strip-components=1 || exit 10
 
