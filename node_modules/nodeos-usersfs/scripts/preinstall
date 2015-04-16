@@ -20,8 +20,8 @@ if [[ ! -d $SRC_DIR ]]; then
   curl -L $GENEXT2FS_URL | tar xzf - -C $SRC_DIR --strip-components=1 || exit 10
 
   cd $SRC_DIR
-  ./autogen.sh
-  ./configure
+  $SRC_DIR/autogen.sh
+  $SRC_DIR/configure
   make
 
   echo -e "${GRN}Successfully compiled genext2fs${CLR}"
