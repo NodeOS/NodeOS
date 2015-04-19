@@ -34,10 +34,4 @@ apt-get install -qq -y nodejs-legacy
 apt-get install -qq -y genisoimage isolinux syslinux syslinux-efi xorriso
 
 # usersfs
-apt-get install -qq -y genext2fs
-
-# autoconf
-apt-get install -qq -y autoconf
-
-# automake
-apt-get install -qq -y automake
+apt-get install -qq -y autoconf automake
