@@ -103,12 +103,28 @@ if [[ ! -d $OBJ_DIR ]]; then
 
 
     #
+    # blessed-contrib examples
+    #
+
+    git clone https://github.com/yaronn/blessed-contrib.git $OBJ_DIR/blessed-contrib
+    (
+      cd $OBJ_DIR/blessed-contrib
+
+      CC=$TARGET-gcc             \
+      CXX=$TARGET-g++            \
+      npm_config_prefix=$OBJ_DIR \
+      $NODE_DIR/deps/npm/cli.js  \
+          install
+    ) || exit 33
+
+
+    #
     # Copy nodeos user login info
     #
 
     mkdir -p $OBJ_DIR/etc        &&
     cp logon.json  $OBJ_DIR/etc/ &&
-    cp resolv.conf $OBJ_DIR/etc/ || exit 32
+    cp resolv.conf $OBJ_DIR/etc/ || exit 34
   ) || err $?
 
   echo -e "${GRN}Successfully generated nodeos user folder${CLR}"
@@ -125,7 +141,7 @@ case $PLATFORM in
     docker build -t $name . || exit 40
   ;;
   pc_qemu | pc_iso | raspberry_qemu | raspberry_image)
-    DISK_SIZE=64  # Size in MB
+    DISK_SIZE=96  # Size in MB
 
     mkdir -p `dirname $OUT_DIR`
 

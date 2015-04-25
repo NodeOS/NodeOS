@@ -6,7 +6,7 @@ bin-man
 bin-fs
 bin-pwd
 NodeOS/ifconfig
-blessed
-blessed-contrib
 slap
 dhcpjs
+performance
+loadtest
