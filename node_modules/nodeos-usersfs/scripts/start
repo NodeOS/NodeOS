@@ -4,9 +4,6 @@ var readlinkSync = require('fs').readlinkSync
 var spawn        = require('child_process').spawn
 
 
-var nographic = true
-
-
 var cpu = readlinkSync('usersfs.img').split('/');
 
 var cpu_family;
@@ -30,6 +27,24 @@ switch(cpu[cpu.length-1])
   break
 }
 
+var append = 'root=/dev/sda'
+
+switch(process.argv[2])
+{
+  case 'nographic':
+    append += ' console=ttyS0'
+    args.push('-nographic')
+  break
+
+  case 'curses':
+    append += ' vga=extended'  // 80x50
+    args.push('-curses')
+  break
+
+  default:
+    append += ' vga=0x318'  // 1024x768x24
+}
+
 var command = 'qemu-system-'+cpu_family
 
 var args =
@@ -38,14 +53,8 @@ var args =
   '--kernel', '../nodeos-barebones/bzImage',
   '--initrd', '../nodeos-initramfs/initramfs.cpio.gz',
   '-hda',     'usersfs.img',
-  '-append',  'root=/dev/sda'
+  '-append',  append
 ]
-
-if(nographic)
-{
-  args[args.length-1] += ' console=ttyS0'
-  args.push('-nographic')
-}
 
 spawn(command, args, {stdio: 'inherit'})
 .on('error', console.trace.bind(console))

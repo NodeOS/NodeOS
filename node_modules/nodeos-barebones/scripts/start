@@ -4,9 +4,6 @@ var readlinkSync = require('fs').readlinkSync
 var spawn        = require('child_process').spawn
 
 
-var nographic = true
-
-
 var cpu = readlinkSync('bzImage').split('/');
 
 var cpu_family;
@@ -39,7 +36,19 @@ var args =
   '--kernel', 'bzImage'
 ]
 
-if(nographic) args.push('-append', 'console=ttyS0', '-nographic')
+switch(process.argv[2])
+{
+  case 'nographic':
+    args.push('-append', 'console=ttyS0', '-nographic')
+  break
+
+  case 'curses':
+    args.push('-append', 'vga=extended', '-curses')  // 80x50
+  break
+
+  default:
+    args.push('-append', 'vga=0x318')  // 1024x768x24
+}
 
 spawn(command, args, {stdio: 'inherit'})
 .on('error', console.trace.bind(console))

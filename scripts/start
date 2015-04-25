@@ -5,9 +5,6 @@ var fs = require('fs');
 var spawn = require('child_process').spawn
 
 
-var nographic = true
-
-
 var cpu = fs.readlinkSync('node_modules/nodeos-barebones/bzImage').split('/');
 
 var cpu_family;
@@ -31,6 +28,24 @@ switch(cpu[cpu.length-2])
   break
 }
 
+var append = 'root=/dev/sda'
+
+switch(process.argv[2])
+{
+  case 'nographic':
+    append += ' console=ttyS0'
+    args.push('-nographic')
+  break
+
+  case 'curses':
+    append += ' vga=extended'  // 80x50
+    args.push('-curses')
+  break
+
+  default:
+    append += ' vga=0x318'  // 1024x768x24
+}
+
 var command = 'qemu-system-'+cpu_family
 
 var args =
@@ -39,14 +54,8 @@ var args =
   '--kernel', 'node_modules/nodeos-barebones/bzImage',
   '--initrd', 'node_modules/nodeos-initramfs/initramfs.cpio.gz',
   '-hda',     'node_modules/nodeos-usersfs/usersfs.img',
-  '-append',  'root=/dev/sda LANG=es_ES.UTF-8 vga=0x318'  // 1024x768x24
+  '-append',  append
 ]
-
-if(nographic)
-{
-  args[args.length-1] += ' console=ttyS0'
-  args.push('-nographic')
-}
 
 // check if kvm is supported
 var kvm = /(vmx|svm)/;
