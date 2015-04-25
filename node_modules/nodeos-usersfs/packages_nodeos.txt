@@ -1,11 +1,12 @@
 npm
-bin-ip
+NodeOS/ip
 bin-sh
 piranna/nsh#patch-1
 bin-man
 bin-fs
 bin-pwd
-#netlovers/node-bin-ifconfig
+NodeOS/ifconfig
 blessed
 blessed-contrib
 slap
+dhcpjs

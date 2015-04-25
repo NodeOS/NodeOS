@@ -106,8 +106,9 @@ if [[ ! -d $OBJ_DIR ]]; then
     # Copy nodeos user login info
     #
 
-    mkdir -p $OBJ_DIR/etc       &&
-    cp logon.json $OBJ_DIR/etc/ || exit 33
+    mkdir -p $OBJ_DIR/etc        &&
+    cp logon.json  $OBJ_DIR/etc/ &&
+    cp resolv.conf $OBJ_DIR/etc/ || exit 32
   ) || err $?
 
   echo -e "${GRN}Successfully generated nodeos user folder${CLR}"
