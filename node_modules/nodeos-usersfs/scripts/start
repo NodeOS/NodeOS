@@ -28,17 +28,18 @@ switch(cpu[cpu.length-1])
 }
 
 var append = 'root=/dev/sda'
+var graphicFlag
 
 switch(process.argv[2])
 {
   case 'nographic':
     append += ' console=ttyS0'
-    args.push('-nographic')
+    graphicFlag = 'nographic'
   break
 
   case 'curses':
     append += ' vga=extended'  // 80x50
-    args.push('-curses')
+    graphicFlag = 'curses'
   break
 
   default:
@@ -55,6 +56,9 @@ var args =
   '-hda',     'usersfs.img',
   '-append',  append
 ]
+
+if(graphicFlag)
+  args.push('-'+graphicFlag)
 
 spawn(command, args, {stdio: 'inherit'})
 .on('error', console.trace.bind(console))

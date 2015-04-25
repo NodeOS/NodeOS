@@ -29,17 +29,18 @@ switch(cpu[cpu.length-2])
 }
 
 var append = 'root=/dev/sda'
+var graphicFlag
 
 switch(process.argv[2])
 {
   case 'nographic':
     append += ' console=ttyS0'
-    args.push('-nographic')
+    graphicFlag = 'nographic'
   break
 
   case 'curses':
     append += ' vga=extended'  // 80x50
-    args.push('-curses')
+    graphicFlag = 'curses'
   break
 
   default:
@@ -56,6 +57,9 @@ var args =
   '-hda',     'node_modules/nodeos-usersfs/usersfs.img',
   '-append',  append
 ]
+
+if(graphicFlag)
+  args.push('-'+graphicFlag)
 
 // check if kvm is supported
 var kvm = /(vmx|svm)/;
