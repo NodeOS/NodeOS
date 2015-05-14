@@ -1,12 +1,20 @@
+# Basic tools
 npm
-NodeOS/ip
 bin-sh
 piranna/nsh#patch-1
 bin-man
 bin-fs
 bin-pwd
-NodeOS/ifconfig
-slap
+
+# Network
+NodeOS/ip
+ntp-client
 dhcpjs
+NodeOS/ifconfig
+
+# Editors
+slap
+
+# Benchmarks
 performance
 loadtest
