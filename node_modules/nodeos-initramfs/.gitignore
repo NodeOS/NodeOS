@@ -1,3 +1,4 @@
 initramfs.cpio.gz
 obj/
 out/
+node_modules/

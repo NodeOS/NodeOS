@@ -77,6 +77,8 @@ var command = argv.shift()
 
 if(command)
 {
+  command = command.replace(/\s+$/, '')
+
   if(command === 'node')
   {
     // We are trying to execute a Node.js script, re-use the current instance.
