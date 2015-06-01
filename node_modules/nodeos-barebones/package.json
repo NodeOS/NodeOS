@@ -10,6 +10,12 @@
   },
   "author": "Jesús Leganés Combarro \"piranna\"",
   "license": "MIT",
+  "dependencies": {
+    "diff": "^1.4.0",
+    "download": "^4.1.2",
+    "download-status": "^2.1.1",
+    "got": "^3.2.0"
+  },
   "devDependencies": {
     "suppose": "NodeOS/node-suppose#patch-1"
   }

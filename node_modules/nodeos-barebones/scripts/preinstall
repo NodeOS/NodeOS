@@ -1,30 +1,77 @@
-#!/usr/bin/env bash
+#!/usr/bin/env node
 
-DEPS=`pwd`/deps
+var fs = require('fs')
 
+var Download = require('download')
+var got      = require('got')
+var progress = require('download-status')
 
-# Dependencies versions
-
-#NODEJS_VERSION=v`curl -s https://semver.io/node/stable`
-#NODEJS_VERSION=v`curl -s https://semver.io/node/unstable`
-NODEJS_VERSION=v0.11.14
-
-
-# Dependencies URLs
-
-NODEJS_URL=http://nodejs.org/dist/$NODEJS_VERSION/node-$NODEJS_VERSION.tar.gz
+var applyPatch = require('diff').applyPatch
 
 
-#
-# Node.js
-#
+// Source versions
 
-SRC_DIR=$DEPS/node
-if [[ ! -d $SRC_DIR ]]; then
-  mkdir -p $SRC_DIR                                                &&
-  curl -L $NODEJS_URL | tar xzf - -C $SRC_DIR --strip-components=1 || exit 10
+const NODEJS_VERSION = "v0.11.14"
 
-  # Patch OpenSSL to work with musl
-  curl -L https://raw.githubusercontent.com/maximeh/buildroot/master/package/openssl/openssl-004-musl-termios.patch \
-  | patch --silent -N -d $SRC_DIR/deps/openssl/openssl/crypto/ui || exit 11
-fi
+
+// Source URLs
+
+const NODEJS_URL="http://nodejs.org/dist/"+NODEJS_VERSION+"/node-"+NODEJS_VERSION+".tar.gz"
+
+
+//
+// Node.js
+//
+
+const SRC_DIR = 'deps/node'
+
+fs.exists(SRC_DIR, function(exists)
+{
+  if(exists) return
+
+  Download({ extract: true, strip: 1 })
+  .get(NODEJS_URL, SRC_DIR)
+//  .use(progress())
+  .run(function(error)
+  {
+    if(error) throw error;
+
+    // Patch OpenSSL to work with musl
+    const PATCH_URL = 'https://raw.githubusercontent.com/maximeh/buildroot/master/package/openssl/openssl-004-musl-termios.patch'
+
+    got(PATCH_URL, function(error, patch)
+    {
+      if(error) throw error;
+
+      const fileToPatch = SRC_DIR+'/deps/openssl/openssl/crypto/ui/ui_openssl.c'
+
+      fs.readFile(fileToPatch, {encoding: 'utf8'}, function(error, fileContent)
+      {
+        if(error) throw error;
+
+        var patchedContent = applyPatch(fileContent, patch)
+
+        fs.writeFile(fileToPatch, patchedContent, function(error)
+        {
+          if(error) throw error;
+
+          // Allow to inspect NodeOS version from inside Node.js
+          try
+          {
+            var version = require('../../../package.json').version
+          }
+          catch(e)
+          {
+            var version = '(unknown)'
+          }
+          var data = "exports.nodeos = '"+version+"'"
+
+          fs.appendFile(SRC_DIR+'/lib/os.js', data, function(error)
+          {
+            if(error) throw error;
+          })
+        })
+      })
+    })
+  })
+})

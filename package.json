@@ -30,6 +30,12 @@
   },
   "homepage": "http://node-os.com",
   "private": true,
+  "dependencies": {
+    "diff": "^1.4.0",
+    "download": "^4.1.2",
+    "download-status": "^2.1.1",
+    "got": "^3.2.0"
+  },
   "devDependencies": {
     "publish-release": "^1.0.2"
   }
