@@ -1,30 +1,61 @@
-#!/usr/bin/env bash
+#!/usr/bin/env node
 
-DEPS=`pwd`/deps
+var fs = require('fs')
 
-# Dependencies versions
+var cp = require('child_process')
 
-GENEXT2FS_VERSION=1.4.1
+var Download = require('download')
+var progress = require('download-status')
 
-# Dependencies URLs
 
-GENEXT2FS_URL=https://github.com/5paceManSpiff/genext2fs/archive/nodeos-$GENEXT2FS_VERSION.tar.gz
+// Dependencies versions
 
-#
-# genext2fs
-#
+const GENEXT2FS_VERSION = "1.4.1"
 
-SRC_DIR=$DEPS/genext2fs
-if [[ ! -d $SRC_DIR ]]; then
-  echo -e "Downloading genext2fs"
-  mkdir -p $SRC_DIR &&
-  curl -L $GENEXT2FS_URL | tar xzf - -C $SRC_DIR --strip-components=1 || exit 10
 
-  cd $SRC_DIR
-  $SRC_DIR/autogen.sh
-  $SRC_DIR/configure
-  make
+// Dependencies URLs
 
-  echo -e "${GRN}Successfully compiled genext2fs${CLR}"
-fi
+const GENEXT2FS_URL="https://github.com/5paceManSpiff/genext2fs/archive/nodeos-"+GENEXT2FS_VERSION+".tar.gz"
 
+
+//
+// genext2fs
+//
+
+const SRC_DIR='deps/genext2fs'
+
+fs.exists(SRC_DIR, function(exists)
+{
+  if(exists) return
+
+  process.stdout.write('Downloading genext2fs... ')
+
+  Download({ extract: true, strip: 1 })
+  .get(GENEXT2FS_URL, SRC_DIR)
+//  .use(progress())
+  .run(function(error)
+  {
+    if(error) throw error;
+
+    console.log('Done')
+
+    var options = {cwd: SRC_DIR}
+
+    cp.execFile('./autogen.sh', options, function(error)
+    {
+      if(error) throw error;
+
+      cp.execFile('./configure', options, function(error)
+      {
+        if(error) throw error;
+
+        cp.exec('make', options, function(error)
+        {
+          if(error) throw error;
+
+          console.log("Successfully compiled genext2fs")
+        })
+      })
+    })
+  })
+})

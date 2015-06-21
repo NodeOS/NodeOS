@@ -106,9 +106,13 @@ if [[ ! -d $OBJ_DIR ]]; then
     # blessed-contrib examples
     #
 
-    git clone https://github.com/yaronn/blessed-contrib.git $OBJ_DIR/blessed-contrib
+    BLESSED_URL=https://github.com/yaronn/blessed-contrib/archive/master.tar.gz
+    SRC_DIR=$OBJ_DIR/blessed-contrib
+
+    mkdir -p $SRC_DIR                                                 &&
+    curl -L $BLESSED_URL | tar xzf - -C $SRC_DIR --strip-components=1 &&
     (
-      cd $OBJ_DIR/blessed-contrib
+      cd $SRC_DIR
 
       CC=$TARGET-gcc             \
       CXX=$TARGET-g++            \

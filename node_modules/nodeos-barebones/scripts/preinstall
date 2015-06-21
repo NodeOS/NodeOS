@@ -29,12 +29,16 @@ fs.exists(SRC_DIR, function(exists)
 {
   if(exists) return
 
+  process.stdout.write('Downloading Node.js... ')
+
   Download({ extract: true, strip: 1 })
   .get(NODEJS_URL, SRC_DIR)
 //  .use(progress())
   .run(function(error)
   {
     if(error) throw error;
+
+    console.log('Done')
 
     // Patch OpenSSL to work with musl
     const PATCH_URL = 'https://raw.githubusercontent.com/maximeh/buildroot/master/package/openssl/openssl-004-musl-termios.patch'

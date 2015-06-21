@@ -1,31 +1,46 @@
-#!/usr/bin/env bash
+#!/usr/bin/env node
 
-DEPS=`pwd`/deps
+var fs = require('fs')
 
+var exec = require('child_process').exec
 
-BAREBONES=`pwd`/../nodeos-barebones
-
-TOOLCHAIN=$BAREBONES/node_modules/nodeos-cross-toolchain
-TOOLS=$TOOLCHAIN/out
-
-source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
+var Download = require('download')
+var progress = require('download-status')
 
 
-#
-# genfatfs
-#
+// Dependencies URLs
 
-SRC_DIR=$DEPS/genfatfs
-if [[ ! -d $SRC_DIR ]]; then
-  mkdir -p `dirname $SRC_DIR`
+const GENFATFS_URL="https://github.com/NodeOS/genfatfs/archive/master.tar.gz"
 
-  curl -L https://github.com/NodeOS/genfatfs/archive/master.zip > master.zip &&
-  unzip master.zip                                                           &&
-  mv genfatfs-master $SRC_DIR                                                &&
-  rm master.zip                                                              || exit 10
 
-  (
-    cd $SRC_DIR &&
-    $MAKE       || exit 22
-  ) || exit $?
-fi
+//
+// genfatfs
+//
+
+const SRC_DIR='deps/genfatfs'
+
+fs.exists(SRC_DIR, function(exists)
+{
+  if(exists) return
+
+  process.stdout.write('Downloading genfatfs... ')
+
+  Download({ extract: true, strip: 1 })
+  .get(GENFATFS_URL, SRC_DIR)
+//  .use(progress())
+  .run(function(error)
+  {
+    if(error) throw error;
+
+    console.log('Done')
+
+    var options = {cwd: SRC_DIR}
+
+    exec('make', options, function(error)
+    {
+      if(error) throw error;
+
+      console.log("Successfully compiled genfatfs")
+    })
+  })
+})
