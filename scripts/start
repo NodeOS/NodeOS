@@ -44,7 +44,7 @@ switch(process.argv[2])
   break
 
   default:
-    append += ' vga=0x318'  // 1024x768x24
+    append += ' vga=0x344'  // 1024x768x32
 }
 
 var command = 'qemu-system-'+cpu_family
@@ -55,6 +55,7 @@ var args =
   '--kernel', 'node_modules/nodeos-barebones/bzImage',
   '--initrd', 'node_modules/nodeos-initramfs/initramfs.cpio.gz',
   '-hda',     'node_modules/nodeos-usersfs/usersfs.img',
+  '-vga',     'std',
   '-append',  append
 ]
 
