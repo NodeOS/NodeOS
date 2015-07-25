@@ -12,11 +12,14 @@ NODE_DIR=$BAREBONES/deps/node
 TOOLCHAIN=$BAREBONES/node_modules/nodeos-cross-toolchain
 TOOLS=$TOOLCHAIN/out
 
-source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
+source $TOOLCHAIN/scripts/adjustEnvVars.sh &&
+source utils.sh                            || exit $?
 
 
 if [[ -z "$name" ]]; then name=initramfs; fi
 
+
+OBJ_DIR=$OBJECTS
 
 if [[ ! -d $OBJECTS ]]; then
   echo -e "${WHT}Generating initramfs${CLR}"
@@ -41,16 +44,7 @@ if [[ ! -d $OBJECTS ]]; then
     # Install system dependencies
     #
 
-    CC=$TARGET-gcc                  \
-    CXX=$TARGET-g++                 \
-    npm_config_prefix=$OBJECTS      \
-    $NODE_DIR/deps/npm/cli.js       \
-        install -g                  \
-        --loglevel warn             \
-        --arch=$NODE_ARCH           \
-        --nodedir=$NODE_DIR         \
-        --jobs=$JOBS                \
-        `grep -v "^#" packages.txt` || exit 210
+    eval "$NPMi" -g `grep -v "^#" packages.txt` || exit 210
 
     ln -fs bin/century $OBJECTS/init || exit 211
 

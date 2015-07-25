@@ -7,6 +7,8 @@ CLR="\e[0m"
 
 
 BAREBONES=`pwd`/../nodeos-barebones
+INITRAMFS=`pwd`/../nodeos-initramfs
+
 NODE_DIR=$BAREBONES/deps/node
 
 GENEXT2FS=`pwd`/deps/genext2fs/genext2fs
@@ -14,7 +16,8 @@ GENEXT2FS=`pwd`/deps/genext2fs/genext2fs
 TOOLCHAIN=$BAREBONES/node_modules/nodeos-cross-toolchain
 TOOLS=$TOOLCHAIN/out
 
-source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
+source $TOOLCHAIN/scripts/adjustEnvVars.sh &&
+source $INITRAMFS/scripts/utils.sh         || exit $?
 
 
 if [[ -z "$name" ]]; then name=usersfs; fi
@@ -36,16 +39,7 @@ if [[ ! -d $OBJ_DIR ]]; then
     # Install system dependencies
     #
 
-    CC=$TARGET-gcc                  \
-    CXX=$TARGET-g++                 \
-    npm_config_prefix=$OBJ_DIR      \
-    $NODE_DIR/deps/npm/cli.js       \
-        install -g                  \
-        --loglevel warn             \
-        --arch=$NODE_ARCH           \
-        --nodedir=$NODE_DIR         \
-        --jobs=$JOBS                \
-        `grep -v "^#" packages_root.txt` || exit 11
+    eval "$NPMi" -g `grep -v "^#" packages_root.txt` || exit 11
 
 
     #
@@ -83,16 +77,7 @@ if [[ ! -d $OBJ_DIR ]]; then
     # Install user dependencies
     #
 
-    CC=$TARGET-gcc                  \
-    CXX=$TARGET-g++                 \
-    npm_config_prefix=$OBJ_DIR      \
-    $NODE_DIR/deps/npm/cli.js       \
-        install -g                  \
-        --loglevel warn             \
-        --arch=$NODE_ARCH           \
-        --nodedir=$NODE_DIR         \
-        --jobs=$JOBS                \
-        `grep -v "^#" packages_nodeos.txt` || exit 31
+    eval "$NPMi" -g `grep -v "^#" packages_nodeos.txt` || exit 31
 
 
     #
@@ -114,12 +99,8 @@ if [[ ! -d $OBJ_DIR ]]; then
     (
       cd $SRC_DIR
 
-      CC=$TARGET-gcc             \
-      CXX=$TARGET-g++            \
-      npm_config_prefix=$OBJ_DIR \
-      $NODE_DIR/deps/npm/cli.js  \
-          install
-    ) || exit 33
+      eval "$NPMi" || exit 33
+    ) || err $?
 
 
     #
