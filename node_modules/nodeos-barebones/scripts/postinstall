@@ -7,7 +7,7 @@ CLR="\e[0m"
 # Check basic functions (boot and Node.js REPL) works as expected
 #
 
-npm install NodeOS/node-suppose#patch-1
+npm install jprichardson/node-suppose
 
 scripts/test || exit $?
 

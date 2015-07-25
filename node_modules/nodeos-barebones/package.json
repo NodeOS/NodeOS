@@ -17,6 +17,6 @@
     "got": "^3.2.0"
   },
   "devDependencies": {
-    "suppose": "NodeOS/node-suppose#patch-1"
+    "suppose": "jprichardson/node-suppose"
   }
 }

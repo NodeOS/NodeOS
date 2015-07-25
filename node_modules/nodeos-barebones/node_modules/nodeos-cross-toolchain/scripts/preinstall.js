@@ -11,10 +11,9 @@ var applyPatch = require('diff').applyPatch
 // Source versions
 
 const BINUTILS_VERSION = "2.25"
-const GCC_VERSION      = "5-20150616"
-//const GCC_VERSION      = "4.7.3"  // "4.9.2" "5.2.0"
-const LINUX_VERSION    = "4.0.4"
-const MUSL_VERSION     = "1.1.9"
+const GCC_VERSION      = "5.2.0"
+const LINUX_VERSION    = "4.1"
+const MUSL_VERSION     = "1.1.10"
 
 
 // Source URLs
@@ -69,6 +68,8 @@ function download_prerequisites()
         fs.copy('sunrpc/rpc/*.h', '/usr/include/rpc', function(error)
         {
           if(error) throw error;
+
+          console.log('Done')
         })
       })
     })
@@ -88,17 +89,15 @@ Download({ extract: true, strip: 1 })
 {
   if(error) throw error;
 
-  console.log('Done')
-
-  // Patch GCC to work with musl
-  const PATCH_URL = 'http://patches.clfs.org/embedded-dev/gcc-4.7.3-musl-1.patch'
-
-  got(PATCH_URL, function(error, patch)
-  {
-    if(error) throw error;
-
+//  // Patch GCC to work with musl
+//  const PATCH_URL = 'http://patches.clfs.org/embedded-dev/gcc-4.7.3-musl-1.patch'
+//
+//  got(PATCH_URL, function(error, patch)
+//  {
+//    if(error) throw error;
+//
 //      const fileToPatch = SRC_DIR+'/deps/openssl/openssl/crypto/ui/ui_openssl.c'
-
+//
 //    fs.readFile(fileToPatch, {encoding: 'utf8'}, function(error, fileContent)
 //    {
 //      if(error) throw error;
@@ -112,5 +111,5 @@ Download({ extract: true, strip: 1 })
         download_prerequisites()
 //      })
 //    })
-  })
+//  })
 })

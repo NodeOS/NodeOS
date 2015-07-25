@@ -215,3 +215,6 @@ if [[ ! -d $OBJ_DIR ]]; then
 
   echo -e "${GRN}Successfully compiled GCC final${CLR}"
 fi
+
+
+rm -rf $TOOLS/include || exit 60
