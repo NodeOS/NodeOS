@@ -13,7 +13,7 @@
     "install": "scripts/build",
     "start": "scripts/start",
     "test": "scripts/test",
-    "uninstall": "scripts/uninstall"
+    "unbuild": "scripts/unbuild"
   },
   "repository": {
     "type": "git",

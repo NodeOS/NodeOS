@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+
+(
+  cd node_modules/nodeos-barebones &&
+  npm run unbuild                  || exit 10
+) &&
+(
+  cd node_modules/nodeos-initramfs &&
+  npm run unbuild                  || exit 20
+) &&
+(
+  cd node_modules/nodeos-rootfs    &&
+  npm run unbuild                  || exit 30
+) &&
+(
+  cd node_modules/nodeos-usersfs   &&
+  npm run unbuild                  || exit 40
+) || exit $?

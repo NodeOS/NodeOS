@@ -6,7 +6,8 @@
     "postinstall": "scripts/postinstall",
     "preinstall": "scripts/preinstall",
     "start": "scripts/start",
-    "test": "scripts/test"
+    "test": "scripts/test",
+    "unbuild": "scripts/unbuild"
   },
   "author": "Jesús Leganés Combarro \"piranna\"",
   "license": "MIT",

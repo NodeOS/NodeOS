@@ -6,7 +6,8 @@
     "preinstall": "scripts/preinstall",
     "startImage": "scripts/startImage",
     "startIso": "scripts/startIso",
-    "test": "scripts/test"
+    "test": "scripts/test",
+    "unbuild": "scripts/unbuild"
   },
   "author": "Jesús Leganés Combarro \"piranna\"",
   "license": "MIT",

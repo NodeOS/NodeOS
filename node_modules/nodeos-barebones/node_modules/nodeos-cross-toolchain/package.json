@@ -8,7 +8,7 @@
     "postinstall": "scripts/postinstall",
     "preinstall": "scripts/preinstall",
     "test": "scripts/test",
-    "uninstall": "scripts/uninstall"
+    "unbuild": "scripts/unbuild"
   },
   "keywords": [
     "NodeOS",
