@@ -104,6 +104,22 @@ if [[ ! -d $OBJ_DIR ]]; then
 
 
     #
+    # node-canvas examples
+    #
+
+    CANVAS_URL=https://github.com/NodeOS/node-canvas/archive/master.tar.gz
+    SRC_DIR=$OBJ_DIR/node-canvas
+
+    mkdir -p $SRC_DIR                                                &&
+    curl -L $CANVAS_URL | tar xzf - -C $SRC_DIR --strip-components=1 &&
+    (
+      cd $SRC_DIR
+
+      eval "$NPMi" --has_cairo=false --has_X11=false || exit 34
+    ) || err $?
+
+
+    #
     # Copy nodeos user login info
     #
 
@@ -126,7 +142,7 @@ case $PLATFORM in
     docker build -t $name . || exit 40
   ;;
   pc_qemu | pc_iso | raspberry_qemu | raspberry_image)
-    DISK_SIZE=96  # Size in MB
+    DISK_SIZE=384  # Size in MB
 
     mkdir -p `dirname $OUT_DIR`
 
