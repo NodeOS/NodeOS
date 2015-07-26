@@ -41,7 +41,7 @@ fs.exists(SRC_DIR, function(exists)
     console.log('Done')
 
     // Patch OpenSSL to work with musl
-    const PATCH_URL = 'https://raw.githubusercontent.com/maximeh/buildroot/master/package/openssl/openssl-004-musl-termios.patch'
+    const PATCH_URL = 'https://raw.githubusercontent.com/maximeh/buildroot/0400322f2d4e28faa98e31815921f54106aeb2e6/package/openssl/openssl-004-musl-termios.patch'
 
     got(PATCH_URL, function(error, patch)
     {
