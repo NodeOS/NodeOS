@@ -4,7 +4,7 @@
   "description": "Cross-toolchain to build NodeOS based on Compressed Linux From Scratch Embedded",
   "main": "./out",
   "scripts": {
-    "install": "scripts/install",
+    "install": "scripts/build",
     "postinstall": "scripts/postinstall",
     "preinstall": "scripts/preinstall",
     "test": "scripts/test",

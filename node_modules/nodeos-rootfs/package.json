@@ -2,7 +2,7 @@
   "name": "nodeos-rootfs",
   "version": "0.0.0",
   "scripts": {
-    "install": "scripts/install",
+    "install": "scripts/build",
     "preinstall": "scripts/preinstall",
     "startImage": "scripts/startImage",
     "startIso": "scripts/startIso",

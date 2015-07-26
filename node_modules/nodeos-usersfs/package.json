@@ -2,7 +2,7 @@
   "name": "nodeos-usersfs",
   "version": "0.0.0",
   "scripts": {
-    "install": "scripts/install",
+    "install": "scripts/build",
     "preinstall": "scripts/preinstall",
     "start": "scripts/start",
     "test": "scripts/test"

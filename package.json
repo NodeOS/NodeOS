@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "BigRedButton": "scripts/BigRedButton",
-    "install": "scripts/install",
+    "install": "scripts/build",
     "start": "scripts/start",
     "test": "scripts/test",
     "uninstall": "scripts/uninstall"

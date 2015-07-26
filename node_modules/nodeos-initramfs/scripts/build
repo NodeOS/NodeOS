@@ -13,7 +13,7 @@ TOOLCHAIN=$BAREBONES/node_modules/nodeos-cross-toolchain
 TOOLS=$TOOLCHAIN/out
 
 source $TOOLCHAIN/scripts/adjustEnvVars.sh &&
-source utils.sh                            || exit $?
+source scripts/utils.sh                    || exit $?
 
 
 if [[ -z "$name" ]]; then name=initramfs; fi

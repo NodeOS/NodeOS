@@ -2,7 +2,7 @@
   "name": "nodeos-barebones",
   "version": "0.0.0",
   "scripts": {
-    "install": "scripts/install",
+    "install": "scripts/build",
     "postinstall": "scripts/postinstall",
     "preinstall": "scripts/preinstall",
     "start": "scripts/start",
