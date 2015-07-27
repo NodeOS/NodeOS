@@ -100,7 +100,7 @@ if [[ ! -d $OBJ_DIR ]]; then
       cd $SRC_DIR
 
       eval "$NPMi" || exit 33
-    ) || err $?
+    ) || exit $?
 
 
     #
@@ -116,7 +116,7 @@ if [[ ! -d $OBJ_DIR ]]; then
       cd $SRC_DIR
 
       eval "$NPMi" --has_cairo=false --has_X11=false || exit 34
-    ) || err $?
+    ) || exit $?
 
 
     #

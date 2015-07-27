@@ -58,7 +58,7 @@ function createDiskImage() {
   cat $ROOTFS  >> $OBJECTS                    &&
   cat $USERSFS >> $OBJECTS                    || exit 10
 
-  eval "echo \"$(< sfdisk.txt)\"" | /sbin/sfdisk -uS --force $OBJECTS || exit 11
+  eval "echo \"$(< share/sfdisk.txt)\"" | /sbin/sfdisk -uS --force $OBJECTS || exit 11
 }
 
 case $PLATFORM in
