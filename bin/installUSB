@@ -24,7 +24,7 @@ dd if=$USERSFS of=$DEVICE seek=$SIZE_ROOTFS || exit 11
 
 # Resize usersfs partition
 
-cat share/fdisk-installUSB.txt | fdisk $DEVICE || exit 12
+cat resources/fdisk-installUSB.txt | fdisk $DEVICE || exit 12
 
 e2fsck -f -y $PARTITION
 resize2fs -p $PARTITION || exit 13

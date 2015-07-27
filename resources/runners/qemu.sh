@@ -5,4 +5,4 @@ qemu-system-$CPU_FAMILY      \\
   --kernel bzImage           \\
   --initrd initramfs.cpio.gz \\
   -hda     usersfs.img       \\
-  -append  \"root=/dev/sda vga=0x318\"
+  -append  \"root=/dev/sda vga=0x344\"
