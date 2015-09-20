@@ -5,6 +5,7 @@
   "scripts": {
     "install": "scripts/build",
     "start": "scripts/start",
+    "preinstall": "scripts/preinstall",
     "test": "scripts/test",
     "unbuild": "scripts/unbuild"
   },

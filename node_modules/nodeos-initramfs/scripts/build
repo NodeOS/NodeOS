@@ -19,21 +19,69 @@ source scripts/utils.sh                    || exit $?
 if [[ -z "$name" ]]; then name=initramfs; fi
 
 
-OBJ_DIR=$OBJECTS
+#
+# FUSE
+#
 
-if [[ ! -d $OBJECTS ]]; then
+grep -q "CONFIG_FUSE_FS=y" $BAREBONES/obj/$CPU/linux/.config
+
+if [ $? -eq 0 ]; then
+  echo -e "${WHT}Compiling FUSE${CLR}"
+
+  SRC_DIR=`pwd`/deps/fuse
+  OBJ_DIR=$OBJECTS/fuse
+
+  if [[ ! -d $OBJ_DIR ]]; then
+    mkdir -p $OBJ_DIR || exit 10
+
+    (
+      cd $OBJ_DIR
+
+      # Configure
+  #    CROSS_COMPILE="$TARGET-"  \
+      MOUNT_FUSE_PATH=/bin  \
+      CC=$TARGET-gcc        \
+      CXX=$TARGET-g++       \
+      $SRC_DIR/configure    \
+          --prefix=/        \
+          --disable-example \
+          --disable-mtab    \
+          --disable-static  \
+          --disable-util    || exit 11
+
+      # Compile
+      $MAKE || exit 12
+
+      # Strip binary
+      $TARGET-strip lib/.libs/libfuse.so || exit 13
+    ) || err $?
+  fi
+
+  # Install
+  mkdir -p $OUT_DIR/lib                             &&
+  cp -d $OBJ_DIR/lib/.libs/libfuse.so* $OUT_DIR/lib || exit 14
+
+  echo -e "${GRN}Successfully compiled FUSE${CLR}"
+fi
+
+
+#
+# System dependencies
+#
+
+OBJ_DIR=$OBJECTS/initramfs
+
+if [[ ! -d $OBJ_DIR ]]; then
   echo -e "${WHT}Generating initramfs${CLR}"
 
-  mkdir -p $OBJECTS || exit 201
+  mkdir -p $OBJ_DIR || exit 20
 
   (
-    OBJ_DIR=$OBJECTS
-
     #case $PLATFORM in
     #  qemu)
     #    gunzip -c $BAREBONES/barebones.cpio.gz |
     #    (
-    #      cd "$OBJECTS";
+    #      cd "$OBJ_DIR";
     #      cpio -i -d -H newc --no-absolute-filenames
     #    ) || exit 201
     #  ;;
@@ -44,20 +92,20 @@ if [[ ! -d $OBJECTS ]]; then
     # Install system dependencies
     #
 
-    eval "$NPMi" -g `grep -v "^#" packages.txt` || exit 210
+    eval "$NPMi" -g `grep -v "^#" packages.txt` || exit 21
 
-    ln -fs bin/century $OBJECTS/init || exit 211
+    ln -fs bin/century $OBJ_DIR/init || exit 22
 
-    mkdir -p $OBJECTS/sbin                                    &&
-    ln -fs ../bin/nodeos-mount-filesystems $OBJECTS/sbin/init || exit 212
+    mkdir -p $OBJ_DIR/sbin                                    &&
+    ln -fs ../bin/nodeos-mount-filesystems $OBJ_DIR/sbin/init || exit 23
 
 
     #
     # /usr/bin/env
     #
 
-    mkdir -p  $OBJECTS/usr/bin     &&
-    cp env.js $OBJECTS/usr/bin/env || exit 220
+    mkdir -p  $OBJ_DIR/usr/bin     &&
+    cp env.js $OBJ_DIR/usr/bin/env || exit 24
   ) || err $?
 
   echo -e "${GRN}Successfully generated initramfs${CLR}"
@@ -69,21 +117,21 @@ fi
 #
 
 # Set initramfs files only accesible to root
-chmod -R u-w,go-rw "$OBJECTS"             &&
-chmod -R go+r      "$OBJECTS/usr/bin/env" || exit 230
+chmod -R u-w,go-rw "$OBJ_DIR"             &&
+chmod -R go+r      "$OBJ_DIR/usr/bin/env" || exit 30
 
 case $PLATFORM in
   docker)
-    docker build -t $name . || exit 231
+    docker build -t $name . || exit 31
   ;;
   pc_qemu | pc_iso | raspberry_qemu | raspberry_image)
     mkdir -p `dirname $OUT_DIR`
     (
-      cd "$OBJECTS";
+      cd "$OBJ_DIR";
       find | cpio --owner root:root -o -H newc | gzip
-    ) > $OUT_DIR || exit 232
+    ) > $OUT_DIR || exit 32
 
-    ln -sfv $OUT_DIR $name.cpio.gz || exit 28
+    ln -sfv $OUT_DIR $name.cpio.gz || exit 33
   ;;
 esac
 
