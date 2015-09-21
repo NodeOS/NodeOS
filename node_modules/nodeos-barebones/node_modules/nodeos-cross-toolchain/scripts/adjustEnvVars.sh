@@ -123,6 +123,7 @@ fi
 OBJECTS=`pwd`/obj/$CPU
 OUT_DIR=`pwd`/out/$CPU
 
+TOOLS=`realpath $TOOLS`
 PATH=$TOOLS/bin:/bin:/usr/bin
 
 SILENT="--silent LIBTOOLFLAGS=--silent"
@@ -134,5 +135,6 @@ MAKE="$MAKE1 --jobs=$JOBS"
 function err(){
   echo -e "${RED}Error compiling '${OBJ_DIR}'${CLR}"
   rm -rf $OBJ_DIR
+  rmdir -p --ignore-fail-on-non-empty `dirname $OBJ_DIR`
   exit $1
 }

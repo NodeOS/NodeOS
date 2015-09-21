@@ -10,10 +10,10 @@ var applyPatch = require('diff').applyPatch
 
 // Source versions
 
-const BINUTILS_VERSION = "2.25"
+const BINUTILS_VERSION = "2.25.1"
 const GCC_VERSION      = "5.2.0"
-const LINUX_VERSION    = "4.1"
-const MUSL_VERSION     = "1.1.10"
+const LINUX_VERSION    = "4.2"
+const MUSL_VERSION     = "1.1.11"
 
 
 // Source URLs
@@ -38,7 +38,7 @@ function download_prerequisites()
 
   const MPFR_VERSION = "3.1.2"
   const GMP_VERSION  = "6.0.0a"
-  const MPC_VERSION  = "1.0.2"  // 1.0.3
+  const MPC_VERSION  = "1.0.2"
 
 
   // Source URLs

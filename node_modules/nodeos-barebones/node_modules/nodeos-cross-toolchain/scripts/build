@@ -96,6 +96,9 @@ if [[ ! -d $OBJ_DIR ]]; then
 
   mkdir -p $OBJ_DIR || exit 30
 
+  # Remove old musl object files
+  rm -rf $OBJECTS/musl || exit 31
+
   (
     cd $OBJ_DIR
 
@@ -122,17 +125,17 @@ if [[ ! -d $OBJ_DIR ]]; then
         --with-mpfr-include=$SRC_DIR/mpfr/src \
         --with-mpfr-lib=`pwd`/mpfr/src/.libs  \
         --with-arch=$CPU                      \
-        --enable-languages=c                  || exit 31
+        --enable-languages=c                  || exit 32
 
     # Compile
-    $MAKE all-gcc all-target-libgcc || exit 32
+    $MAKE all-gcc all-target-libgcc || exit 33
 
     # Install
-    $MAKE install-gcc install-target-libgcc || exit 33
+    $MAKE install-gcc install-target-libgcc || exit 34
   ) || err $?
 
   # Remove object files
-  rm -rf $OBJ_DIR || exit 34
+  rm -rf $OBJ_DIR || exit 35
 
   echo -e "${GRN}Successfully compiled GCC static${CLR}"
 fi
