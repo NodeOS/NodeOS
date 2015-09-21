@@ -1,3 +1,7 @@
 #!/usr/bin/env sh
 
-rm -rf bzImage deps/ obj/ out/ || exit $?
+rm -rf bzImage deps/ obj/ out/ &&
+(
+  cd node_modules/nodeos-cross-toolchain &&
+  npm run unbuild                        || exit 40
+) || exit $?

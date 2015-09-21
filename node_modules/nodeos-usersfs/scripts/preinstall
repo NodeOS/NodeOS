@@ -32,7 +32,7 @@ fs.exists(SRC_DIR, function(exists)
 
   Download({ extract: true, strip: 1 })
   .get(GENEXT2FS_URL, SRC_DIR)
-//  .use(progress())
+  .use(progress())
   .run(function(error)
   {
     if(error) throw error;

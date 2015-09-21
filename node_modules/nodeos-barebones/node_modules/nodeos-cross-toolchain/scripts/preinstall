@@ -1,14 +1,17 @@
 #!/usr/bin/env bash
 
+set -o pipefail
+
+
 SOURCES=`pwd`/deps
 
 
 # Dependencies versions
 
-BINUTILS_VERSION=2.25
 GCC_VERSION=4.7.3
-LINUX_VERSION=4.1.3
-MUSL_VERSION=1.1.10
+BINUTILS_VERSION=2.25.1
+LINUX_VERSION=4.2
+MUSL_VERSION=1.1.11
 
 
 # Dependencies URLs
@@ -19,14 +22,28 @@ LINUX_URL=https://www.kernel.org/pub/linux/kernel/v4.x/linux-$LINUX_VERSION.tar.
 MUSL_URL=http://www.musl-libc.org/releases/musl-$MUSL_VERSION.tar.gz
 
 
+# Clean download directory on failure to be able to continue from the same point
+
+RED="\e[31m"
+CLR="\e[0m"
+
+function err(){
+  echo -e "${RED}Error downloading '${URL}'${CLR}"
+  rm -rf $SRC_DIR
+  rmdir -p --ignore-fail-on-non-empty `dirname $SRC_DIR`
+  exit $1
+}
+
+
 #
 # binutils
 #
 
+URL=$BINUTILS_URL
 SRC_DIR=$SOURCES/binutils
 if [[ ! -d $SRC_DIR ]]; then
-  mkdir -p $SRC_DIR                                                  &&
-  curl -L $BINUTILS_URL | tar xzf - -C $SRC_DIR --strip-components=1 || exit 10
+  mkdir -p $SRC_DIR                                         &&
+  curl -L $URL | tar xzf - -C $SRC_DIR --strip-components=1 || err 10
 fi
 
 
@@ -34,23 +51,23 @@ fi
 # gcc
 #
 
+URL=$GCC_URL
 SRC_DIR=$SOURCES/gcc
 if [[ ! -d $SRC_DIR ]]; then
-  mkdir -p $SRC_DIR                                             &&
-  curl -L $GCC_URL | tar xzf - -C $SRC_DIR --strip-components=1 &&
+  mkdir -p $SRC_DIR                                         &&
+  curl -L $URL | tar xzf - -C $SRC_DIR --strip-components=1 &&
   (
     cd $SRC_DIR
 
     # Patch GCC to work with musl
-    curl -L http://patches.clfs.org/embedded-dev/gcc-4.7.3-musl-1.patch | patch --silent -Np1 || exit 20
+    curl -L https://raw.githubusercontent.com/GregorR/musl-cross/master/patches/gcc-$GCC_VERSION-musl.diff | patch --silent -Np1 || exit 20
 
     # Download source code of mpfr, gmp & mpc
 #    contrib/download_prerequisites
     mkdir -p mpfr && curl -L http://ftpmirror.gnu.org/mpfr/mpfr-3.1.2.tar.xz | tar xJf - -C mpfr --strip-components=1 &&
     mkdir -p gmp  && curl -L http://ftpmirror.gnu.org/gmp/gmp-6.0.0a.tar.xz  | tar xJf - -C gmp  --strip-components=1 &&
     mkdir -p mpc  && curl -L http://ftpmirror.gnu.org/mpc/mpc-1.0.2.tar.gz   | tar xzf - -C mpc  --strip-components=1 || exit 21
-#    mkdir -p mpc  && curl -L http://ftpmirror.gnu.org/mpc/mpc-1.0.3.tar.gz   | tar xzf - -C mpc  --strip-components=1 || exit 21
-  ) || exit $?
+  ) || err $?
 fi
 
 
@@ -58,10 +75,11 @@ fi
 # Linux kernel headers
 #
 
+URL=$LINUX_URL
 SRC_DIR=$SOURCES/linux
 if [[ ! -d $SRC_DIR ]]; then
-  mkdir -p $SRC_DIR                                               &&
-  curl -L $LINUX_URL | tar xJf - -C $SRC_DIR --strip-components=1 || exit 30
+  mkdir -p $SRC_DIR                                         &&
+  curl -L $URL | tar xJf - -C $SRC_DIR --strip-components=1 || err 30
 fi
 
 
@@ -69,10 +87,11 @@ fi
 # musl
 #
 
+URL=$MUSL_URL
 SRC_DIR=$SOURCES/musl
 if [[ ! -d $SRC_DIR ]]; then
-  mkdir -p $SRC_DIR                                              &&
-  curl -L $MUSL_URL | tar xzf - -C $SRC_DIR --strip-components=1 || exit 40
+  mkdir -p $SRC_DIR                                         &&
+  curl -L $URL | tar xzf - -C $SRC_DIR --strip-components=1 || err 40
 fi
 
 
