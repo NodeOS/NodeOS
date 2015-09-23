@@ -110,6 +110,8 @@ if [[ ! -d $OBJ_DIR ]]; then
         --with-sysroot=$TOOLS/$TARGET         \
         --disable-nls                         \
         --disable-shared                      \
+        --disable-target-libsanitizer         \
+        --disable-libsanitizer                \
         --without-headers                     \
         --with-newlib                         \
         --disable-decimal-float               \
@@ -203,6 +205,8 @@ if [[ ! -d $OBJ_DIR ]]; then
         --enable-c99                          \
         --enable-long-long                    \
         --disable-libmudflap                  \
+        --disable-target-libsanitizer         \
+        --disable-libsanitizer                \
         --disable-multilib                    \
         --with-mpfr-include=$SRC_DIR/mpfr/src \
         --with-mpfr-lib=`pwd`/mpfr/src/.libs  \
