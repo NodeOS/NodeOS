@@ -24,8 +24,9 @@ if [[ -z "$name" ]]; then name=initramfs; fi
 #
 
 grep -q "CONFIG_FUSE_FS=y" $BAREBONES/obj/$CPU/linux/.config
+HAS_FUSE=$?
 
-if [ $? -eq 0 ]; then
+if [ $HAS_FUSE -eq 0 ]; then
   echo -e "${WHT}Compiling FUSE${CLR}"
 
   SRC_DIR=`pwd`/deps/fuse
@@ -58,8 +59,8 @@ if [ $? -eq 0 ]; then
   fi
 
   # Install
-  mkdir -p $OUT_DIR/lib                             &&
-  cp -d $OBJ_DIR/lib/.libs/libfuse.so* $OUT_DIR/lib || exit 14
+  chmod -R u+w $OBJECTS/initramfs &&
+  rm    -rf    $OBJECTS/initramfs || exit 14
 
   echo -e "${GRN}Successfully compiled FUSE${CLR}"
 fi
@@ -87,6 +88,14 @@ if [[ ! -d $OBJ_DIR ]]; then
     #  ;;
     #esac
 
+    #
+    # Install FUSE
+    #
+
+    if [ $HAS_FUSE -eq 0 ]; then
+      mkdir -p $OBJ_DIR/lib                                  &&
+      cp -d $OBJECTS/fuse/lib/.libs/libfuse.so* $OBJ_DIR/lib || exit 14
+    fi
 
     #
     # Install system dependencies

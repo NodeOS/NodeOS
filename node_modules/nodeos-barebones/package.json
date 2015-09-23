@@ -12,7 +12,7 @@
   "author": "Jesús Leganés Combarro \"piranna\"",
   "license": "MIT",
   "dependencies": {
-    "diff": "^2.1.1",
+    "diff": "^1.4.0",
     "download": "^4.2.0",
     "download-status": "^2.2.1",
     "got": "^4.2.0"
