@@ -58,9 +58,13 @@ if [ $HAS_FUSE -eq 0 ]; then
     ) || err $?
   fi
 
-  # Install
-  chmod -R u+w $OBJECTS/initramfs &&
-  rm    -rf    $OBJECTS/initramfs || exit 14
+  # Force re-creation of initramfs
+  OBJ_DIR=$OBJECTS/initramfs
+
+  if [[ -d $OBJ_DIR ]]; then
+    chmod -R u+w $OBJ_DIR &&
+    rm    -rf    $OBJ_DIR || exit 14
+  fi
 
   echo -e "${GRN}Successfully compiled FUSE${CLR}"
 fi
@@ -101,7 +105,10 @@ if [[ ! -d $OBJ_DIR ]]; then
     # Install system dependencies
     #
 
-    eval "$NPMi" -g `grep -v "^#" packages.txt` || exit 21
+    eval "$NPMi" -g `grep -v "^#" packages.txt`      \
+        --fuse__include_dirs=`pwd`/deps/fuse/include \
+        --fuse__library_dirs=$OBJECTS/fuse/lib/.libs \
+        --fuse__libraries=-lfuse                     || exit 23
 
     ln -fs bin/century $OBJ_DIR/init || exit 24
 
