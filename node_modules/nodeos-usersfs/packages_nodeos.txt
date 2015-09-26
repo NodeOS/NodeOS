@@ -13,7 +13,7 @@ dhcpjs
 NodeOS/ifconfig
 
 # Editors
-slap
+#slap
 
 # Benchmarks
 performance

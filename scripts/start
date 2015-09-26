@@ -76,7 +76,7 @@ try
 if(kvm.test(contents) === false)
 {
   // disable kvm
-  console.log("Your computer does not support kvm.  NodeOS will be slower without it.");
+  console.log("Your computer does not support kvm. NodeOS will be slower without it.");
   args.shift();
 }
 

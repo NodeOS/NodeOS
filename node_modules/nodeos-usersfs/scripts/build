@@ -70,53 +70,53 @@ OBJ_DIR=$OBJECTS/nodeos
 if [[ ! -d $OBJ_DIR ]]; then
   echo -e "${WHT}Generating nodeos user folder${CLR}"
 
-  mkdir -p $OBJ_DIR || exit 30
+  mkdir -p $OBJ_DIR || exit 20
 
   (
     #
     # Install user dependencies
     #
 
-    eval "$NPMi" -g `grep -v "^#" packages_nodeos.txt` || exit 31
+    eval "$NPMi" -g `grep -v "^#" packages_nodeos.txt` || exit 21
 
 
     #
     # Dummy init file for the user
     #
 
-    cp init.js $OBJ_DIR/init || exit 32
+    cp init.js $OBJ_DIR/init || exit 22
 
 
+    # #
+    # # blessed-contrib examples
+    # #
     #
-    # blessed-contrib examples
+    # BLESSED_URL=https://github.com/yaronn/blessed-contrib/archive/master.tar.gz
+    # SRC_DIR=$OBJ_DIR/blessed-contrib
     #
-
-    BLESSED_URL=https://github.com/yaronn/blessed-contrib/archive/master.tar.gz
-    SRC_DIR=$OBJ_DIR/blessed-contrib
-
-    mkdir -p $SRC_DIR                                                 &&
-    curl -L $BLESSED_URL | tar xzf - -C $SRC_DIR --strip-components=1 &&
-    (
-      cd $SRC_DIR
-
-      eval "$NPMi" || exit 33
-    ) || exit $?
-
-
+    # mkdir -p $SRC_DIR                                                 &&
+    # curl -L $BLESSED_URL | tar xzf - -C $SRC_DIR --strip-components=1 &&
+    # (
+    #   cd $SRC_DIR
     #
-    # node-canvas examples
+    #   eval "$NPMi" || exit 23
+    # ) || exit $?
     #
-
-    CANVAS_URL=https://github.com/NodeOS/node-canvas/archive/master.tar.gz
-    SRC_DIR=$OBJ_DIR/node-canvas
-
-    mkdir -p $SRC_DIR                                                &&
-    curl -L $CANVAS_URL | tar xzf - -C $SRC_DIR --strip-components=1 &&
-    (
-      cd $SRC_DIR
-
-      eval "$NPMi" --has_cairo=false --has_X11=false || exit 34
-    ) || exit $?
+    #
+    # #
+    # # node-canvas examples
+    # #
+    #
+    # CANVAS_URL=https://github.com/NodeOS/node-canvas/archive/master.tar.gz
+    # SRC_DIR=$OBJ_DIR/node-canvas
+    #
+    # mkdir -p $SRC_DIR                                                &&
+    # curl -L $CANVAS_URL | tar xzf - -C $SRC_DIR --strip-components=1 &&
+    # (
+    #   cd $SRC_DIR
+    #
+    #   eval "$NPMi" --has_cairo=false --has_X11=false || exit 24
+    # ) || exit $?
 
 
     #
@@ -125,7 +125,7 @@ if [[ ! -d $OBJ_DIR ]]; then
 
     mkdir -p $OBJ_DIR/etc        &&
     cp logon.json  $OBJ_DIR/etc/ &&
-    cp resolv.conf $OBJ_DIR/etc/ || exit 34
+    cp resolv.conf $OBJ_DIR/etc/ || exit 24
   ) || err $?
 
   echo -e "${GRN}Successfully generated nodeos user folder${CLR}"
@@ -139,7 +139,7 @@ fi
 case $PLATFORM in
   docker)
     chmod -R go= "$HOME"    &&
-    docker build -t $name . || exit 40
+    docker build -t $name . || exit 30
   ;;
   pc_qemu | pc_iso | raspberry_qemu | raspberry_image)
     DISK_SIZE=384  # Size in MB
@@ -153,13 +153,13 @@ case $PLATFORM in
         --reserved-percentage    0   \
         --creator-os linux           \
         --allow-holes                \
-        --squash $OUT_DIR            || exit 41
+        --squash $OUT_DIR            || exit 31
 
-    /sbin/tune2fs -j $OUT_DIR || exit 42
+    /sbin/tune2fs -j $OUT_DIR || exit 32
 
 #    scripts/debugfs.chownr $OUT_DIR 1 nodeos
 
-    ln -sfv $OUT_DIR $name.img || exit 43
+    ln -sfv $OUT_DIR $name.img || exit 33
   ;;
 esac
 

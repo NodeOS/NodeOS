@@ -84,7 +84,7 @@ if [[ ! -d $OBJ_DIR ]]; then
     #    (
     #      cd "$OBJ_DIR";
     #      cpio -i -d -H newc --no-absolute-filenames
-    #    ) || exit 201
+    #    ) || exit 21
     #  ;;
     #esac
 
@@ -94,7 +94,7 @@ if [[ ! -d $OBJ_DIR ]]; then
 
     if [ $HAS_FUSE -eq 0 ]; then
       mkdir -p $OBJ_DIR/lib                                  &&
-      cp -d $OBJECTS/fuse/lib/.libs/libfuse.so* $OBJ_DIR/lib || exit 14
+      cp -d $OBJECTS/fuse/lib/.libs/libfuse.so* $OBJ_DIR/lib || exit 22
     fi
 
     #
@@ -103,10 +103,10 @@ if [[ ! -d $OBJ_DIR ]]; then
 
     eval "$NPMi" -g `grep -v "^#" packages.txt` || exit 21
 
-    ln -fs bin/century $OBJ_DIR/init || exit 22
+    ln -fs bin/century $OBJ_DIR/init || exit 24
 
     mkdir -p $OBJ_DIR/sbin                                    &&
-    ln -fs ../bin/nodeos-mount-filesystems $OBJ_DIR/sbin/init || exit 23
+    ln -fs ../bin/nodeos-mount-filesystems $OBJ_DIR/sbin/init || exit 25
 
 
     #
@@ -114,7 +114,7 @@ if [[ ! -d $OBJ_DIR ]]; then
     #
 
     mkdir -p  $OBJ_DIR/usr/bin     &&
-    cp env.js $OBJ_DIR/usr/bin/env || exit 24
+    cp env.js $OBJ_DIR/usr/bin/env || exit 26
   ) || err $?
 
   echo -e "${GRN}Successfully generated initramfs${CLR}"

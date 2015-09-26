@@ -31,7 +31,7 @@
   "homepage": "http://node-os.com",
   "private": true,
   "dependencies": {
-    "diff": "^1.4.0",
+    "diff": "^2.1.2",
     "download": "^4.2.0",
     "download-status": "^2.2.1",
     "fs-extra": "^0.24.0",
