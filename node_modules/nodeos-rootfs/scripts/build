@@ -63,7 +63,7 @@ function createPartitionImage() {
       --root $OBJECTS     \
       $OUT_DIR            || exit 21
 
-  ln -sfv $OUT_DIR $name.img || exit 22
+  ln -sf $OUT_DIR $name.img || exit 22
 }
 
 function createEfiImage() {
@@ -126,7 +126,7 @@ function createIsoImage() {
     $OBJECTS              &&
   isohybrid $OUT_DIR      || exit 32
 
-  ln -sfv $OUT_DIR $name.iso || exit 33
+  ln -sf $OUT_DIR $name.iso || exit 33
 }
 
 case $PLATFORM in

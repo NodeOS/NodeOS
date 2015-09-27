@@ -159,7 +159,7 @@ case $PLATFORM in
 
 #    scripts/debugfs.chownr $OUT_DIR 1 nodeos
 
-    ln -sfv $OUT_DIR $name.img || exit 33
+    ln -sf $OUT_DIR $name.img || exit 33
   ;;
 esac
 

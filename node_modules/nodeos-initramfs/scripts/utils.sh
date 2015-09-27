@@ -3,7 +3,7 @@ NPMi='CC=$TARGET-gcc             \
       npm_config_prefix=$OBJ_DIR \
       $NODE_DIR/deps/npm/cli.js  \
         install                  \
-        --loglevel warn          \
+        --silent                 \
         --arch=$NODE_ARCH        \
         --nodedir=$NODE_DIR      \
         --jobs=$JOBS             '

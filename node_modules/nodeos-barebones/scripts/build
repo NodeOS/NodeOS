@@ -34,8 +34,8 @@ if [[ ! -d $OBJ_DIR ]]; then
     CC=$TARGET-gcc            \
     CXX=$TARGET-g++           \
     $SRC_DIR/configure        \
-        --dest-cpu=$NODE_ARCH \
         --prefix=/            \
+        --dest-cpu=$NODE_ARCH \
         --dest-os=linux       \
         --without-dtrace      \
         --without-npm         \
@@ -120,7 +120,7 @@ if [[ ! -d $OBJ_DIR ]]; then
 
       echo -e "${GRN}Successfully compiled Linux${CLR}"
 
-      ln -sfv $OUT_DIR/linux bzImage || exit 29
+      ln -sf $OUT_DIR/linux bzImage || exit 29
     ;;
   esac
 fi

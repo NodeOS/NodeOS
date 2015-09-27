@@ -123,7 +123,9 @@ fi
 OBJECTS=`pwd`/obj/$CPU
 OUT_DIR=`pwd`/out/$CPU
 
-TOOLS=`realpath -s $TOOLS`
+if [[ $TOOLS ]]; then
+  TOOLS=`realpath -s $TOOLS`
+fi
 PATH=$TOOLS/bin:/bin:/usr/bin
 
 SILENT="--silent LIBTOOLFLAGS=--silent"

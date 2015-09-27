@@ -44,6 +44,7 @@ if [ $HAS_FUSE -eq 0 ]; then
       CC=$TARGET-gcc        \
       CXX=$TARGET-g++       \
       $SRC_DIR/configure    \
+          --silent          \
           --prefix=/        \
           --host=$TARGET    \
           --disable-example \

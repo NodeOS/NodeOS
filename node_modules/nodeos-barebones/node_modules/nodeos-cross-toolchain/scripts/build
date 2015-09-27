@@ -15,9 +15,9 @@ TOOLS=`pwd`/out
 source scripts/adjustEnvVars.sh || exit $?
 
 
-mkdir -p     $TOOLS/$TARGET       &&
-ln -sfnv .   $TOOLS/$TARGET/usr   &&
-ln -sfnv lib $TOOLS/$TARGET/lib64 || exit 2
+mkdir -p    $TOOLS/$TARGET       &&
+ln -sfn .   $TOOLS/$TARGET/usr   &&
+ln -sfn lib $TOOLS/$TARGET/lib64 || exit 2
 
 
 #
@@ -160,9 +160,10 @@ if [[ ! -d $OBJ_DIR ]]; then
     # Configure
     CROSS_COMPILE="$TARGET-" \
     $SRC_DIR/configure       \
+        --silent             \
         --prefix=/           \
-        --disable-static     \
-        --target=$TARGET     || exit 41
+        --target=$TARGET     \
+        --disable-static     || exit 41
 
     # Compile
     CROSS_COMPILE="$TARGET-" $MAKE || exit 42

@@ -67,10 +67,10 @@ case $PLATFORM in
   ;;
 esac
 
-ln -sfv node_modules/nodeos-barebones/bzImage           .
-ln -sfv node_modules/nodeos-initramfs/initramfs.cpio.gz .
-ln -sfv node_modules/nodeos-rootfs/rootfs.iso           .
-ln -sfv node_modules/nodeos-usersfs/usersfs.img         .
+ln -sf node_modules/nodeos-barebones/bzImage           .
+ln -sf node_modules/nodeos-initramfs/initramfs.cpio.gz .
+ln -sf node_modules/nodeos-rootfs/rootfs.iso           .
+ln -sf node_modules/nodeos-usersfs/usersfs.img         .
 
 if [[ ! -z "$RELEASE" ]]; then
   OUT_DIR=`pwd`/out/$CPU_FAMILY
