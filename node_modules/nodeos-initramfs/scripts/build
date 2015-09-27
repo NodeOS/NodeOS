@@ -45,6 +45,7 @@ if [ $HAS_FUSE -eq 0 ]; then
       CXX=$TARGET-g++       \
       $SRC_DIR/configure    \
           --prefix=/        \
+          --host=$TARGET    \
           --disable-example \
           --disable-mtab    \
           --disable-static  \
