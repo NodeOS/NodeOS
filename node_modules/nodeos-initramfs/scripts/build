@@ -136,7 +136,7 @@ fi
 
 # Set initramfs files only accesible to root
 chmod -R u-w,go-rw "$OBJ_DIR"             &&
-chmod -R go+r      "$OBJ_DIR/usr/bin/env" || exit 30
+chmod -R o+r       "$OBJ_DIR/usr/bin/env" || exit 30
 
 case $PLATFORM in
   docker)

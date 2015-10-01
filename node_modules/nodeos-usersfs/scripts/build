@@ -57,6 +57,9 @@ if [[ ! -d $OBJ_DIR ]]; then
     ln -sf bin/forever-starter $OBJ_DIR/init || exit 13
   ) || err $?
 
+  # Force re-creation of usersfs
+  rm -rf $OUT_DIR || exit 14
+
   echo -e "${GRN}Successfully generated root user folder${CLR}"
 fi
 
@@ -128,6 +131,9 @@ if [[ ! -d $OBJ_DIR ]]; then
     cp resolv.conf $OBJ_DIR/etc/ || exit 24
   ) || err $?
 
+  # Force re-creation of usersfs
+  rm -rf $OUT_DIR || exit 25
+
   echo -e "${GRN}Successfully generated nodeos user folder${CLR}"
 fi
 
@@ -136,32 +142,33 @@ fi
 # Wrap the system up and pack it
 #
 
-case $PLATFORM in
-  docker)
-    chmod -R go= "$HOME"    &&
-    docker build -t $name . || exit 30
-  ;;
-  pc_qemu | pc_iso | raspberry_qemu | raspberry_image)
-    DISK_SIZE=384  # Size in MB
+if [[ ! -f $OUT_DIR ]]; then
+  case $PLATFORM in
+    docker)
+      chmod -R go= "$HOME"    &&
+      docker build -t $name . || exit 30
+    ;;
+    pc_qemu | pc_iso | raspberry_qemu | raspberry_image)
+      DISK_SIZE=384  # Size in MB
 
-    mkdir -p `dirname $OUT_DIR`
+      mkdir -p `dirname $OUT_DIR`
 
-    $GENEXT2FS -b $((DISK_SIZE*1024)) \
-        --root $OBJECTS              \
-        --block-size          1024   \
-        --bytes-per-inode     4096   \
-        --reserved-percentage    0   \
-        --creator-os linux           \
-        --allow-holes                \
-        --squash $OUT_DIR            || exit 31
+      $GENEXT2FS -b $((DISK_SIZE*1024)) \
+          --root $OBJECTS              \
+          --block-size          1024   \
+          --bytes-per-inode     4096   \
+          --reserved-percentage    0   \
+          --creator-os linux           \
+          --allow-holes                \
+          --squash $OUT_DIR            || exit 31
 
-    /sbin/tune2fs -j $OUT_DIR || exit 32
+      /sbin/tune2fs -j $OUT_DIR > /dev/null    || exit 32
+      scripts/debugfs.chownr $OUT_DIR nodeos 1 || exit 33
 
-#    scripts/debugfs.chownr $OUT_DIR 1 nodeos
-
-    ln -sf $OUT_DIR $name.img || exit 33
-  ;;
-esac
+      ln -sf $OUT_DIR $name.img || exit 34
+    ;;
+  esac
+fi
 
 
 echo -e "${GRN}Successfully built Layer-3 image '$name'${CLR}"
