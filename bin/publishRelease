@@ -11,6 +11,9 @@ if(!token)
 
 const tag = (new Date()).toISOString().substr(0,10)
 
+var branch = process.env.BRANCH_NAME
+if(branch && branch !== 'master') tag += ' ('+branch+')'
+
 var opts =
 {
   token: token,
