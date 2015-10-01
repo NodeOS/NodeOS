@@ -47,12 +47,14 @@ function download_prerequisites()
   const GMP_URL  = "http://ftpmirror.gnu.org/gmp/gmp-"+GMP_VERSION+".tar.xz"
   const MPC_URL  = "http://ftpmirror.gnu.org/mpc/mpc-"+MPC_VERSION+".tar.gz"
 
-  Download({ extract: true, strip: 1 })
+  var download = Download({ extract: true, strip: 1 })
   .get(MPFR_URL, 'mpfr')
   .get(GMP_URL,  'gmp')
   .get(MPC_URL,  'mpc')
-  //.use(progress())
-  .run(function(error)
+
+  if(!process.env.CI) download.use(progress())
+
+  download.run(function(error)
   {
     if(error) throw error;
 

@@ -28,10 +28,11 @@ exists(SRC_DIR, function(exists)
 
   process.stdout.write('Downloading FUSE... ')
 
-  Download({ extract: true, strip: 1 })
-  .get(FUSE_URL, SRC_DIR)
-  .use(progress())
-  .run(function(error)
+  var download = Download({ extract: true, strip: 1 }).get(FUSE_URL, SRC_DIR)
+  
+  if(!process.env.CI) download.use(progress())
+
+  download.run(function(error)
   {
     if(error) throw error;
 
