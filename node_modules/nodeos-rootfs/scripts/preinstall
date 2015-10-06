@@ -119,12 +119,12 @@ function(downloads)
   {
     if(error) throw error;
 
+    if(!process.env.CI) console.log('Done')
+
     async.series(downloads.filter(notUndefinedAction).map(getAction),
     function(argument)
     {
       if(error) throw error;
-
-      console.log('Done')
     })
   })
 })

@@ -128,7 +128,7 @@ if [[ $TOOLS ]]; then
 fi
 PATH=$TOOLS/bin:/bin:/usr/bin
 
-SILENT="--silent LIBTOOLFLAGS=--silent"
+SILENT="--silent LIBTOOLFLAGS=--silent V="
 MAKE1="make $SILENT"
 MAKE="$MAKE1 --jobs=$JOBS"
 
