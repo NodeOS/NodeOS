@@ -134,10 +134,11 @@ function createIsoImage() {
     -eltorito-alt-boot    \
     -efi-boot efiboot.img \
       -no-emul-boot       \
-    $OBJECTS              &&
-  isohybrid $OUT_DIR      || exit 43
+    $OBJECTS              || exit 43
 
-  ln -sf $OUT_DIR $name.iso || exit 44
+  $SRC_DIR/bios/utils/isohybrid $OUT_DIR || exit 44
+
+  ln -sf $OUT_DIR $name.iso || exit 45
 }
 
 case $PLATFORM in
