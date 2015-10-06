@@ -19,7 +19,7 @@ apt-get install -qq -y bc qemu-system
 apt-get install -qq -y nodejs-legacy
 
 # rootfs
-apt-get install -qq -y genisoimage xorriso
+apt-get install -qq -y genisoimage
 
 # usersfs
 apt-get install -qq -y autoconf automake
