@@ -6,20 +6,20 @@
 #
 
 # Update cache
-apt-get update -qq
+apt-get update -qq || exit 1
 
 
 # cross-compiler
-apt-get install -qq -y gcc texinfo
+apt-get install -qq -y gcc texinfo || exit 10
 
 # barebones
-apt-get install -qq -y bc qemu-system
+apt-get install -qq -y bc qemu-system || exit 11
 
 # initramfs
-apt-get install -qq -y nodejs-legacy
+apt-get install -qq -y nodejs-legacy || exit 12
 
 # rootfs
-apt-get install -qq -y genisoimage
+apt-get install -qq -y genisoimage libuuid1:i386 || exit 13
 
 # usersfs
-apt-get install -qq -y autoconf automake
+apt-get install -qq -y autoconf automake || exit 14

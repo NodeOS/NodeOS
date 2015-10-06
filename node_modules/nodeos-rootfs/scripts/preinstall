@@ -8,8 +8,8 @@ var async    = require('async')
 var Download = require('download')
 var progress = require('download-status')
 
-var Decompress = require('decompress')
-var tarxz      = require('decompress-tarxz')
+//var Decompress = require('decompress')
+//var tarxz      = require('decompress-tarxz')
 
 
 const DEPS='deps'
