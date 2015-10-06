@@ -24,7 +24,8 @@ const SYSLINUX_VERSION = "6.03"
 // Dependencies URLs
 
 const GENFATFS_URL="https://github.com/NodeOS/genfatfs/archive/"+GENFATFS_VERSION+".tar.gz"
-const SYSLINUX_URL="https://www.kernel.org/pub/linux/utils/boot/syslinux/syslinux-"+SYSLINUX_VERSION+".tar.xz"
+//const SYSLINUX_URL="https://www.kernel.org/pub/linux/utils/boot/syslinux/syslinux-"+SYSLINUX_VERSION+".tar.xz"
+const SYSLINUX_URL="https://www.kernel.org/pub/linux/utils/boot/syslinux/syslinux-"+SYSLINUX_VERSION+".tar.gz"
 
 
 //
@@ -45,14 +46,14 @@ var downloads =
   {
     name: 'syslinux',
     url: SYSLINUX_URL,
-    action: function(callback)
-    {
-      Decompress()
-          .src(join(DEPS, this.name, 'syslinux-'+SYSLINUX_VERSION+'.tar.xz'))
-          .dest(join(DEPS, this.name))
-          .use(tarxz({strip: 1}))
-          .run(callback)
-    }
+    // action: function(callback)
+    // {
+    //   Decompress()
+    //       .src(join(DEPS, this.name, 'syslinux-'+SYSLINUX_VERSION+'.tar.xz'))
+    //       .dest(join(DEPS, this.name))
+    //       .use(tarxz({strip: 1}))
+    //       .run(callback)
+    // }
   }
 ]
 

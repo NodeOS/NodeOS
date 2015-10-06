@@ -77,20 +77,20 @@ function createPartitionImage() {
 
 function createEfiImage() {
   rm -rf $OBJ_DIR   &&
-  mkdir -p $OBJ_DIR || exit 11
+  mkdir -p $OBJ_DIR || exit 30
 
-  cp syslinux.cfg $OBJ_DIR || exit 41
+  cp syslinux.cfg $OBJ_DIR || exit 31
 
   # Copy kernel and initramfs on the ISO image
 
   cp $BAREBONES/bzImage           $OBJ_DIR/kernel.img &&
-  cp $INITRAMFS/initramfs.cpio.gz $OBJ_DIR/initram.gz || exit 30
+  cp $INITRAMFS/initramfs.cpio.gz $OBJ_DIR/initram.gz || exit 32
 
   # Copy SysLinux files
 
-  cp $SRC_DIR/efi$BITS/efi/syslinux.efi               \
-     $SRC_DIR/efi$BITS/elflink/ldlinux/ldlinux.e$BITS \
-     $OBJ_DIR                                         || exit 31
+  cp $SRC_DIR/efi$BITS/efi/syslinux.efi                     \
+     $SRC_DIR/efi$BITS/com32/elflink/ldlinux/ldlinux.e$BITS \
+     $OBJ_DIR                                               || exit 33
 
   # Create EFI disk image
 
@@ -99,24 +99,24 @@ function createEfiImage() {
 
   $GENFATFS -b $DISK_SIZE \
     --root $OBJ_DIR       \
-    $EFIBOOT_IMG          || exit 21
+    $EFIBOOT_IMG          || exit 34
 }
 
 function createIsoImage() {
   # Create EFI boot image
   createEfiImage           || exit $?
-  cp $EFIBOOT_IMG $OBJECTS || exit 30
+  cp $EFIBOOT_IMG $OBJECTS || exit 40
 
   # Copy kernel and initramfs on the ISO image
 
   cp $BAREBONES/bzImage           $OBJECTS/kernel.img &&
-  cp $INITRAMFS/initramfs.cpio.gz $OBJECTS/initram.gz || exit 30
+  cp $INITRAMFS/initramfs.cpio.gz $OBJECTS/initram.gz || exit 41
 
   # Copy IsoLinux files
 
   cp $SRC_DIR/bios/core/isolinux.bin                 \
      $SRC_DIR/bios/com32/elflink/ldlinux/ldlinux.c32 \
-     $OBJECTS                                        || exit 31
+     $OBJECTS                                        || exit 42
 
   # Create ISO image
 
@@ -133,18 +133,18 @@ function createIsoImage() {
     -efi-boot $EFIBOOT_IMG \
       -no-emul-boot        \
     $OBJECTS               &&
-  isohybrid $OUT_DIR       || exit 32
+  isohybrid $OUT_DIR       || exit 43
 
-  ln -sf $OUT_DIR $name.iso || exit 33
+  ln -sf $OUT_DIR $name.iso || exit 44
 }
 
 case $PLATFORM in
   docker)
-    docker build -t $name . || exit 40
+    docker build -t $name . || exit 50
   ;;
 
   pc_iso)
-    cp syslinux.cfg $OBJECTS || exit 42
+    cp syslinux.cfg $OBJECTS || exit 51
 
     createIsoImage || exit $?
   ;;
