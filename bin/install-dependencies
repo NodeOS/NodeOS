@@ -2,23 +2,11 @@
 
 #
 # Install Ubuntu dependencies
-# The dependencies of one level would be also needed for the next ones
+# The dependencies of one level would also be needed for the next ones
 #
 
 # Update cache
 apt-get update -qq
-
-
-# Ubuntu 14.04 LTS has an old version of syslinux (4.05), install the Utopic one
-apt-get install -qq -y mtools
-
-wget -P deps \
-  http://mirrors.kernel.org/ubuntu/pool/main/s/syslinux/isolinux_6.03~pre18+dfsg-1ubuntu1_amd64.deb       \
-  http://mirrors.kernel.org/ubuntu/pool/main/s/syslinux/syslinux_6.03~pre18+dfsg-1ubuntu1_amd64.deb       \
-  http://mirrors.kernel.org/ubuntu/pool/main/s/syslinux/syslinux-common_6.03~pre18+dfsg-1ubuntu1_all.deb  \
-  http://mirrors.kernel.org/ubuntu/pool/main/s/syslinux/syslinux-utils_6.03~pre18+dfsg-1ubuntu1_amd64.deb \
-  http://mirrors.kernel.org/ubuntu/pool/universe/s/syslinux/syslinux-efi_6.03~pre18+dfsg-1ubuntu1_amd64.deb
-dpkg -i deps/*.deb
 
 
 # cross-compiler
@@ -31,7 +19,7 @@ apt-get install -qq -y bc qemu-system
 apt-get install -qq -y nodejs-legacy
 
 # rootfs
-apt-get install -qq -y genisoimage isolinux syslinux syslinux-efi xorriso
+apt-get install -qq -y genisoimage xorriso
 
 # usersfs
 apt-get install -qq -y autoconf automake

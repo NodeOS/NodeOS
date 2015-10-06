@@ -30,6 +30,15 @@ mkdir -p $OBJECTS || exit 11
 
 
 #
+# SysLinux
+#
+
+SRC_DIR=`pwd`/deps/syslinux
+OBJ_DIR=`pwd`/obj/efiboot
+EFIBOOT_IMG=`pwd`/obj/efiboot.img
+
+
+#
 # Wrap the system up and pack it
 #
 
@@ -67,21 +76,21 @@ function createPartitionImage() {
 }
 
 function createEfiImage() {
-  rm -rf efiboot
-  mkdir -p efiboot || exit 11
+  rm -rf $OBJ_DIR   &&
+  mkdir -p $OBJ_DIR || exit 11
 
-  cp syslinux.cfg efiboot || exit 41
+  cp syslinux.cfg $OBJ_DIR || exit 41
 
   # Copy kernel and initramfs on the ISO image
 
-  cp $BAREBONES/bzImage           efiboot/kernel.img &&
-  cp $INITRAMFS/initramfs.cpio.gz efiboot/initram.gz || exit 30
+  cp $BAREBONES/bzImage           $OBJ_DIR/kernel.img &&
+  cp $INITRAMFS/initramfs.cpio.gz $OBJ_DIR/initram.gz || exit 30
 
   # Copy SysLinux files
 
-  cp /usr/lib/SYSLINUX.EFI/efi$BITS/syslinux.efi       \
-     /usr/lib/syslinux/modules/efi$BITS/ldlinux.e$BITS \
-     efiboot                                           || exit 31
+  cp $SRC_DIR/efi$BITS/efi/syslinux.efi               \
+     $SRC_DIR/efi$BITS/elflink/ldlinux/ldlinux.e$BITS \
+     $OBJ_DIR                                         || exit 31
 
   # Create EFI disk image
 
@@ -89,14 +98,14 @@ function createEfiImage() {
   DISK_SIZE=$((16*1024))
 
   $GENFATFS -b $DISK_SIZE \
-    --root efiboot      \
-    efiboot.img         || exit 21
+    --root $OBJ_DIR       \
+    $EFIBOOT_IMG          || exit 21
 }
 
 function createIsoImage() {
   # Create EFI boot image
-  createEfiImage          || exit $?
-  cp efiboot.img $OBJECTS || exit 30
+  createEfiImage           || exit $?
+  cp $EFIBOOT_IMG $OBJECTS || exit 30
 
   # Copy kernel and initramfs on the ISO image
 
@@ -105,26 +114,26 @@ function createIsoImage() {
 
   # Copy IsoLinux files
 
-  cp /usr/lib/ISOLINUX/isolinux.bin             \
-     /usr/lib/syslinux/modules/bios/ldlinux.c32 \
-     $OBJECTS                                   || exit 31
+  cp $SRC_DIR/bios/core/isolinux.bin                 \
+     $SRC_DIR/bios/com32/elflink/ldlinux/ldlinux.c32 \
+     $OBJECTS                                        || exit 31
 
   # Create ISO image
 
   OUT_DIR=$OUT_DIR/iso
   mkdir -p `dirname $OUT_DIR`
 
-  genisoimage -o $OUT_DIR \
-    -c boot.cat           \
-    -b isolinux.bin       \
-      -no-emul-boot       \
-      -boot-load-size 4   \
-      -boot-info-table    \
-    -eltorito-alt-boot    \
-    -efi-boot efiboot.img \
-      -no-emul-boot       \
-    $OBJECTS              &&
-  isohybrid $OUT_DIR      || exit 32
+  genisoimage -o $OUT_DIR  \
+    -c boot.cat            \
+    -b isolinux.bin        \
+      -no-emul-boot        \
+      -boot-load-size 4    \
+      -boot-info-table     \
+    -eltorito-alt-boot     \
+    -efi-boot $EFIBOOT_IMG \
+      -no-emul-boot        \
+    $OBJECTS               &&
+  isohybrid $OUT_DIR       || exit 32
 
   ln -sf $OUT_DIR $name.iso || exit 33
 }

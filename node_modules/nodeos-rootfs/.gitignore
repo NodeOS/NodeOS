@@ -1,7 +1,5 @@
-rootfs.img
 deps/
 obj/
 out/
+rootfs.img
 rootfs.iso
-efiboot
-efiboot.img

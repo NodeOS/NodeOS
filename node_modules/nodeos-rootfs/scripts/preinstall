@@ -1,47 +1,129 @@
 #!/usr/bin/env node
 
-var fs = require('fs')
-
 var exec = require('child_process').exec
+var fs   = require('fs')
+var join = require('path').join
 
+var async    = require('async')
 var Download = require('download')
 var progress = require('download-status')
+
+var Decompress = require('decompress')
+var tarxz      = require('decompress-tarxz')
+
+
+const DEPS='deps'
+
+
+// Source versions
+
+const GENFATFS_VERSION = "master"
+const SYSLINUX_VERSION = "6.03"
 
 
 // Dependencies URLs
 
-const GENFATFS_URL="https://github.com/NodeOS/genfatfs/archive/master.tar.gz"
+const GENFATFS_URL="https://github.com/NodeOS/genfatfs/archive/"+GENFATFS_VERSION+".tar.gz"
+const SYSLINUX_URL="https://www.kernel.org/pub/linux/utils/boot/syslinux/syslinux-"+SYSLINUX_VERSION+".tar.xz"
 
 
 //
-// genfatfs
+// Download dependencies
 //
 
-const SRC_DIR='deps/genfatfs'
+var downloads =
+[
+  {
+    name: 'genfatfs',
+    url: GENFATFS_URL,
+    action: function(callback)
+    {
+      exec('make', {cwd: join(DEPS, this.name)}, callback)
+    }
+  },
 
-fs.exists(SRC_DIR, function(exists)
+  {
+    name: 'syslinux',
+    url: SYSLINUX_URL,
+    action: function(callback)
+    {
+      Decompress()
+          .src(join(DEPS, this.name, 'syslinux-'+SYSLINUX_VERSION+'.tar.xz'))
+          .dest(join(DEPS, this.name))
+          .use(tarxz({strip: 1}))
+          .run(callback)
+    }
+  }
+]
+
+
+function addUrl(item)
 {
-  if(exists) return
+  this.get(item.url, join(DEPS, item.name))
+}
 
-  process.stdout.write('Downloading genfatfs... ')
+function getName(item)
+{
+  return item.name
+}
 
-  var download = Download({ extract: true, strip: 1 }).get(GENFATFS_URL, SRC_DIR)
+function getAction(item)
+{
+  return function(callback)
+  {
+    item.action(function(error)
+    {
+      if(error) return callback(error)
 
+      console.log("Successfully compiled",item.name)
+      callback()
+    })
+  }
+}
+
+function getNames(downloads)
+{
+  var names = downloads.map(getName)
+  var last  = names.pop()
+
+  var result = names.join(', ')
+
+  if(names.length) result += ' and '
+
+  return result + last
+}
+
+function notUndefinedAction(item)
+{
+  return item.action !== undefined
+}
+
+
+async.reject(downloads, function(item, callback)
+{
+  fs.exists(join(DEPS, item.name), callback)
+},
+function(downloads)
+{
+  if(!downloads.length) return
+
+  process.stdout.write('Downloading '+getNames(downloads)+'... ')
+
+  var download = Download({ extract: true, strip: 1 })
   if(!process.env.CI) download.use(progress())
+
+  downloads.forEach(addUrl, download)
 
   download.run(function(error)
   {
     if(error) throw error;
 
-    console.log('Done')
-
-    var options = {cwd: SRC_DIR}
-
-    exec('make', options, function(error)
+    async.series(downloads.filter(notUndefinedAction).map(getAction),
+    function(argument)
     {
       if(error) throw error;
 
-      console.log("Successfully compiled genfatfs")
+      console.log('Done')
     })
   })
 })
