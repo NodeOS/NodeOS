@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# [ToDo] include test for Node.js binary without virtual machine
+# LD_LIBRARY_PATH=lib lib/libc.so bin/node
+
 GRN="\e[32m"
 CLR="\e[0m"
 

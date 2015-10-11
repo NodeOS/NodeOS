@@ -1,21 +1,4 @@
 #
-# Basic directories
-#
-
-dir /    0111 0 0
-dir /bin 0555 0 0
-dir /dev 0000 0 0
-dir /lib 0111 0 0
-
-
-#
-# Console device so we can interact with the system before devfs is mounted
-#
-
-nod /dev/console 0600 0 0 c 5 1
-
-
-#
 # Node.js required shared libraries
 #
 

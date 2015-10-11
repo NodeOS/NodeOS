@@ -1,4 +1,5 @@
+.vagga/
 deps/
-bzImage
 obj/
 out/
+bzImage

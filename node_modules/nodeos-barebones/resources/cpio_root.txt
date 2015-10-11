@@ -1,0 +1,5 @@
+#
+# Basic directories
+#
+
+dir / 0111 0 0

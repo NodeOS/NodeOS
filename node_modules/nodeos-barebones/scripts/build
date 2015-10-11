@@ -63,21 +63,36 @@ fi
 SRC_DIR=$TOOLCHAIN/deps/linux
 OBJ_DIR=$OBJECTS/linux
 
-if [[ ! -d $OBJ_DIR ]]; then
-  mkdir -p $OBJ_DIR
+mkdir -p $OBJ_DIR
 
-  # Generate initramfs configuration file
-  eval "echo \"$(< cpio.txt)\"" > $OBJ_DIR/cpio.txt || exit 20
+# Generate initramfs configuration file
+cat resources/cpio_root.txt > $OBJ_DIR/cpio.txt || exit 20
+if [[ $PLATFORM -ne vagga ]]; then
+  cat resources/cpio_standalone.txt >> $OBJ_DIR/cpio.txt || exit 21
+fi
+eval "echo \"$(< resources/cpio_common.txt)\"" >> $OBJ_DIR/cpio.txt || exit 22
 
-  case $PLATFORM in
-    docker)
-      ( cd $SRC_DIR/usr && $MAKE O=$OBJ_DIR gen_init_cpio ) || exit 21
+case $PLATFORM in
+# docker)
+#   ( cd $SRC_DIR/usr && $MAKE O=$OBJ_DIR gen_init_cpio ) || exit 30
+#
+#   $OBJ_DIR/usr/gen_init_cpio $OBJ_DIR/cpio.txt | \
+#       scripts/cpio2tar                         | \
+#       docker import - $name                    || exit 31
+# ;;
 
-    `$OBJ_DIR/usr/gen_init_cpio $OBJ_DIR/cpio.txt` | \
-        tar -cf - --format ustar @-                | \
-        docker import - $name                      || exit 22
-    ;;
-    pc_qemu | pc_iso | raspberry_qemu | raspberry_image)
+  vagga)
+#    if [[ ! -f $OUT_DIR/initramfs.tar ]]; then
+      ( cd $SRC_DIR/usr && $MAKE O=$OBJ_DIR gen_init_cpio ) || exit 30
+
+      mkdir -p $OUT_DIR                             &&
+      $OBJ_DIR/usr/gen_init_cpio $OBJ_DIR/cpio.txt  | \
+          scripts/cpio2tar > $OUT_DIR/barebones.tar || exit 31
+#    fi
+  ;;
+
+  pc_* | raspberry)
+    if [[ ! -f $OUT_DIR/linux ]]; then
       echo -e "${WHT}Compiling Linux${CLR}"
 
       MAKE="$MAKE O=$OBJ_DIR ARCH=$ARCH CROSS_COMPILE=$TARGET-"
@@ -86,41 +101,46 @@ if [[ ! -d $OBJ_DIR ]]; then
         cd $SRC_DIR
 
         # Configure
-        $MAKE1 mrproper || exit 23
+        $MAKE1 mrproper || exit 40
 
         case $PLATFORM in
-          pc_qemu | pc_iso)
+          pc_*)
             DEFCONFIG=${CPU_FAMILY}_defconfig
           ;;
 
-          raspberry_qemu | raspberry_image)
+          raspberry)
             DEFCONFIG=bcm2835_defconfig
+          ;;
+
+          *)
+            echo "Unknown platform '$PLATFORM'"
+            exit 41
           ;;
         esac
 
-        $MAKE $DEFCONFIG || exit 24
+        $MAKE $DEFCONFIG || exit 42
       ) || err $?
 
       # Set NodeOS custom configuration
-      cat config >> $OBJ_DIR/.config || err 25
+      cat resources/config >> $OBJ_DIR/.config || err 43
 
       (
         cd $SRC_DIR
 
         # Fix and clean configuration
-        $MAKE oldnoconfig || exit 26
+        $MAKE oldnoconfig || exit 44
 
         # Compile
-        $MAKE || exit 27
+        $MAKE || exit 45
       ) || err $?
 
       # Install
       mkdir -p $OUT_DIR                                  &&
-      cp $OBJ_DIR/arch/$ARCH/boot/bzImage $OUT_DIR/linux || err 28
+      cp $OBJ_DIR/arch/$ARCH/boot/bzImage $OUT_DIR/linux || err 46
 
       echo -e "${GRN}Successfully compiled Linux${CLR}"
+    fi
 
-      ln -sf $OUT_DIR/linux bzImage || exit 29
-    ;;
-  esac
-fi
+    ln -sf $OUT_DIR/linux bzImage || err 47
+  ;;
+esac

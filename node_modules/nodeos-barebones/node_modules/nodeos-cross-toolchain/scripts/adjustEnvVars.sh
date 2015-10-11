@@ -40,20 +40,20 @@ esac
 # default CPU for each platform
 if [[ -z "$CPU" ]]; then
   case $PLATFORM in
-    pc_qemu | pc_iso)
-#      CPU=native  # https://gcc.gnu.org/onlinedocs/gcc-4.9.2/gcc/i386-and-x86-64-Options.html#i386-and-x86-64-Options
-      CPU=`uname -m`
-    ;;
-
-    docker_32 | pc_qemu_32 | pc_iso_32)
+    *_32)
       CPU=i686
     ;;
-    docker_64 | pc_qemu_64 | pc_iso_64)
+    *_64)
       CPU=x86_64
     ;;
 
-    raspberry_qemu | raspberry_image)
+    raspberry_*)
       CPU=armv6
+    ;;
+
+    *)
+#      CPU=native  # https://gcc.gnu.org/onlinedocs/gcc-4.9.2/gcc/i386-and-x86-64-Options.html#i386-and-x86-64-Options
+      CPU=`uname -m`
     ;;
   esac
 fi
@@ -67,18 +67,18 @@ esac
 
 # Normalice platforms
 case $PLATFORM in
-  docker_32|docker_64)
+  docker_*)
     PLATFORM=docker
   ;;
 
-  pc_qemu_32 | pc_qemu_64)
+  pc_qemu_*)
     PLATFORM=pc_qemu
   ;;
-  pc_iso_32 | pc_iso_64)
+  pc_iso_*)
     PLATFORM=pc_iso
   ;;
 
-#  raspberry_qemu)
+#  raspberry_*)
 #    PLATFORM=raspberry
 #  ;;
 esac
