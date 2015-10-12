@@ -11,6 +11,7 @@
   "scripts": {
     "BigRedButton": "scripts/BigRedButton",
     "install": "scripts/build",
+    "publish": "scripts/publish",
     "start": "scripts/start",
     "test": "scripts/test",
     "unbuild": "scripts/unbuild"
