@@ -6,6 +6,7 @@
 #
 
 # Update cache
+dpkg --add-architecture i386
 apt-get update -qq || exit 1
 
 
