@@ -1,24 +1,41 @@
-#!/usr/bin/env bash
+#!/usr/bin/env node
 
-SOURCES=`pwd`/deps
+var exists = require('fs').exists
 
-
-# Dependencies versions
-
-FUSE_VERSION=2.9.4
+var Download = require('download')
+var progress = require('download-status')
 
 
-# Dependencies URLs
+// Source versions
 
-FUSE_URL=http://downloads.sourceforge.net/fuse/fuse-$FUSE_VERSION.tar.gz
+const FUSE_VERSION = "2.9.4"
 
 
-#
-# FUSE
-#
+// Source URLs
 
-SRC_DIR=$SOURCES/fuse
-if [[ ! -d $SRC_DIR ]]; then
-  mkdir -p $SRC_DIR                                              &&
-  curl -L $FUSE_URL | tar xzf - -C $SRC_DIR --strip-components=1 || exit 10
-fi
+const FUSE_URL="http://downloads.sourceforge.net/fuse/fuse-"+FUSE_VERSION+".tar.gz"
+
+
+//
+// FUSE
+//
+
+const SRC_DIR = 'deps/fuse'
+
+exists(SRC_DIR, function(exists)
+{
+  if(exists) return
+
+  process.stdout.write('Downloading FUSE... ')
+
+  var download = Download({ extract: true, strip: 1 }).get(FUSE_URL, SRC_DIR)
+  
+  if(!process.env.CI) download.use(progress())
+
+  download.run(function(error)
+  {
+    if(error) throw error;
+
+    console.log('Done')
+  })
+})

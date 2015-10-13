@@ -1,4 +1,5 @@
 initramfs.cpio.gz
+node_modules/
+deps/
 obj/
 out/
-node_modules/
