@@ -5,10 +5,12 @@ var readlinkSync = require('fs').readlinkSync
 var suppose = require('suppose')
 
 
-var cpu = readlinkSync('bzImage').split('/');
+var link = readlinkSync('out/latest').split('/');
+
+var cpu = link[link.length-2]
 
 var cpu_family;
-switch(cpu[cpu.length-2])
+switch(cpu)
 {
   case 'armv6':
     cpu_family = 'arm'
@@ -43,7 +45,7 @@ var args =
 [
 //  '-enable-kvm',  // Give problems running inside VMs, like Travis-CI
   '-nographic',
-  '--kernel', 'bzImage',
+  '--kernel', 'out/latest',
   '-append',  'console=ttyS0'
 ]
 

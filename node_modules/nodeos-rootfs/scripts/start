@@ -4,10 +4,13 @@ var readlinkSync = require('fs').readlinkSync
 var spawn        = require('child_process').spawn
 
 
-var cpu = readlinkSync('rootfs.img').split('/');
+var link = readlinkSync('out/latest').split('/');
+
+var cpu  = link[link.length-2]
+var type = link[link.length-1]
 
 var cpu_family;
-switch(cpu[cpu.length-2])
+switch(cpu)
 {
   case 'armv6':
     cpu_family = 'arm'
@@ -28,12 +31,21 @@ switch(cpu[cpu.length-2])
 }
 
 var command = 'qemu-system-'+cpu_family
+var args    = ['-enable-kvm']
 
-var args =
-[
-  '-enable-kvm',
-  '-hda', 'rootfs.img'
-]
+switch(type)
+{
+  case 'iso':
+    args.push(['-cdrom', 'out/latest'])
+  break
+
+  case 'img':
+    args.push(['-hda', 'out/latest'])
+  break
+
+  default:
+    throw 'Unknown rootfs type "'+type+'"'
+}
 
 spawn(command, args, {stdio: 'inherit'})
 .on('error', console.trace.bind(console))

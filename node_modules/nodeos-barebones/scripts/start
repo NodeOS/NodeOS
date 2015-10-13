@@ -4,10 +4,12 @@ var readlinkSync = require('fs').readlinkSync
 var spawn        = require('child_process').spawn
 
 
-var cpu = readlinkSync('bzImage').split('/');
+var link = readlinkSync('out/latest').split('/');
+
+var cpu = link[link.length-2]
 
 var cpu_family;
-switch(cpu[cpu.length-2])
+switch(cpu)
 {
   case 'armv6':
     cpu_family = 'arm'
@@ -32,7 +34,7 @@ var command = 'qemu-system-'+cpu_family
 var args =
 [
   '-enable-kvm',
-  '--kernel', 'bzImage'
+  '--kernel', 'out/latest'
 ]
 
 switch(process.argv[2])

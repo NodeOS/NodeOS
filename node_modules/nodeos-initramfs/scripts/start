@@ -4,10 +4,12 @@ var readlinkSync = require('fs').readlinkSync
 var spawn        = require('child_process').spawn
 
 
-var cpu = readlinkSync('initramfs.cpio.gz').split('/');
+var link = readlinkSync('out/latest').split('/');
+
+var cpu = link[link.length-1]
 
 var cpu_family;
-switch(cpu[cpu.length-1])
+switch(cpu)
 {
   case 'armv6':
     cpu_family = 'arm'
@@ -33,8 +35,8 @@ var args =
 [
   '-enable-kvm',
   '-nographic',
-  '--kernel', '../nodeos-barebones/bzImage',
-  '--initrd', 'initramfs.cpio.gz'
+  '--kernel', '../nodeos-barebones/out/latest',
+  '--initrd', 'out/latest'
 ]
 
 switch(process.argv[2])
