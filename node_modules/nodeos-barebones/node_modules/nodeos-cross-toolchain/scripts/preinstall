@@ -10,7 +10,7 @@ SOURCES=`pwd`/deps
 
 BINUTILS_VERSION=2.25.1
 GCC_VERSION=4.7.3
-LINUX_VERSION=4.2
+LINUX_VERSION=4.2.3
 MUSL_VERSION=1.1.11
 
 
@@ -18,7 +18,7 @@ MUSL_VERSION=1.1.11
 
 BINUTILS_URL=http://ftpmirror.gnu.org/binutils/binutils-$BINUTILS_VERSION.tar.gz
 GCC_URL=http://ftpmirror.gnu.org/gcc/gcc-$GCC_VERSION/gcc-$GCC_VERSION.tar.gz
-LINUX_URL=https://www.kernel.org/pub/linux/kernel/v4.x/linux-$LINUX_VERSION.tar.bz2
+LINUX_URL=https://www.kernel.org/pub/linux/kernel/v4.x/linux-$LINUX_VERSION.tar.gz
 MUSL_URL=http://www.musl-libc.org/releases/musl-$MUSL_VERSION.tar.gz
 
 
@@ -64,8 +64,8 @@ if [[ ! -d $SRC_DIR ]]; then
 
     # Download source code of mpfr, gmp & mpc
 #    contrib/download_prerequisites
-    mkdir -p mpfr && curl -L http://ftpmirror.gnu.org/mpfr/mpfr-3.1.2.tar.bz2 | tar xJf - -C mpfr --strip-components=1 &&
-    mkdir -p gmp  && curl -L http://ftpmirror.gnu.org/gmp/gmp-6.0.0a.tar.bz2  | tar xJf - -C gmp  --strip-components=1 &&
+    mkdir -p mpfr && curl -L http://ftpmirror.gnu.org/mpfr/mpfr-3.1.2.tar.bz2 | tar xjf - -C mpfr --strip-components=1 &&
+    mkdir -p gmp  && curl -L http://ftpmirror.gnu.org/gmp/gmp-6.0.0a.tar.bz2  | tar xjf - -C gmp  --strip-components=1 &&
     mkdir -p mpc  && curl -L http://ftpmirror.gnu.org/mpc/mpc-1.0.2.tar.gz    | tar xzf - -C mpc  --strip-components=1 || exit 21
   ) || err $?
 fi
@@ -79,7 +79,7 @@ URL=$LINUX_URL
 SRC_DIR=$SOURCES/linux
 if [[ ! -d $SRC_DIR ]]; then
   mkdir -p $SRC_DIR                                         &&
-  curl -L $URL | tar xJf - -C $SRC_DIR --strip-components=1 || err 30
+  curl -L $URL | tar xzf - -C $SRC_DIR --strip-components=1 || err 30
 fi
 
 

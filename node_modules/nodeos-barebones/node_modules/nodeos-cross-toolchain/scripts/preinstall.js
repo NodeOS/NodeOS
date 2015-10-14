@@ -18,7 +18,7 @@ const DEPS='deps'
 
 const BINUTILS_VERSION = "2.25.1"
 const GCC_VERSION      = "4.7.3"  // "5.2.0"
-const LINUX_VERSION    = "4.2"
+const LINUX_VERSION    = "4.2.3"
 const MUSL_VERSION     = "1.1.11"
 
 
@@ -34,7 +34,7 @@ const MUSL_URL     = "http://www.musl-libc.org/releases/musl-"+MUSL_VERSION+".ta
 // binutils, gcc, Linux & musl
 //
 
-function download_prerequisites(callback)
+function download_prerequisites(name, callback)
 {
   // Download source code of mpfr, gmp & mpc
 //    contrib/download_prerequisites
@@ -53,9 +53,9 @@ function download_prerequisites(callback)
   const MPC_URL  = "http://ftpmirror.gnu.org/mpc/mpc-"+MPC_VERSION+".tar.gz"
 
   var download = Download({ extract: true, strip: 1 })
-  .get(MPFR_URL, 'mpfr')
-  .get(GMP_URL,  'gmp')
-  .get(MPC_URL,  'mpc')
+  .get(MPFR_URL, join(DEPS, name, 'mpfr'))
+  .get(GMP_URL,  join(DEPS, name, 'gmp'))
+  .get(MPC_URL,  join(DEPS, name, 'mpc'))
 
   if(!process.env.CI) download.use(progress())
 
@@ -109,7 +109,7 @@ var downloads =
       //      {
       //        if(error) throw error;
 
-              download_prerequisites(callback)
+              download_prerequisites(this.name, callback)
       //      })
       //    })
       //  })
@@ -142,16 +142,7 @@ function getName(item)
 
 function getAction(item)
 {
-  return function(callback)
-  {
-    item.action(function(error)
-    {
-      if(error) return callback(error)
-
-      console.log("Successfully compiled",item.name)
-      callback()
-    })
-  }
+  return item.action
 }
 
 function getNames(downloads)
