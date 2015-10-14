@@ -27,27 +27,28 @@ function chown(path, options, callback)
     {
       if(error) return callback(error)
 
-      if(options.recursive)
-        return async.eachSeries(files, function(stat, callback)
-        {
-          var name = stat.name
-          if(name === '.' || name === '..') return callback()
+      if(!options.recursive) return callback()
 
-          var filepath = join(path, name)
+      async.eachSeries(files, function(stat, callback)
+      {
+        var name = stat.name
+        if(name === '.' || name === '..') return callback()
 
-          if(isNaN(stat.size))
-            return chown(filepath, options, callback)
+        var filepath = join(path, name)
 
-          async.series(
-          [
-            debugfs.set_uid.bind(debugfs, filepath, uid),
-            debugfs.set_gid.bind(debugfs, filepath, gid)
-          ],
-          callback)
-        },
+        // Directory
+        if(isNaN(stat.size))
+          return chown(filepath, options, callback)
+
+        // File
+        async.series(
+        [
+          debugfs.set_uid.bind(debugfs, filepath, uid),
+          debugfs.set_gid.bind(debugfs, filepath, gid)
+        ],
         callback)
-
-      callback()
+      },
+      callback)
     })
   })
 }

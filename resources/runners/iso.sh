@@ -2,5 +2,5 @@
 
 qemu-system-$CPU_FAMILY \\
   -enable-kvm           \\
-  -hda rootfs.iso       \\
-  -hdb usersfs.img
+  -hda rootfs           \\
+  -hdb usersfs

@@ -5,10 +5,12 @@ var fs = require('fs');
 var spawn = require('child_process').spawn
 
 
-var cpu = fs.readlinkSync('node_modules/nodeos-barebones/bzImage').split('/');
+var link = fs.readlinkSync('out/latest').split('/');
+
+var cpu = link[link.length-2]
 
 var cpu_family;
-switch(cpu[cpu.length-2])
+switch(cpu)
 {
   case 'armv6':
     cpu_family = 'arm'
@@ -52,9 +54,9 @@ var command = 'qemu-system-'+cpu_family
 var args =
 [
   '-enable-kvm',
-  '--kernel', 'node_modules/nodeos-barebones/bzImage',
-  '--initrd', 'node_modules/nodeos-initramfs/initramfs.cpio.gz',
-  '-hda',     'node_modules/nodeos-usersfs/usersfs.img',
+  '--kernel', 'out/latest/barebones',
+  '--initrd', 'out/latest/initramfs',
+  '-hda',     'out/latest/usersfs',
   '-vga',     'std',
   '-append',  append
 ]

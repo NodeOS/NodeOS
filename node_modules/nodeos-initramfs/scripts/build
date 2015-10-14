@@ -112,10 +112,14 @@ if [[ ! -d $OBJ_DIR ]]; then
         --fuse__library_dirs=$OBJECTS/fuse/lib/.libs \
         --fuse__libraries=-lfuse                     || exit 23
 
-    ln -fs bin/century $OBJ_DIR/init || exit 24
+    if [[ $PLATFORM -ne vagga ]]; then
+      ln -fs bin/century $OBJ_DIR/init || exit 24
 
-    mkdir -p $OBJ_DIR/sbin                                    &&
-    ln -fs ../bin/nodeos-mount-filesystems $OBJ_DIR/sbin/init || exit 25
+      mkdir -p $OBJ_DIR/sbin                                    &&
+      ln -fs ../bin/nodeos-mount-filesystems $OBJ_DIR/sbin/init || exit 25
+    else
+      ln -fs ../bin/nodeos-mount-filesystems $OBJ_DIR/init || exit 26
+    fi
 
 
     #
@@ -123,7 +127,7 @@ if [[ ! -d $OBJ_DIR ]]; then
     #
 
     mkdir -p  $OBJ_DIR/usr/bin     &&
-    cp env.js $OBJ_DIR/usr/bin/env || exit 26
+    cp env.js $OBJ_DIR/usr/bin/env || exit 27
   ) || err $?
 
   echo -e "${GRN}Successfully generated initramfs${CLR}"
@@ -139,17 +143,24 @@ chmod -R u-w,go-rw "$OBJ_DIR"             &&
 chmod -R o+r       "$OBJ_DIR/usr/bin/env" || exit 30
 
 case $PLATFORM in
-  docker)
+#  docker)
+#    docker build -t $name . || exit 31
+#  ;;
+
+  vagga)
     docker build -t $name . || exit 31
+
+    ln -sf $CPU out/latest || exit 33
   ;;
-  pc_qemu | pc_iso | raspberry_qemu | raspberry_image)
+
+  pc_* | raspberry_*)
     mkdir -p `dirname $OUT_DIR`
     (
       cd "$OBJ_DIR";
       find | cpio --owner root:root -o -H newc | gzip
-    ) > $OUT_DIR || exit 32
+    ) > $OUT_DIR || exit 33
 
-    ln -sfv $OUT_DIR $name.cpio.gz || exit 33
+    ln -sf $CPU out/latest || exit 34
   ;;
 esac
 

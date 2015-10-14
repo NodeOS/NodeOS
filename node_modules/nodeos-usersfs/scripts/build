@@ -144,11 +144,21 @@ fi
 
 if [[ ! -f $OUT_DIR ]]; then
   case $PLATFORM in
-    docker)
+#    docker)
+#      chmod -R go= "$HOME"    &&
+#      docker build -t $name . || exit 30
+#
+#      ln -sf $CPU out/latest || exit 34
+#    ;;
+
+    vagga)
       chmod -R go= "$HOME"    &&
       docker build -t $name . || exit 30
+
+      ln -sf $CPU out/latest || exit 34
     ;;
-    pc_qemu | pc_iso | raspberry_qemu | raspberry_image)
+
+    pc_* | raspberry_*)
       DISK_SIZE=384  # Size in MB
 
       mkdir -p `dirname $OUT_DIR`
@@ -165,7 +175,7 @@ if [[ ! -f $OUT_DIR ]]; then
       /sbin/tune2fs -j $OUT_DIR > /dev/null    || exit 32
       scripts/debugfs.chownr $OUT_DIR nodeos 1 || exit 33
 
-      ln -sf $OUT_DIR $name.img || exit 34
+      ln -sf $CPU out/latest || exit 34
     ;;
   esac
 fi

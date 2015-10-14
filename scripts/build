@@ -46,8 +46,8 @@ function createDiskImage() {
   # ToDo: sizes would need to be on cylinders and retain DOS compatibility
   # http://elinux.org/RPi_Advanced_Setup#Advanced_SD_card_setup
 
-  ROOTFS=node_modules/nodeos-rootfs/rootfs.img
-  USERSFS=node_modules/nodeos-usersfs/usersfs.img
+  ROOTFS=$OUT_DIR/$PLATFORM/rootfs
+  USERSFS=$OUT_DIR/$PLATFORM/usersfs
 
   SIZE_MBR=$((2*1024))
   SIZE_ROOTFS=$(stat -L -c%s "$ROOTFS")
@@ -58,42 +58,53 @@ function createDiskImage() {
   cat $ROOTFS  >> $OBJECTS                    &&
   cat $USERSFS >> $OBJECTS                    || exit 10
 
-  eval "echo \"$(< resources/sfdisk.txt)\"" | /sbin/sfdisk -uS --force $OBJECTS || exit 11
+  eval "echo \"$(< resources/sfdisk.txt)\"" | \
+      /sbin/sfdisk -uS --force $OBJECTS || exit 11
 }
 
+
+OUT_DIR=`pwd`/out/$CPU_FAMILY
+mkdir -p $OUT_DIR/$PLATFORM
 case $PLATFORM in
-  raspberry_image)
-    createDiskImage || exit $?
+  *_qemu|lxc)
+    cp node_modules/nodeos-barebones/out/latest $OUT_DIR/$PLATFORM/barebones
+    cp node_modules/nodeos-initramfs/out/latest $OUT_DIR/$PLATFORM/initramfs
+  ;;
+
+  *_iso|*_img)
+    cp node_modules/nodeos-rootfs/out/latest $OUT_DIR/$PLATFORM/rootfs
   ;;
 esac
+cp node_modules/nodeos-usersfs/out/latest $OUT_DIR/$PLATFORM/usersfs
 
-ln -sf node_modules/nodeos-barebones/bzImage           .
-ln -sf node_modules/nodeos-initramfs/initramfs.cpio.gz .
-ln -sf node_modules/nodeos-rootfs/rootfs.iso           .
-ln -sf node_modules/nodeos-usersfs/usersfs.img         .
+ln -sf $CPU_FAMILY/$PLATFORM out/latest
+
 
 if [[ ! -z "$RELEASE" ]]; then
-  OUT_DIR=`pwd`/out/$CPU_FAMILY
-  ZIP_FILE=$OUT_DIR-$PLATFORM.zip
+  ZIP_FILE=$OUT_DIR/$PLATFORM/$CPU_FAMILY-$PLATFORM.zip
 
-  mkdir -p `dirname $OUT_DIR`
   rm -f $ZIP_FILE
 
   case $PLATFORM in
     pc_qemu)
-      zip -j $ZIP_FILE                                  \
-        node_modules/nodeos-barebones/bzImage           \
-        node_modules/nodeos-initramfs/initramfs.cpio.gz \
-        node_modules/nodeos-usersfs/usersfs.img         || exit 10
+      zip -j $ZIP_FILE               \
+        $OUT_DIR/$PLATFORM/barebones \
+        $OUT_DIR/$PLATFORM/initramfs \
+        $OUT_DIR/$PLATFORM/usersfs   || exit 10
 
       eval "echo -e \"$(< resources/runners/qemu.sh)\"" > /tmp/run.sh
     ;;
+
     pc_iso)
-      zip -j $ZIP_FILE                          \
-        node_modules/nodeos-rootfs/rootfs.iso   \
-        node_modules/nodeos-usersfs/usersfs.img || exit 11
+      zip -j $ZIP_FILE             \
+        $OUT_DIR/$PLATFORM/rootfs  \
+        $OUT_DIR/$PLATFORM/usersfs || exit 11
 
       eval "echo -e \"$(< resources/runners/iso.sh)\"" > /tmp/run.sh
+    ;;
+
+    raspberry_image)
+      createDiskImage || exit $?
     ;;
   esac
 
@@ -118,7 +129,12 @@ case $PLATFORM in
     echo -e "- Share your creation with:"
     echo -e "${WHT}    docker push $NOSN${CLR}"
   ;;
-  pc_qemu|raspberry_qemu)
+
+  vagga)
+    echo -e "${WHT}    vagga run${CLR}"
+  ;;
+
+  *_img|*_iso|*_qemu)
     echo -e "${WHT}    npm start${CLR}"
   ;;
 esac

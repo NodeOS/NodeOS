@@ -56,12 +56,12 @@ esac
 function createPartitionImage() {
   # Copy kernel and initramfs on the partition image
 
-  cp $BAREBONES/bzImage           $OBJECTS/kernel.img &&
-  cp $INITRAMFS/initramfs.cpio.gz $OBJECTS/initram.gz || exit 20
+  cp $BAREBONES/out/latest $OBJECTS/kernel.img &&
+  cp $INITRAMFS/out/latest $OBJECTS/initram.gz || exit 20
 
   # Create partition image
 
-  OUT_DIR=$OUT_DIR/image
+  OUT_DIR=$OUT_DIR/img
   mkdir -p `dirname $OUT_DIR`
 
   # Size in MB
@@ -71,8 +71,6 @@ function createPartitionImage() {
   $GENFATFS -b $DISK_SIZE \
       --root $OBJECTS     \
       $OUT_DIR            || exit 21
-
-  ln -sf $OUT_DIR $name.img || exit 22
 }
 
 function createEfiImage() {
@@ -83,8 +81,8 @@ function createEfiImage() {
 
   # Copy kernel and initramfs on the ISO image
 
-  cp $BAREBONES/bzImage           $OBJ_DIR/kernel.img &&
-  cp $INITRAMFS/initramfs.cpio.gz $OBJ_DIR/initram.gz || exit 32
+  cp $BAREBONES/out/latest $OBJ_DIR/kernel.img &&
+  cp $INITRAMFS/out/latest $OBJ_DIR/initram.gz || exit 32
 
   # Copy SysLinux files
 
@@ -109,8 +107,8 @@ function createIsoImage() {
 
   # Copy kernel and initramfs on the ISO image
 
-  cp $BAREBONES/bzImage           $OBJECTS/kernel.img &&
-  cp $INITRAMFS/initramfs.cpio.gz $OBJECTS/initram.gz || exit 41
+  cp $BAREBONES/out/latest $OBJECTS/kernel.img &&
+  cp $INITRAMFS/out/latest $OBJECTS/initram.gz || exit 41
 
   # Copy IsoLinux files
 
@@ -137,19 +135,15 @@ function createIsoImage() {
     $OBJECTS              || exit 43
 
   $SRC_DIR/bios/utils/isohybrid $OUT_DIR || exit 44
-
-  ln -sf $OUT_DIR $name.iso || exit 45
 }
 
 case $PLATFORM in
-  docker)
-    docker build -t $name . || exit 50
-  ;;
-
   pc_iso)
-    cp syslinux.cfg $OBJECTS || exit 51
+    cp syslinux.cfg $OBJECTS || exit 52
 
     createIsoImage || exit $?
+
+    ln -sf $CPU/iso out/latest || exit 53
   ;;
 
   raspberry_image)
@@ -159,6 +153,8 @@ case $PLATFORM in
     # bootcode.bin, start.elf, cmdline.txt
 
     createPartitionImage || exit $?
+
+    ln -sf $CPU/img out/latest || exit 54
   ;;
 esac
 

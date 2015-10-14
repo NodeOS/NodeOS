@@ -6,13 +6,12 @@ var publishRelease = require('publish-release')
 
 
 const token = process.env.GITHUB_TOKEN
-if(!token)
-  return console.error('GITHUB_TOKEN environment variable is not defined')
+if(!token) throw 'GITHUB_TOKEN environment variable is not defined'
 
 const tag = (new Date()).toISOString().substr(0,10)
 
-var branch = process.env.BRANCH_NAME
-if(branch && branch !== 'master') tag += ' ('+branch+')'
+var branch_name = process.env.BRANCH_NAME
+if(branch_name && branch_name !== 'master') tag += ' ('+branch_name+')'
 
 var opts =
 {
@@ -23,14 +22,14 @@ var opts =
   prerelease: true,
   assets:
   [
-    'out/i386-pc_iso.zip',
-    'out/i386-pc_qemu.zip',
-    'out/x86_64-pc_iso.zip',
-    'out/x86_64-pc_qemu.zip'
+    'out/i386/pc_iso/i386-pc_iso.zip',
+    'out/i386/pc_qemu/i386-pc_qemu.zip',
+    'out/x86_64/pc_iso/x86_64-pc_iso.zip',
+    'out/x86_64/pc_qemu/x86_64-pc_qemu.zip'
   ]
 }
 
 publishRelease(opts, function(error)
 {
-  if(error) console.error(error)
+  if(error) throw error
 })
