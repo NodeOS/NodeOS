@@ -20,10 +20,8 @@ if [[ -z "$name" ]]; then name=barebones; fi
 SRC_DIR=`pwd`/deps/node
 OBJ_DIR=$OBJECTS/node
 
-if [[ ! -d $OBJ_DIR ]]; then
+if [[ ! -f $OBJ_DIR ]]; then
   echo -e "${WHT}Compiling Node.js${CLR}"
-
-  mkdir -p $OBJ_DIR || exit 10
 
   (
 #    cd $OBJ_DIR
@@ -49,8 +47,10 @@ if [[ ! -d $OBJ_DIR ]]; then
   ) || err $?
 
   # Install
-  mkdir -p $OUT_DIR                          || exit 14
-  cp $SRC_DIR/out/Release/node $OUT_DIR/node || exit 15
+  mkdir -p $OBJECTS         || exit 14
+  cp $SRC_DIR/node $OBJ_DIR || exit 15
+
+  # Exec test
 
   echo -e "${GRN}Successfully compiled Node.js${CLR}"
 fi
@@ -82,13 +82,15 @@ case $PLATFORM in
 # ;;
 
   vagga)
-#    if [[ ! -f $OUT_DIR/initramfs.tar ]]; then
+    if [[ ! -f $OUT_DIR/initramfs.tar ]]; then
       ( cd $SRC_DIR/usr && $MAKE O=$OBJ_DIR gen_init_cpio ) || exit 30
 
       mkdir -p $OUT_DIR                             &&
       $OBJ_DIR/usr/gen_init_cpio $OBJ_DIR/cpio.txt  | \
           scripts/cpio2tar > $OUT_DIR/barebones.tar || exit 31
-#    fi
+    fi
+
+    ln -sf $CPU/barebones.tar out/latest || exit 32
   ;;
 
   pc_* | raspberry)
@@ -136,11 +138,11 @@ case $PLATFORM in
 
       # Install
       mkdir -p $OUT_DIR                                  &&
-      cp $OBJ_DIR/arch/$ARCH/boot/bzImage $OUT_DIR/linux || err 46
+      cp $OBJ_DIR/arch/$ARCH/boot/bzImage $OUT_DIR/linux || exit 46
 
       echo -e "${GRN}Successfully compiled Linux${CLR}"
     fi
 
-    ln -sf $OUT_DIR/linux bzImage || err 47
+    ln -sf $CPU/linux out/latest || exit 47
   ;;
 esac
