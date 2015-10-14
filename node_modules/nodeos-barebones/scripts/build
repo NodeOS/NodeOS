@@ -67,7 +67,7 @@ mkdir -p $OBJ_DIR
 
 # Generate initramfs configuration file
 cat resources/cpio_root.txt > $OBJ_DIR/cpio.txt || exit 20
-if [[ $PLATFORM -ne vagga ]]; then
+if [[ $PLATFORM != vagga ]]; then
   cat resources/cpio_standalone.txt >> $OBJ_DIR/cpio.txt || exit 21
 fi
 eval "echo \"$(< resources/cpio_common.txt)\"" >> $OBJ_DIR/cpio.txt || exit 22
