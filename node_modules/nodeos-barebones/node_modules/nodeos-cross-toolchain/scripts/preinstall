@@ -1,102 +1,202 @@
-#!/usr/bin/env bash
+#!/usr/bin/env node
 
-set -o pipefail
+var join = require('path').join
 
+var async    = require('async')
+var Download = require('download');
+var fs       = require('fs-extra')
+var got      = require('got')
+var progress = require('download-status');
 
-SOURCES=`pwd`/deps
-
-
-# Dependencies versions
-
-BINUTILS_VERSION=2.25.1
-GCC_VERSION=4.7.3
-LINUX_VERSION=4.2.3
-MUSL_VERSION=1.1.11
+var applyPatches = require('diff').applyPatches
 
 
-# Dependencies URLs
-
-BINUTILS_URL=http://ftpmirror.gnu.org/binutils/binutils-$BINUTILS_VERSION.tar.gz
-GCC_URL=http://ftpmirror.gnu.org/gcc/gcc-$GCC_VERSION/gcc-$GCC_VERSION.tar.gz
-LINUX_URL=https://www.kernel.org/pub/linux/kernel/v4.x/linux-$LINUX_VERSION.tar.gz
-MUSL_URL=http://www.musl-libc.org/releases/musl-$MUSL_VERSION.tar.gz
+const DEPS='deps'
 
 
-# Clean download directory on failure to be able to continue from the same point
+// Source versions
 
-RED="\e[31m"
-CLR="\e[0m"
+const BINUTILS_VERSION = "2.25.1"
+const GCC_VERSION      = "4.7.3"  // "5.2.0"
+const LINUX_VERSION    = "4.2.3"
+const MUSL_VERSION     = "1.1.11"
 
-function err(){
-  echo -e "${RED}Error downloading '${URL}'${CLR}"
-  rm -rf $SRC_DIR
-  rmdir -p --ignore-fail-on-non-empty `dirname $SRC_DIR`
-  exit $1
+
+// Source URLs
+
+const BINUTILS_URL = "http://ftpmirror.gnu.org/binutils/binutils-"+BINUTILS_VERSION+".tar.gz"
+const GCC_URL      = "http://ftpmirror.gnu.org/gcc/gcc-"+GCC_VERSION+"/gcc-"+GCC_VERSION+".tar.gz"
+const LINUX_URL    = "https://www.kernel.org/pub/linux/kernel/v4.x/linux-"+LINUX_VERSION+".tar.gz"
+const MUSL_URL     = "http://www.musl-libc.org/releases/musl-"+MUSL_VERSION+".tar.gz"
+
+// Patch GCC to work with musl
+const PATCH_URL = 'https://raw.githubusercontent.com/GregorR/musl-cross/master/patches/gcc-'+GCC_VERSION+'-musl.diff'
+
+
+//
+// binutils, gcc, Linux & musl
+//
+
+function download_prerequisites(name, callback)
+{
+  // Download source code of mpfr, gmp & mpc
+//    contrib/download_prerequisites
+
+  // Source versions
+
+  const MPFR_VERSION = "3.1.2"
+  const GMP_VERSION  = "6.0.0a"
+  const MPC_VERSION  = "1.0.2"
+
+
+  // Source URLs
+
+  const MPFR_URL = "http://ftpmirror.gnu.org/mpfr/mpfr-"+MPFR_VERSION+".tar.bz2"
+  const GMP_URL  = "http://ftpmirror.gnu.org/gmp/gmp-"+GMP_VERSION+".tar.bz2"
+  const MPC_URL  = "http://ftpmirror.gnu.org/mpc/mpc-"+MPC_VERSION+".tar.gz"
+
+  var download = Download({ extract: true, strip: 1 })
+  if(!process.env.CI) download.use(progress())
+
+  download.get(MPFR_URL, join(DEPS, name, 'mpfr'))
+  download.get(GMP_URL,  join(DEPS, name, 'gmp'))
+  download.get(MPC_URL,  join(DEPS, name, 'mpc'))
+
+  download.run(function(error)
+  {
+    if(error) return callback(error)
+
+    // Check system headers
+    fs.exists('/usr/include/rpc/types.h', function(exists)
+    {
+      if(exists) return callback()
+
+      fs.mkdir('/usr/include/rpc', function(error)
+      {
+        if(error) return callback(error)
+
+        fs.copy('sunrpc/rpc/*.h', '/usr/include/rpc', callback)
+      })
+    })
+  })
 }
 
 
-#
-# binutils
-#
+var downloads =
+[
+  {
+    name: 'binutils',
+    url: BINUTILS_URL
+  },
+  {
+    name: 'gcc',
+    url: GCC_URL,
+    action: function(callback)
+    {
+      var name = this.name
 
-URL=$BINUTILS_URL
-SRC_DIR=$SOURCES/binutils
-if [[ ! -d $SRC_DIR ]]; then
-  mkdir -p $SRC_DIR                                         &&
-  curl -L $URL | tar xzf - -C $SRC_DIR --strip-components=1 || err 10
-fi
+      got(PATCH_URL, function(error, patch)
+      {
+        if(error) return callback(error)
 
+        applyPatches(patch,
+        {
+          loadFile: function(patch, callback)
+          {
+            fs.readFile(join(DEPS, name, patch.index), 'utf8', callback)
+          },
 
-#
-# gcc
-#
+          patched: function(patch, content)
+          {
+            if(content === false)
+              return console.error('Context sanity check failed:',patch)
 
-URL=$GCC_URL
-SRC_DIR=$SOURCES/gcc
-if [[ ! -d $SRC_DIR ]]; then
-  mkdir -p $SRC_DIR                                         &&
-  curl -L $URL | tar xzf - -C $SRC_DIR --strip-components=1 &&
-  (
-    cd $SRC_DIR
+            fs.writeFile(join(DEPS, name, patch.index), content)
+          },
 
-    # Patch GCC to work with musl
-    curl -L https://raw.githubusercontent.com/GregorR/musl-cross/master/patches/gcc-$GCC_VERSION-musl.diff | patch --silent -Np1 || exit 20
+          complete: function(error)
+          {
+            if(error) return callback(error)
 
-    # Download source code of mpfr, gmp & mpc
-#    contrib/download_prerequisites
-    mkdir -p mpfr && curl -L http://ftpmirror.gnu.org/mpfr/mpfr-3.1.2.tar.bz2 | tar xjf - -C mpfr --strip-components=1 &&
-    mkdir -p gmp  && curl -L http://ftpmirror.gnu.org/gmp/gmp-6.0.0a.tar.bz2  | tar xjf - -C gmp  --strip-components=1 &&
-    mkdir -p mpc  && curl -L http://ftpmirror.gnu.org/mpc/mpc-1.0.2.tar.gz    | tar xzf - -C mpc  --strip-components=1 || exit 21
-  ) || err $?
-fi
-
-
-#
-# Linux kernel headers
-#
-
-URL=$LINUX_URL
-SRC_DIR=$SOURCES/linux
-if [[ ! -d $SRC_DIR ]]; then
-  mkdir -p $SRC_DIR                                         &&
-  curl -L $URL | tar xzf - -C $SRC_DIR --strip-components=1 || err 30
-fi
-
-
-#
-# musl
-#
-
-URL=$MUSL_URL
-SRC_DIR=$SOURCES/musl
-if [[ ! -d $SRC_DIR ]]; then
-  mkdir -p $SRC_DIR                                         &&
-  curl -L $URL | tar xzf - -C $SRC_DIR --strip-components=1 || err 40
-fi
+            download_prerequisites(name, callback)
+          }
+        })
+      })
+    }
+  },
+  {
+    name: 'linux',
+    url: LINUX_URL
+  },
+  {
+    name: 'musl',
+    url: MUSL_URL
+  },
+]
 
 
-# Check system headers
-if [[ ! -r /usr/include/rpc/types.h ]]; then
-  su -c 'mkdir -pv /usr/include/rpc'
-  su -c 'cp -v sunrpc/rpc/*.h /usr/include/rpc'
-fi
+//
+// Downloads manager
+//
+
+function addUrl(item)
+{
+  this.get(item.url, join(DEPS, item.name))
+}
+
+function getName(item)
+{
+  return item.name
+}
+
+function getAction(item)
+{
+  return item.action.bind(item)
+}
+
+function getNames(downloads)
+{
+  var names = downloads.map(getName)
+  var last  = names.pop()
+
+  var result = names.join(', ')
+
+  if(names.length) result += ' and '
+
+  return result + last
+}
+
+function notUndefinedAction(item)
+{
+  return item.action !== undefined
+}
+
+
+async.reject(downloads, function(item, callback)
+{
+  fs.exists(join(DEPS, item.name), callback)
+},
+function(downloads)
+{
+  if(!downloads.length) return
+
+  process.stdout.write('Downloading '+getNames(downloads)+'... ')
+
+  var download = Download({ extract: true, strip: 1 })
+  if(!process.env.CI) download.use(progress())
+
+  downloads.forEach(addUrl, download)
+
+  download.run(function(error)
+  {
+    if(error) throw error;
+
+    if(!process.env.CI) console.log('Done')
+
+    async.series(downloads.filter(notUndefinedAction).map(getAction),
+    function(error)
+    {
+      if(error) throw error;
+    })
+  })
+})
