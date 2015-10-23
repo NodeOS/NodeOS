@@ -138,6 +138,13 @@ function createIsoImage() {
 }
 
 case $PLATFORM in
+  vagga)
+    mkdir -p `dirname $OUT_DIR`
+
+    cp $BAREBONES/out/latest out/barebones.tar || exit 50
+    cp $INITRAMFS/out/latest out/initramfs.tar || exit 51
+  ;;
+
   pc_iso)
     cp syslinux.cfg $OBJECTS || exit 52
 

@@ -119,7 +119,6 @@ if [[ ! -d $OBJ_DIR ]]; then
       mkdir -p $OBJ_DIR/sbin                                    &&
       ln -fs ../bin/nodeos-mount-filesystems $OBJ_DIR/sbin/init || exit 25
     else
-      cp $BAREBONES/out/latest out/barebones.tar        &&
       ln -fs bin/nodeos-mount-filesystems $OBJ_DIR/init || exit 26
     fi
 
@@ -156,7 +155,9 @@ case $PLATFORM in
       find | cpio --owner root:root -o -H ustar
     ) > $OUT_DIR.tar || exit 32
 
-    ln -sf $CPU.tar out/latest || exit 33
+    cp $BAREBONES/out/latest out/barebones.tar || exit 33
+
+    ln -sf $CPU.tar out/latest || exit 34
   ;;
 
   pc_* | raspberry_*)
@@ -164,9 +165,9 @@ case $PLATFORM in
     (
       cd "$OBJ_DIR";
       find | cpio --owner root:root -o -H newc | gzip
-    ) > $OUT_DIR || exit 33
+    ) > $OUT_DIR || exit 35
 
-    ln -sf $CPU out/latest || exit 34
+    ln -sf $CPU out/latest || exit 36
   ;;
 esac
 
