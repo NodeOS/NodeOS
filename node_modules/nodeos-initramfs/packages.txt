@@ -1,4 +1,4 @@
-piranna/node-century#patch-2
-#/home/piranna/Dropbox/Proyectos/NodeOS/node-century
-nodeos-mount-filesystems
-#/home/piranna/Proyectos/nodeos-mount-filesystems
+#nodeos-mount-filesystems
+/home/piranna/Proyectos/nodeos-mount-filesystems
+exclfs
+nodeos-mount-utils

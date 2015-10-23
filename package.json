@@ -35,7 +35,7 @@
     "async": "^1.4.2",
     "cpio-stream": "NodeOS/cpio-stream",
     "diff": "NodeOS/jsdiff",
-    "download": "NodeOS/download",
+    "download": "^4.3.0",
     "download-status": "^2.2.1",
     "fs-extra": "^0.24.0",
     "got": "^4.2.0",

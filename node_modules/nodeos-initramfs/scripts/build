@@ -112,13 +112,15 @@ if [[ ! -d $OBJ_DIR ]]; then
         --fuse__library_dirs=$OBJECTS/fuse/lib/.libs \
         --fuse__libraries=-lfuse                     || exit 23
 
-    if [[ $PLATFORM -ne vagga ]]; then
-      ln -fs bin/century $OBJ_DIR/init || exit 24
+    if [[ $PLATFORM != vagga ]]; then
+      eval "$NPMi" -g piranna/node-century#patch-2 &&
+      ln -fs bin/century $OBJ_DIR/init             || exit 24
 
       mkdir -p $OBJ_DIR/sbin                                    &&
       ln -fs ../bin/nodeos-mount-filesystems $OBJ_DIR/sbin/init || exit 25
     else
-      ln -fs ../bin/nodeos-mount-filesystems $OBJ_DIR/init || exit 26
+      cp $BAREBONES/out/latest out/barebones.tar        &&
+      ln -fs bin/nodeos-mount-filesystems $OBJ_DIR/init || exit 26
     fi
 
 
@@ -148,9 +150,13 @@ case $PLATFORM in
 #  ;;
 
   vagga)
-    docker build -t $name . || exit 31
+    mkdir -p `dirname $OUT_DIR`
+    (
+      cd "$OBJ_DIR";
+      find | cpio --owner root:root -o -H ustar
+    ) > $OUT_DIR.tar || exit 32
 
-    ln -sf $CPU out/latest || exit 33
+    ln -sf $CPU.tar out/latest || exit 33
   ;;
 
   pc_* | raspberry_*)

@@ -1,0 +1,19 @@
+containers:
+  initramfs:
+    setup:
+    - !Tar
+#      url: ../nodeos-barebones/out/latest
+      url: ./out/barebones.tar
+    - !Tar
+      url: ./out/latest
+
+commands:
+  run: !Command
+    description: Start NodeOS initramfs layer
+    container: initramfs
+    environ:
+      HOME: /
+      root: ''
+    pid1mode: exec
+    write-mode: transient-hard-link-copy
+    run: [/init]

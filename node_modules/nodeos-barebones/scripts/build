@@ -82,7 +82,7 @@ case $PLATFORM in
 # ;;
 
   vagga)
-    if [[ ! -f $OUT_DIR/initramfs.tar ]]; then
+    if [[ ! -f $OUT_DIR/barebones.tar ]]; then
       ( cd $SRC_DIR/usr && $MAKE O=$OBJ_DIR gen_init_cpio ) || exit 30
 
       mkdir -p $OUT_DIR                             &&

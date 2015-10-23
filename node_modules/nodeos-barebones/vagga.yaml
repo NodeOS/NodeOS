@@ -2,7 +2,7 @@ containers:
   barebones:
     setup:
     - !Tar
-      url: http://localhost:8080/out/nocona/barebones.tar
+      url: ./out/latest
 
 commands:
   run: !Command
