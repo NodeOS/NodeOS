@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+
+(
+  cd node_modules/nodeos-barebones &&
+  npm run dockerBuild              || exit 10
+) &&
+(
+  cd node_modules/nodeos-initramfs &&
+  npm run dockerBuild              || exit 20
+) &&
+(
+  cd node_modules/nodeos-rootfs    &&
+  npm run dockerBuild              || exit 30
+) &&
+(
+  cd node_modules/nodeos-usersfs   &&
+  npm run dockerBuild              || exit 40
+) &&
+(
+  docker build -t NodeOS .         || exit 50
+) || exit $?

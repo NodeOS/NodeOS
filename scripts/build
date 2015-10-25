@@ -116,17 +116,18 @@ fi
 
 echo -e "${GRY}------------------------------------------${CLR}"
 echo -e "${GRN}${BLD}Success!${CLR}"
-echo -e "${GRN}You Just Built a Custom NodeOS Image ${WHT}$NOSN${CLR}"
+echo -e "${GRN}You Just Built a Custom NodeOS Image${CLR}"
 echo -e "${GRY}------------------------------------------${CLR}"
 echo
 echo -e "- Interactively run your image with:"
 
 case $PLATFORM in
   docker)
-    echo -e "${WHT}    docker run -t -i $NOSN${CLR}"
+    echo -e "${WHT}    npm run dockerBuild ${CLR}"
+    echo -e "${WHT}    docker run -t -i NodeOS${CLR}"
     echo
     echo -e "- Share your creation with:"
-    echo -e "${WHT}    docker push $NOSN${CLR}"
+    echo -e "${WHT}    docker push NodeOS${CLR}"
   ;;
 
   vagga)

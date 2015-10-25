@@ -10,6 +10,7 @@
   ],
   "scripts": {
     "BigRedButton": "scripts/BigRedButton",
+    "dockerBuild": "scripts/dockerBuild",
     "install": "scripts/build",
     "publish": "scripts/publish",
     "start": "scripts/start",

@@ -2,6 +2,7 @@
   "name": "nodeos-usersfs",
   "version": "0.0.0",
   "scripts": {
+    "dockerBuild": "docker build -t usersfs .",
     "install": "scripts/build",
     "preinstall": "scripts/preinstall",
     "start": "scripts/start",

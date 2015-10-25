@@ -2,6 +2,7 @@
   "name": "nodeos-rootfs",
   "version": "0.0.0",
   "scripts": {
+    "dockerBuild": "docker build -t rootfs .",
     "install": "scripts/build",
     "preinstall": "scripts/preinstall",
     "start": "scripts/start",
