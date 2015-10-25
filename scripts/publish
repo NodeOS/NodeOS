@@ -24,8 +24,10 @@ var opts =
   [
     'out/i386/pc_iso/i386-pc_iso.zip',
     'out/i386/pc_qemu/i386-pc_qemu.zip',
+    'out/i386/vagga/i386-vagga.zip',
     'out/x86_64/pc_iso/x86_64-pc_iso.zip',
-    'out/x86_64/pc_qemu/x86_64-pc_qemu.zip'
+    'out/x86_64/pc_qemu/x86_64-pc_qemu.zip',
+    'out/x86_64/vagga/x86_64-vagga.zip'
   ]
 }
 

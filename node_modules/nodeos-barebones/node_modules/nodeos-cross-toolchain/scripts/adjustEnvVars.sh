@@ -81,6 +81,10 @@ case $PLATFORM in
 #  raspberry_*)
 #    PLATFORM=raspberry
 #  ;;
+
+  vagga_*)
+    PLATFORM=vagga
+  ;;
 esac
 
 # Set target and architecture for the selected CPU

@@ -1,0 +1,21 @@
+containers:
+  NodeOS:
+    setup:
+    - !Tar
+      url: ./out/latest/barebones
+    - !Tar
+      url: ./out/latest/initramfs
+    volumes:
+      /tmp: !BindRW ./out/latest/usersfs
+
+commands:
+  run: !Command
+    description: Start NodeOS
+    container: NodeOS
+    environ:
+      PWD: /
+      root: ''
+    pid1mode: exec
+    run: [/init]
+#    run: /tmp/bin/logon
+    write-mode: transient-hard-link-copy

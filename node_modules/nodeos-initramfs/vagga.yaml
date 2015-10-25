@@ -2,7 +2,6 @@ containers:
   initramfs:
     setup:
     - !Tar
-#      url: ../nodeos-barebones/out/latest
       url: ./out/barebones.tar
     - !Tar
       url: ./out/latest
