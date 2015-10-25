@@ -13,28 +13,6 @@ TOOLCHAIN=$BAREBONES/node_modules/nodeos-cross-toolchain
 source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
 
 
-case $PLATFORM in
-  docker)
-    # if user is logged into docker index
-    # automatically prefix their name to built images
-    name=$(docker info | grep ^Username | awk '{print $2}' )
-    if [[ -z "$name" ]]; then name=local; fi
-
-    NOSN=${name}/nodeos
-  ;;
-esac
-
-export PLATFORM
-
-
-## Build each layer up
-#(cd node_modules/nodeos-cross-toolchain              npm install ) &&
-#(cd node_modules/nodeos-barebones                    npm install ) &&
-#(cd node_modules/nodeos-initramfs                    npm install ) &&
-#(cd node_modules/nodeos-rootfs                       npm install ) &&
-#(cd node_modules/nodeos-usersfs         name=${NOSN} npm install ) || err $?
-
-
 #
 # Wrap the system up and pack it
 #

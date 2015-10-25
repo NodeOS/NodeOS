@@ -19,9 +19,6 @@ TOOLS=$TOOLCHAIN/out
 source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
 
 
-if [[ -z "$name" ]]; then name=rootfs; fi
-
-
 if [[ -d $OBJECTS ]]; then
   chmod -R u+w $OBJECTS &&
   rm    -rf    $OBJECTS || exit 10
@@ -166,4 +163,4 @@ case $PLATFORM in
 esac
 
 
-echo -e "${GRN}Successfully built '$name'${CLR}"
+echo -e "${GRN}Successfully built 'rootfs'${CLR}"

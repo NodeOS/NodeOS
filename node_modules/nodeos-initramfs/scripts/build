@@ -16,9 +16,6 @@ source $TOOLCHAIN/scripts/adjustEnvVars.sh &&
 source scripts/utils.sh                    || exit $?
 
 
-if [[ -z "$name" ]]; then name=initramfs; fi
-
-
 #
 # FUSE
 #
@@ -144,15 +141,11 @@ chmod -R u-w,go-rw "$OBJ_DIR"             &&
 chmod -R o+r       "$OBJ_DIR/usr/bin/env" || exit 30
 
 case $PLATFORM in
-#  docker)
-#    docker build -t $name . || exit 31
-#  ;;
-
   vagga)
     mkdir -p `dirname $OUT_DIR`
     (
       cd "$OBJ_DIR";
-      find | cpio --owner root:root -o -H ustar
+      find | cpio --owner 0:0 -o -H ustar
     ) > $OUT_DIR.tar || exit 32
 
     cp $BAREBONES/out/latest out/barebones.tar || exit 33
@@ -164,7 +157,7 @@ case $PLATFORM in
     mkdir -p `dirname $OUT_DIR`
     (
       cd "$OBJ_DIR";
-      find | cpio --owner root:root -o -H newc | gzip
+      find | cpio --owner 0:0 -o -H newc | gzip
     ) > $OUT_DIR || exit 35
 
     ln -sf $CPU out/latest || exit 36
@@ -172,4 +165,4 @@ case $PLATFORM in
 esac
 
 
-echo -e "${GRN}Successfully built '$name'${CLR}"
+echo -e "${GRN}Successfully built 'initramfs'${CLR}"

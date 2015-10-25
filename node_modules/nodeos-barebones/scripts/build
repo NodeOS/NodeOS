@@ -10,9 +10,6 @@ TOOLS=$TOOLCHAIN/out
 source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
 
 
-if [[ -z "$name" ]]; then name=barebones; fi
-
-
 #
 # Node.js
 #
@@ -73,14 +70,6 @@ fi
 eval "echo \"$(< resources/cpio_common.txt)\"" >> $OBJ_DIR/cpio.txt || exit 22
 
 case $PLATFORM in
-# docker)
-#   ( cd $SRC_DIR/usr && $MAKE O=$OBJ_DIR gen_init_cpio ) || exit 30
-#
-#   $OBJ_DIR/usr/gen_init_cpio $OBJ_DIR/cpio.txt | \
-#       scripts/cpio2tar                         | \
-#       docker import - $name                    || exit 31
-# ;;
-
   vagga)
     if [[ ! -f $OUT_DIR/barebones.tar ]]; then
       ( cd $SRC_DIR/usr && $MAKE O=$OBJ_DIR gen_init_cpio ) || exit 30
@@ -146,3 +135,6 @@ case $PLATFORM in
     ln -sf $CPU/linux out/latest || exit 47
   ;;
 esac
+
+
+echo -e "${GRN}Successfully built 'barebones'${CLR}"

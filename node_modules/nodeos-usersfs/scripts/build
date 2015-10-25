@@ -20,9 +20,6 @@ source $TOOLCHAIN/scripts/adjustEnvVars.sh &&
 source $INITRAMFS/scripts/utils.sh         || exit $?
 
 
-if [[ -z "$name" ]]; then name=usersfs; fi
-
-
 #
 # root home
 #
@@ -176,4 +173,4 @@ if [[ ! -e $OUT_DIR ]]; then
 fi
 
 
-echo -e "${GRN}Successfully built Layer-3 image '$name'${CLR}"
+echo -e "${GRN}Successfully built Layer-3 image 'usersfs'${CLR}"
