@@ -4,7 +4,6 @@
   "scripts": {
     "dockerBuild": "docker build -t barebones .",
     "install": "scripts/build",
-    "postinstall": "scripts/postinstall",
     "preinstall": "scripts/preinstall",
     "start": "scripts/start",
     "test": "scripts/test",

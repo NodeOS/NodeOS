@@ -133,6 +133,8 @@ case $PLATFORM in
     fi
 
     ln -sf $CPU/linux out/latest || exit 47
+
+    scripts/test || exit 48
   ;;
 esac
 
