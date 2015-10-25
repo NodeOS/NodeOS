@@ -127,8 +127,8 @@ if [[ ! -d $OBJ_DIR ]]; then
     # /usr/bin/env
     #
 
-    mkdir -p  $OBJ_DIR/usr/bin     &&
-    cp env.js $OBJ_DIR/usr/bin/env || exit 27
+    mkdir -p  $OBJ_DIR/usr/bin                &&
+    ln -fs ../../bin/env $OBJ_DIR/usr/bin/env || exit 27
   ) || err $?
 
   echo -e "${GRN}Successfully generated initramfs${CLR}"

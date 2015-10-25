@@ -2,3 +2,4 @@
 /home/piranna/Proyectos/nodeos-mount-filesystems
 exclfs
 nodeos-mount-utils
+usrbinenv
