@@ -39,21 +39,21 @@ var timeout = setTimeout(function()
 
   console.error('Timeout while waiting an answer')
   process.exit(-2)
-}, 15*1000)
+}, 5*1000)
 
 
-var command = 'qemu-system-'+cpu_family
+const LD_LIBRARY_PATH = 'node_modules/nodeos-cross-toolchain/out/'+cpu_family+'-nodeos-linux-musl/lib'
 
-var args =
-[
-//  '-enable-kvm',  // Give problems running inside VMs, like Travis-CI
-  '-nographic',
-  '--kernel', 'out/'+cpu+'/linux',
-  '-append',  'console=ttyS0'
-]
+process.env.LD_LIBRARY_PATH = LD_LIBRARY_PATH
+var command = 'qemu-'+cpu_family
+//var args = ['-L', 'obj/'+cpu+'/lib', 'obj/'+cpu+'/node']
+var args = [LD_LIBRARY_PATH+'/libc.so', 'obj/'+cpu+'/node', '-i']
+
+//require('child_process').spawn(command, args, {stdio: 'inherit'})
 
 exe = suppose(command, args)
-  .on(/> /).respond('setTimeout(console.log, 2000, "this is","a test")\n')
+//  .debug(process.stderr)
+  .on(/> /).respond('setTimeout(console.log, 1000, "this is","a test")\n')
   .on(/this is a test/, function(exe)
   {
     exe.kill()
