@@ -36,10 +36,9 @@
     "async": "^1.4.2",
     "cpio-stream": "NodeOS/cpio-stream",
     "diff": "NodeOS/jsdiff",
-    "download": "^4.3.0",
-    "download-status": "^2.2.1",
-    "fs-extra": "^0.24.0",
-    "got": "^4.2.0",
+    "download-manager": "piranna/download-manager",
+    "fs-extra": "^0.26.0",
+    "got": "^5.0.0",
     "suppose": "jprichardson/node-suppose",
     "tar-stream": "NodeOS/tar-stream"
   },

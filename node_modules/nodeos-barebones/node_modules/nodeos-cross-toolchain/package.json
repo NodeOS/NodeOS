@@ -20,7 +20,7 @@
   "author": "Jesús Leganés Combarro \"piranna\" <piranna@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "download": "^4.1.2",
-    "download-status": "^2.1.1"
+    "download-manager": "^0.0.5",
+    "fs-extra": "^0.24.0"
   }
 }

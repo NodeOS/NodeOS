@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
-var fs = require('fs')
+var fs   = require('fs')
+var join = require('path').join
 
-var Download = require('download')
-var got      = require('got')
-var progress = require('download-status')
+var got     = require('got')
+var manager = require('download-manager')
 
 var applyPatch = require('diff').applyPatch
 
@@ -18,65 +18,62 @@ const NODEJS_VERSION = "v0.11.14"
 
 const NODEJS_URL="http://nodejs.org/dist/"+NODEJS_VERSION+"/node-"+NODEJS_VERSION+".tar.gz"
 
+// Patch OpenSSL to work with musl
+const PATCH_URL = 'https://raw.githubusercontent.com/maximeh/buildroot/0400322f2d4e28faa98e31815921f54106aeb2e6/package/openssl/openssl-004-musl-termios.patch'
+
 
 //
 // Node.js
 //
 
-const SRC_DIR = 'deps/node'
-
-fs.exists(SRC_DIR, function(exists)
-{
-  if(exists) return
-
-  process.stdout.write('Downloading Node.js... ')
-
-  var download = Download({ extract: true, strip: 1 }).get(NODEJS_URL, SRC_DIR)
-
-  if(!process.env.CI) download.use(progress())
-
-  download.run(function(error)
+var downloads =
+[
   {
-    if(error) throw error;
-
-    if(!process.env.CI) console.log('Done')
-
-    // Patch OpenSSL to work with musl
-    const PATCH_URL = 'https://raw.githubusercontent.com/maximeh/buildroot/0400322f2d4e28faa98e31815921f54106aeb2e6/package/openssl/openssl-004-musl-termios.patch'
-
-    got(PATCH_URL, function(error, patch)
+    name: 'node',
+    url: NODEJS_URL,
+//    patch: PATCH_URL,
+    action: function(callback)
     {
-      if(error) throw error;
+      var name = this.name
 
-      const fileToPatch = SRC_DIR+'/deps/openssl/openssl/crypto/ui/ui_openssl.c'
-
-      fs.readFile(fileToPatch, {encoding: 'utf8'}, function(error, fileContent)
+      got(PATCH_URL, function(error, patch)
       {
-        if(error) throw error;
+        if(error) return callback(error)
 
-        var patchedContent = applyPatch(fileContent, patch)
+        const fileToPatch = join('deps', name,
+            'deps/openssl/openssl/crypto/ui/ui_openssl.c')
 
-        fs.writeFile(fileToPatch, patchedContent, function(error)
+        fs.readFile(fileToPatch, 'utf8', function(error, fileContent)
         {
-          if(error) throw error;
+          if(error) return callback(error)
 
-          // Allow to inspect NodeOS version from inside Node.js
-          try
-          {
-            var version = require('../../../package.json').version
-          }
-          catch(e)
-          {
-            var version = '(unknown)'
-          }
-          var data = "exports.nodeos = '"+version+"'"
+          var patchedContent = applyPatch(fileContent, patch)
 
-          fs.appendFile(SRC_DIR+'/lib/os.js', data, function(error)
+          fs.writeFile(fileToPatch, patchedContent, function(error)
           {
-            if(error) throw error;
-          })
-        })
-      })
-    })
-  })
+            if(error) return callback(error)
+
+            // Allow to inspect NodeOS version from inside Node.js
+            try
+            {
+              var version = require('../../../package.json').version
+            }
+            catch(e)
+            {
+              var version = '(unknown)'
+            }
+            var data = "exports.nodeos = '"+version+"'"
+
+            fs.appendFile(join('deps', name, 'lib/os.js'), data, callback)
+         })
+       })
+     })
+    }
+  }
+]
+
+
+manager(downloads, function(error)
+{
+  if(error) throw error;
 })

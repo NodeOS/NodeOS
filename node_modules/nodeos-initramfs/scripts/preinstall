@@ -2,8 +2,7 @@
 
 var exists = require('fs').exists
 
-var Download = require('download')
-var progress = require('download-status')
+var manager = require('download-manager')
 
 
 // Source versions
@@ -20,22 +19,16 @@ const FUSE_URL="http://downloads.sourceforge.net/fuse/fuse-"+FUSE_VERSION+".tar.
 // FUSE
 //
 
-const SRC_DIR = 'deps/fuse'
-
-exists(SRC_DIR, function(exists)
-{
-  if(exists) return
-
-  process.stdout.write('Downloading FUSE... ')
-
-  var download = Download({ extract: true, strip: 1 }).get(FUSE_URL, SRC_DIR)
-  
-  if(!process.env.CI) download.use(progress())
-
-  download.run(function(error)
+var downloads =
+[
   {
-    if(error) throw error;
+    name: 'fuse',
+    url: FUSE_URL
+  }
+]
 
-    console.log('Done')
-  })
+
+manager(downloads, function(error)
+{
+  if(error) throw error;
 })

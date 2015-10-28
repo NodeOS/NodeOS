@@ -1,15 +1,9 @@
 #!/usr/bin/env node
 
 var exec = require('child_process').exec
-var fs   = require('fs')
 var join = require('path').join
 
-var async    = require('async')
-var Download = require('download')
-var progress = require('download-status')
-
-
-const DEPS='deps'
+var manager = require('download-manager')
 
 
 // Source versions
@@ -35,7 +29,7 @@ var downloads =
     url: GENFATFS_URL,
     action: function(callback)
     {
-      exec('make', {cwd: join(DEPS, this.name)}, callback)
+      exec('make', {cwd: join('deps', this.name)}, callback)
     }
   },
 
@@ -46,77 +40,7 @@ var downloads =
 ]
 
 
-//
-// Downloads manager
-//
-
-function addUrl(item)
+manager(downloads, function(error)
 {
-  this.get(item.url, join(DEPS, item.name))
-}
-
-function getName(item)
-{
-  return item.name
-}
-
-function getAction(item)
-{
-  return function(callback)
-  {
-    item.action(function(error)
-    {
-      if(error) return callback(error)
-
-      console.log("Successfully compiled",item.name)
-      callback()
-    })
-  }
-}
-
-function getNames(downloads)
-{
-  var names = downloads.map(getName)
-  var last  = names.pop()
-
-  var result = names.join(', ')
-
-  if(names.length) result += ' and '
-
-  return result + last
-}
-
-function notUndefinedAction(item)
-{
-  return item.action !== undefined
-}
-
-
-async.reject(downloads, function(item, callback)
-{
-  fs.exists(join(DEPS, item.name), callback)
-},
-function(downloads)
-{
-  if(!downloads.length) return
-
-  process.stdout.write('Downloading '+getNames(downloads)+'... ')
-
-  var download = Download({ extract: true, strip: 1 })
-  if(!process.env.CI) download.use(progress())
-
-  downloads.forEach(addUrl, download)
-
-  download.run(function(error)
-  {
-    if(error) throw error;
-
-    if(!process.env.CI) console.log('Done')
-
-    async.series(downloads.filter(notUndefinedAction).map(getAction),
-    function(error)
-    {
-      if(error) throw error;
-    })
-  })
+  if(error) throw error;
 })

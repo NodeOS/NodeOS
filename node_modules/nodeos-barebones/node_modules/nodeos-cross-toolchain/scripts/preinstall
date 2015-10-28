@@ -2,13 +2,8 @@
 
 var join = require('path').join
 
-var async    = require('async')
-var Download = require('download');
-var fs       = require('fs-extra')
-var got      = require('got')
-var progress = require('download-status');
-
-var applyPatches = require('diff').applyPatches
+var fs      = require('fs-extra')
+var manager = require('download-manager')
 
 
 const DEPS='deps'
@@ -34,13 +29,15 @@ const PATCH_URL = 'https://raw.githubusercontent.com/GregorR/musl-cross/master/p
 
 
 //
-// binutils, gcc, Linux & musl
+// gcc prerequisites
 //
 
-function download_prerequisites(name, callback)
+function download_prerequisites(callback)
 {
   // Download source code of mpfr, gmp & mpc
 //    contrib/download_prerequisites
+
+  var name = this.name
 
   // Source versions
 
@@ -55,14 +52,25 @@ function download_prerequisites(name, callback)
   const GMP_URL  = "http://ftpmirror.gnu.org/gmp/gmp-"+GMP_VERSION+".tar.bz2"
   const MPC_URL  = "http://ftpmirror.gnu.org/mpc/mpc-"+MPC_VERSION+".tar.gz"
 
-  var download = Download({ extract: true, strip: 1 })
-  if(!process.env.CI) download.use(progress())
 
-  download.get(MPFR_URL, join(DEPS, name, 'mpfr'))
-  download.get(GMP_URL,  join(DEPS, name, 'gmp'))
-  download.get(MPC_URL,  join(DEPS, name, 'mpc'))
+  var downloads =
+  [
+    {
+      name: join(name, 'mpfr'),
+      url: MPFR_URL
+    },
+    {
+      name: join(name, 'gmp'),
+      url: GMP_URL
+    },
+    {
+      name: join(name, 'mpc'),
+      url: MPC_URL
+    }
+  ]
 
-  download.run(function(error)
+
+  manager(downloads, function(error)
   {
     if(error) return callback(error)
 
@@ -82,6 +90,10 @@ function download_prerequisites(name, callback)
 }
 
 
+//
+// binutils, gcc, Linux & musl
+//
+
 var downloads =
 [
   {
@@ -91,38 +103,8 @@ var downloads =
   {
     name: 'gcc',
     url: GCC_URL,
-    action: function(callback)
-    {
-      var name = this.name
-
-      got(PATCH_URL, function(error, patch)
-      {
-        if(error) return callback(error)
-
-        applyPatches(patch,
-        {
-          loadFile: function(patch, callback)
-          {
-            fs.readFile(join(DEPS, name, patch.index), 'utf8', callback)
-          },
-
-          patched: function(patch, content)
-          {
-            if(content === false)
-              return console.error('Context sanity check failed:',patch)
-
-            fs.writeFile(join(DEPS, name, patch.index), content)
-          },
-
-          complete: function(error)
-          {
-            if(error) return callback(error)
-
-            download_prerequisites(name, callback)
-          }
-        })
-      })
-    }
+    patch: PATCH_URL,
+    action: download_prerequisites
   },
   {
     name: 'linux',
@@ -131,72 +113,11 @@ var downloads =
   {
     name: 'musl',
     url: MUSL_URL
-  },
+  }
 ]
 
 
-//
-// Downloads manager
-//
-
-function addUrl(item)
+manager(downloads, function(error)
 {
-  this.get(item.url, join(DEPS, item.name))
-}
-
-function getName(item)
-{
-  return item.name
-}
-
-function getAction(item)
-{
-  return item.action.bind(item)
-}
-
-function getNames(downloads)
-{
-  var names = downloads.map(getName)
-  var last  = names.pop()
-
-  var result = names.join(', ')
-
-  if(names.length) result += ' and '
-
-  return result + last
-}
-
-function notUndefinedAction(item)
-{
-  return item.action !== undefined
-}
-
-
-async.reject(downloads, function(item, callback)
-{
-  fs.exists(join(DEPS, item.name), callback)
-},
-function(downloads)
-{
-  if(!downloads.length) return
-
-  process.stdout.write('Downloading '+getNames(downloads)+'... ')
-
-  var download = Download({ extract: true, strip: 1 })
-  if(!process.env.CI) download.use(progress())
-
-  downloads.forEach(addUrl, download)
-
-  download.run(function(error)
-  {
-    if(error) throw error;
-
-    if(!process.env.CI) console.log('Done')
-
-    async.series(downloads.filter(notUndefinedAction).map(getAction),
-    function(error)
-    {
-      if(error) throw error;
-    })
-  })
+  if(error) throw error;
 })
