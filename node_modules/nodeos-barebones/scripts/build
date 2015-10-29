@@ -74,7 +74,7 @@ fi
 eval "echo \"$(< resources/cpio_common.txt)\"" >> $OBJ_DIR/cpio.txt || exit 22
 
 case $PLATFORM in
-  vagga)
+  docker|vagga)
     if [[ ! -f $OUT_DIR/barebones.tar ]]; then
       (
         cd $SRC_DIR/usr     &&

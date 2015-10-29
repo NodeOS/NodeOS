@@ -143,7 +143,7 @@ if [[ ! -e $OUT_DIR ]]; then
   mkdir -p `dirname $OUT_DIR`
 
   case $PLATFORM in
-    vagga)
+    docker|vagga)
       cp $BAREBONES/out/latest out/barebones.tar || exit 30
       cp $INITRAMFS/out/latest out/initramfs.tar || exit 31
 

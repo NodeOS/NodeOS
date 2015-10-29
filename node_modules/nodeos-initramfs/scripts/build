@@ -147,12 +147,15 @@ chmod -R u-w,go-rw "$OBJ_DIR"             &&
 chmod -R o+r       "$OBJ_DIR/usr/bin/env" || exit 30
 
 case $PLATFORM in
-  vagga)
-    mkdir -p `dirname $OUT_DIR`
-    (
-      cd "$OBJ_DIR";
-      find | cpio --owner 0:0 -o -H ustar
-    ) > $OUT_DIR.tar || exit 32
+  docker|vagga)
+    if [[ ! -f $OUT_DIR.tar ]]; then
+      mkdir -p `dirname $OUT_DIR`
+
+      (
+        cd "$OBJ_DIR";
+        find | cpio --owner 0:0 -o -H ustar
+      ) > $OUT_DIR.tar || exit 32
+    fi
 
     cp $BAREBONES/out/latest out/barebones.tar || exit 33
 
@@ -160,13 +163,16 @@ case $PLATFORM in
   ;;
 
   pc_* | raspberry_*)
-    mkdir -p `dirname $OUT_DIR`
-    (
-      cd "$OBJ_DIR";
-      find | cpio --owner 0:0 -o -H newc | gzip
-    ) > $OUT_DIR || exit 35
+    if [[ ! -f $OUT_DIR.cpio ]]; then
+      mkdir -p `dirname $OUT_DIR`
 
-    ln -sf $CPU out/latest || exit 36
+      (
+        cd "$OBJ_DIR";
+        find | cpio --owner 0:0 -o -H newc | gzip
+      ) > $OUT_DIR.cpio || exit 35
+    fi
+
+    ln -sf $CPU.cpio out/latest || exit 36
   ;;
 
   *)

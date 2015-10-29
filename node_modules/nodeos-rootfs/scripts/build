@@ -135,7 +135,7 @@ function createIsoImage() {
 }
 
 case $PLATFORM in
-  vagga)
+  docker|vagga)
     mkdir -p `dirname $OUT_DIR`
 
     cp $BAREBONES/out/latest out/barebones.tar || exit 50
