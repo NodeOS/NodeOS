@@ -104,6 +104,7 @@ var downloads =
     name: 'gcc',
     url: GCC_URL,
     patch: PATCH_URL,
+    strip: 1,
     action: download_prerequisites
   },
   {

@@ -3,10 +3,7 @@
 var fs   = require('fs')
 var join = require('path').join
 
-var got     = require('got')
 var manager = require('download-manager')
-
-var applyPatch = require('diff').applyPatch
 
 
 // Source versions
@@ -31,43 +28,23 @@ var downloads =
   {
     name: 'node',
     url: NODEJS_URL,
-//    patch: PATCH_URL,
+    patch: PATCH_URL,
+    strip: 1,
+    path: 'deps/openssl/openssl',
     action: function(callback)
     {
-      var name = this.name
-
-      got(PATCH_URL, function(error, patch)
+      // Allow to inspect NodeOS version from inside Node.js
+      try
       {
-        if(error) return callback(error)
+        var version = require('../../../package.json').version
+      }
+      catch(e)
+      {
+        var version = '(unknown)'
+      }
+      var data = "exports.nodeos = '"+version+"'"
 
-        const fileToPatch = join('deps', name,
-            'deps/openssl/openssl/crypto/ui/ui_openssl.c')
-
-        fs.readFile(fileToPatch, 'utf8', function(error, fileContent)
-        {
-          if(error) return callback(error)
-
-          var patchedContent = applyPatch(fileContent, patch)
-
-          fs.writeFile(fileToPatch, patchedContent, function(error)
-          {
-            if(error) return callback(error)
-
-            // Allow to inspect NodeOS version from inside Node.js
-            try
-            {
-              var version = require('../../../package.json').version
-            }
-            catch(e)
-            {
-              var version = '(unknown)'
-            }
-            var data = "exports.nodeos = '"+version+"'"
-
-            fs.appendFile(join('deps', name, 'lib/os.js'), data, callback)
-         })
-       })
-     })
+      fs.appendFile(join('deps', this.name, 'lib/os.js'), data, callback)
     }
   }
 ]

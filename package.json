@@ -33,12 +33,10 @@
   "homepage": "http://node-os.com",
   "private": true,
   "dependencies": {
-    "async": "^1.4.2",
+    "async": "^1.5.0",
     "cpio-stream": "NodeOS/cpio-stream",
-    "diff": "^2.2.0",
     "download-manager": "^0.0.9",
     "fs-extra": "^0.26.0",
-    "got": "^5.0.0",
     "suppose": "jprichardson/node-suppose",
     "tar-stream": "^1.3.0"
   },
