@@ -116,7 +116,7 @@ fi
 
 echo -e "${GRY}------------------------------------------${CLR}"
 echo -e "${GRN}${BLD}Success!${CLR}"
-echo -e "${GRN}You Just Built a Custom NodeOS Image${CLR}"
+echo -e "${GRN}You just built a custom NodeOS image${CLR}"
 echo -e "${GRY}------------------------------------------${CLR}"
 echo
 echo -e "- Interactively run your image with:"
