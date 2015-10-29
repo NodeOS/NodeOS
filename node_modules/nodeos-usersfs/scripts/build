@@ -169,6 +169,11 @@ if [[ ! -e $OUT_DIR ]]; then
 
       ln -sf $CPU out/latest || exit 43
     ;;
+
+    *)
+      echo -e "${RED}Unknown platform '$PLATFORM'${CLR}"
+      exit 50
+    ;;
   esac
 fi
 

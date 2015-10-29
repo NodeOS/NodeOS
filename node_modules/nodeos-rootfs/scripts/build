@@ -160,6 +160,11 @@ case $PLATFORM in
 
     ln -sf $CPU/img out/latest || exit 54
   ;;
+
+  *)
+    echo -e "${RED}Unknown platform '$PLATFORM'${CLR}"
+    exit 55
+  ;;
 esac
 
 

@@ -4,6 +4,9 @@
 # libraries and shell utils to offer a Node.js REPL from cold boot
 
 
+set -o pipefail
+
+
 TOOLCHAIN=`pwd`/node_modules/nodeos-cross-toolchain
 TOOLS=$TOOLCHAIN/out
 
@@ -73,14 +76,22 @@ eval "echo \"$(< resources/cpio_common.txt)\"" >> $OBJ_DIR/cpio.txt || exit 22
 case $PLATFORM in
   vagga)
     if [[ ! -f $OUT_DIR/barebones.tar ]]; then
-      ( cd $SRC_DIR/usr && $MAKE O=$OBJ_DIR gen_init_cpio ) || exit 30
+      (
+        cd $SRC_DIR/usr     &&
+        $MAKE gen_init_cpio || exit 30
+
+        mkdir -p         $OBJ_DIR/usr &&
+        mv gen_init_cpio $OBJ_DIR/usr || exit 31
+      ) || exit $?
 
       mkdir -p $OUT_DIR                             &&
       $OBJ_DIR/usr/gen_init_cpio $OBJ_DIR/cpio.txt  | \
-          scripts/cpio2tar > $OUT_DIR/barebones.tar || exit 31
+          scripts/cpio2tar > $OUT_DIR/barebones.tar || exit 32
+
+      rm -f $OBJ_DIR/.config || exit 33
     fi
 
-    ln -sf $CPU/barebones.tar out/latest || exit 32
+    ln -sf $CPU/barebones.tar out/latest || exit 34
   ;;
 
   pc_* | raspberry)
@@ -137,6 +148,11 @@ case $PLATFORM in
     fi
 
     ln -sf $CPU/linux out/latest || exit 47
+  ;;
+
+  *)
+    echo -e "${RED}Unknown platform '$PLATFORM'${CLR}"
+    exit 50
   ;;
 esac
 

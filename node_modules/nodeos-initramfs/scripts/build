@@ -66,6 +66,8 @@ if [ $HAS_FUSE -eq 0 ]; then
   fi
 
   echo -e "${GRN}Successfully compiled FUSE${CLR}"
+else
+  echo -e "${WHT}FUSE is disabled${CLR}"
 fi
 
 
@@ -104,19 +106,23 @@ if [[ ! -d $OBJ_DIR ]]; then
     # Install system dependencies
     #
 
-    eval "$NPMi" -g `grep -v "^#" packages.txt`      \
-        --fuse__include_dirs=`pwd`/deps/fuse/include \
-        --fuse__library_dirs=$OBJECTS/fuse/lib/.libs \
-        --fuse__libraries=-lfuse                     || exit 23
+    if [ $HAS_FUSE -eq 0 ]; then
+      eval "$NPMi" -g exclfs                           \
+          --fuse__include_dirs=`pwd`/deps/fuse/include \
+          --fuse__library_dirs=$OBJECTS/fuse/lib/.libs \
+          --fuse__libraries=-lfuse                     || exit 23
+    fi
+
+    eval "$NPMi" -g `grep -v "^#" packages.txt` || exit 24
 
     if [[ $PLATFORM != vagga ]]; then
       eval "$NPMi" -g piranna/node-century#patch-2 &&
-      ln -fs bin/century $OBJ_DIR/init             || exit 24
+      ln -fs bin/century $OBJ_DIR/init             || exit 25
 
       mkdir -p $OBJ_DIR/sbin                                    &&
-      ln -fs ../bin/nodeos-mount-filesystems $OBJ_DIR/sbin/init || exit 25
+      ln -fs ../bin/nodeos-mount-filesystems $OBJ_DIR/sbin/init || exit 26
     else
-      ln -fs bin/nodeos-mount-filesystems $OBJ_DIR/init || exit 26
+      ln -fs bin/nodeos-mount-filesystems $OBJ_DIR/init || exit 27
     fi
 
 
@@ -161,6 +167,11 @@ case $PLATFORM in
     ) > $OUT_DIR || exit 35
 
     ln -sf $CPU out/latest || exit 36
+  ;;
+
+  *)
+    echo -e "${RED}Unknown platform '$PLATFORM'${CLR}"
+    exit 40
   ;;
 esac
 
