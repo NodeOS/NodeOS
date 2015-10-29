@@ -12,8 +12,8 @@
   "author": "Jesús Leganés Combarro \"piranna\"",
   "license": "MIT",
   "dependencies": {
-    "diff": "NodeOS/jsdiff",
-    "download-manager": "^0.0.5",
+    "diff": "^2.2.0",
+    "download-manager": "^0.0.9",
     "got": "^5.0.0"
   },
   "devDependencies": {
