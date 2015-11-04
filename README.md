@@ -6,9 +6,13 @@ Lightweight operating system using [Node.js](http://nodejs.org) as userspace.
 
 NodeOS is an operating system build entirely in Javascript and managed by
 [npm](https://www.npmjs.com/). Any package in npm is a NodeOS package, which at
-last count was 197,274 packages. The goal of NodeOS is to provide just enough to
+last count was 201,871 packages. The goal of NodeOS is to provide just enough to
 let npm provide the rest. Since anyone can contribute to npm, anyone can create
 NodeOS packages.
+
+This project won the spanish [9th National Free Software Championship](https://www.concursosoftwarelibre.org/1415)
+and it's a current participant of its [10th edition](https://www.concursosoftwarelibre.org/1516)
+and the Granada University [2nd Free Projects prize](http://osl.ugr.es/bases-de-los-premios-a-proyectos-libres-de-la-ugr)
 
 [Roadmap](https://github.com/NodeOS/NodeOS/issues/37)
 
