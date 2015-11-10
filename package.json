@@ -12,6 +12,7 @@
     "BigRedButton": "scripts/BigRedButton",
     "dockerBuild": "scripts/dockerBuild",
     "install": "scripts/build",
+    "postinstall": "scripts/postinstall",
     "publish": "scripts/publish",
     "start": "scripts/start",
     "test": "scripts/test",
