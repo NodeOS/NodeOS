@@ -97,12 +97,14 @@ case $CPU in
   ;;
   i[34567]86)
     ARCH="x86"
+    BITS=32
     CPU_FAMILY=i386
     NODE_ARCH=ia32
     TARGET=$CPU-nodeos-linux-musl
   ;;
   x86_64|nocona)
     ARCH="x86"
+    BITS=64
     CPU_FAMILY=x86_64
     NODE_ARCH=x64
 #    TARGET=$CPU-nodeos-linux-musl

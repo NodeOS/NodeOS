@@ -15,9 +15,12 @@ TOOLS=`pwd`/out
 source scripts/adjustEnvVars.sh || exit $?
 
 
-mkdir -p    $TOOLS/$TARGET       &&
-ln -sfn .   $TOOLS/$TARGET/usr   &&
-ln -sfn lib $TOOLS/$TARGET/lib64 || exit 2
+mkdir -p  $TOOLS/$TARGET     &&
+ln -sfn . $TOOLS/$TARGET/usr || exit 1
+
+if [[ $BITS = 64 ]]; then
+  ln -sfn lib $TOOLS/$TARGET/lib64 || exit 2
+fi
 
 
 #
@@ -25,18 +28,19 @@ ln -sfn lib $TOOLS/$TARGET/lib64 || exit 2
 #
 
 SRC_DIR=$DEPS/linux
+OBJ_DIR=$TOOLS/$TARGET/include/linux
 
-if [[ ! -d $TOOLS/$TARGET/include/linux ]]; then
+if [[ ! -d $OBJ_DIR ]]; then
   echo -e "${WHT}Extracting Linux headers${CLR}"
 
   (
     cd $SRC_DIR
 
     # Extract headers
-    $MAKE mrproper                 &&
-    $MAKE ARCH=$ARCH headers_check &&
-    $MAKE ARCH=$ARCH INSTALL_HDR_PATH=$TOOLS/$TARGET headers_install
-  ) || exit 10
+    $MAKE mrproper                                                   &&
+    $MAKE ARCH=$ARCH headers_check                                   &&
+    $MAKE ARCH=$ARCH INSTALL_HDR_PATH=$TOOLS/$TARGET headers_install || exit 10
+  ) || err $?
 
   echo -e "${GRN}Successfully extracted Linux headers${CLR}"
 fi
@@ -73,12 +77,6 @@ if [[ ! -d $OBJ_DIR ]]; then
     # Install
     $MAKE install || exit 23
   ) || err $?
-
-#  case $(uname -m) in
-#    x86_64)
-#      mkdir -v $TOOLS/lib && ln -sv lib $TOOLS/lib64
-#    ;;
-#  esac
 
   echo -e "${GRN}Successfully compiled binutils${CLR}"
 fi
@@ -134,7 +132,8 @@ if [[ ! -d $OBJ_DIR ]]; then
     $MAKE install-gcc install-target-libgcc || exit 34
   ) || err $?
 
-  # Remove object files
+  # Remove object files to allow generation of final version
+  # [ToDo] Check if we can be able to generate them on different folders
   rm -rf $OBJ_DIR || exit 35
 
   echo -e "${GRN}Successfully compiled GCC static${CLR}"

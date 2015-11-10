@@ -41,15 +41,6 @@ EFIBOOT_IMG=`pwd`/obj/efiboot.img
 
 GENFATFS=deps/genfatfs/genfatfs
 
-case $CPU_FAMILY in
-  i386)
-    BITS=32
-  ;;
-  x86_64)
-    BITS=64
-  ;;
-esac
-
 function createPartitionImage() {
   # Copy kernel and initramfs on the partition image
 
@@ -160,6 +151,8 @@ case $PLATFORM in
 
     ln -sf $CPU/img out/latest || exit 54
   ;;
+
+  *_qemu);;
 
   *)
     echo -e "${RED}Unknown platform '$PLATFORM'${CLR}"

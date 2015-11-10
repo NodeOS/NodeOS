@@ -14,7 +14,7 @@ commands:
     container: usersfs
     environ:
       PWD: /
-      root: ''
+      root: 'container'
     pid1mode: exec
     run: [/init]
 #    run: /tmp/bin/logon
