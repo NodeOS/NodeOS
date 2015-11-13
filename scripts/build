@@ -35,4 +35,4 @@ case $PLATFORM in
 esac
 cp node_modules/nodeos-usersfs/out/latest $OUT_DIR/usersfs
 
-ln -sf $CPU_FAMILY/$PLATFORM out/latest
+ln -sfn $CPU_FAMILY/$PLATFORM out/latest

@@ -2,6 +2,10 @@
 
 # This script prepares a initramfs that can boot a NodeOS usersfs
 
+
+set -o pipefail
+
+
 GRN="\e[32m"
 CLR="\e[0m"
 
@@ -24,12 +28,12 @@ grep -q "CONFIG_FUSE_FS=y" $BAREBONES/obj/$CPU/linux/.config
 HAS_FUSE=$?
 
 if [ $HAS_FUSE -eq 0 ]; then
-  echo -e "${WHT}Compiling FUSE${CLR}"
-
   SRC_DIR=`pwd`/deps/fuse
   OBJ_DIR=$OBJECTS/fuse
 
   if [[ ! -d $OBJ_DIR ]]; then
+    echo -e "${WHT}Compiling FUSE${CLR}"
+
     mkdir -p $OBJ_DIR || exit 10
 
     (
@@ -55,17 +59,17 @@ if [ $HAS_FUSE -eq 0 ]; then
       # Strip binary
       $TARGET-strip lib/.libs/libfuse.so || exit 13
     ) || err $?
+
+    # Force re-creation of initramfs
+    OBJ_DIR=$OBJECTS/initramfs
+
+    if [[ -d $OBJ_DIR ]]; then
+      chmod -R u+w $OBJ_DIR &&
+      rm    -rf    $OBJ_DIR || exit 14
+    fi
+
+    echo -e "${GRN}Successfully compiled FUSE${CLR}"
   fi
-
-  # Force re-creation of initramfs
-  OBJ_DIR=$OBJECTS/initramfs
-
-  if [[ -d $OBJ_DIR ]]; then
-    chmod -R u+w $OBJ_DIR &&
-    rm    -rf    $OBJ_DIR || exit 14
-  fi
-
-  echo -e "${GRN}Successfully compiled FUSE${CLR}"
 else
   echo -e "${WHT}FUSE is disabled${CLR}"
 fi
@@ -100,29 +104,27 @@ if [[ ! -d $OBJ_DIR ]]; then
     if [ $HAS_FUSE -eq 0 ]; then
       mkdir -p $OBJ_DIR/lib                                  &&
       cp -d $OBJECTS/fuse/lib/.libs/libfuse.so* $OBJ_DIR/lib || exit 22
-    fi
 
-    #
-    # Install system dependencies
-    #
-
-    if [ $HAS_FUSE -eq 0 ]; then
       eval "$NPMi" -g exclfs                           \
           --fuse__include_dirs=`pwd`/deps/fuse/include \
           --fuse__library_dirs=$OBJECTS/fuse/lib/.libs \
           --fuse__libraries=-lfuse                     || exit 23
     fi
 
+    #
+    # Install system dependencies
+    #
+
     eval "$NPMi" -g `grep -v "^#" packages.txt` || exit 24
 
-    if [[ $PLATFORM != vagga ]]; then
-      eval "$NPMi" -g piranna/node-century#patch-2 &&
-      ln -fs bin/century $OBJ_DIR/init             || exit 25
+    if [[ $PLATFORM = vagga ]]; then
+      ln -fs bin/nodeos-mount-filesystems $OBJ_DIR/init || exit 25
+    else
+      eval "$NPMi" -g NodeOS/node-century &&
+      ln -fs bin/century $OBJ_DIR/init    || exit 26
 
       mkdir -p $OBJ_DIR/sbin                                    &&
-      ln -fs ../bin/nodeos-mount-filesystems $OBJ_DIR/sbin/init || exit 26
-    else
-      ln -fs bin/nodeos-mount-filesystems $OBJ_DIR/init || exit 27
+      ln -fs ../bin/nodeos-mount-filesystems $OBJ_DIR/sbin/init || exit 27
     fi
 
 
@@ -130,8 +132,8 @@ if [[ ! -d $OBJ_DIR ]]; then
     # /usr/bin/env
     #
 
-    mkdir -p  $OBJ_DIR/usr/bin                &&
-    ln -fs ../../bin/env $OBJ_DIR/usr/bin/env || exit 27
+    mkdir -p             $OBJ_DIR/usr/bin     &&
+    ln -fs ../../bin/env $OBJ_DIR/usr/bin/env || exit 28
   ) || err $?
 
   echo -e "${GRN}Successfully generated initramfs${CLR}"
@@ -154,30 +156,31 @@ case $PLATFORM in
       (
         cd "$OBJ_DIR";
         find | cpio --owner 0:0 -o -H ustar
-      ) > $OUT_DIR.tar || exit 32
+      ) > $OUT_DIR.tar || exit 40
     fi
 
-    cp $BAREBONES/out/latest out/barebones.tar || exit 33
+    ln -sf $CPU.tar out/latest || exit 41
 
-    ln -sf $CPU.tar out/latest || exit 34
+    # Needed by vagga
+    cp $BAREBONES/out/latest out/barebones.tar || exit 42
   ;;
 
   pc_* | raspberry_*)
-    if [[ ! -f $OUT_DIR.cpio ]]; then
+    if [[ ! -f $OUT_DIR.cpio.gz ]]; then
       mkdir -p `dirname $OUT_DIR`
 
       (
         cd "$OBJ_DIR";
         find | cpio --owner 0:0 -o -H newc | gzip
-      ) > $OUT_DIR.cpio || exit 35
+      ) > $OUT_DIR.cpio.gz || exit 50
     fi
 
-    ln -sf $CPU.cpio out/latest || exit 36
+    ln -sf $CPU.cpio.gz out/latest || exit 51
   ;;
 
   *)
     echo -e "${RED}Unknown platform '$PLATFORM'${CLR}"
-    exit 40
+    exit 60
   ;;
 esac
 

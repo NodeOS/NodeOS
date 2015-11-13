@@ -113,6 +113,7 @@ function createIsoImage() {
   # genisoimage looks for its boot image as a subdirectory of the filesystem on the CD
   genisoimage -o $OUT_DIR \
     -c boot.cat           \
+    -V NodeOS             \
     -b isolinux.bin       \
       -no-emul-boot       \
       -boot-load-size 4   \
@@ -124,6 +125,7 @@ function createIsoImage() {
 
   $SRC_DIR/bios/utils/isohybrid $OUT_DIR || exit 44
 }
+
 
 case $PLATFORM in
   docker|vagga)
@@ -152,7 +154,7 @@ case $PLATFORM in
     ln -sf $CPU/img out/latest || exit 54
   ;;
 
-  *_qemu);;
+  *_qemu);;  # QEmu don't need a rootfs image
 
   *)
     echo -e "${RED}Unknown platform '$PLATFORM'${CLR}"
