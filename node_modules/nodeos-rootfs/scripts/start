@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
-var readlinkSync = require('fs').readlinkSync
-var spawn        = require('child_process').spawn
+var fs    = require('fs')
+var spawn = require('child_process').spawn
 
 
-var link = readlinkSync('out/latest').split('/');
+var link = fs.readlinkSync('out/latest').split('/');
 
 var cpu  = link[link.length-2]
 var type = link[link.length-1]
@@ -36,15 +36,33 @@ var args    = ['-enable-kvm']
 switch(type)
 {
   case 'iso':
-    args.push(['-cdrom', 'out/latest'])
+    args.push('-cdrom', 'out/latest')
   break
 
   case 'img':
-    args.push(['-hda', 'out/latest'])
+    args.push('-hda', 'out/latest')
   break
 
   default:
     throw 'Unknown rootfs type "'+type+'"'
+}
+
+// check if kvm is supported
+var kvm = /(vmx|svm)/;
+var contents = "";
+
+try
+{
+  contents = fs.readFileSync('/proc/cpuinfo');
+} catch(e){
+  throw(e);
+}
+
+if(kvm.test(contents) === false)
+{
+  // disable kvm
+  console.log("Your computer does not support kvm. NodeOS will be slower without it.");
+  args.shift();
 }
 
 spawn(command, args, {stdio: 'inherit'})

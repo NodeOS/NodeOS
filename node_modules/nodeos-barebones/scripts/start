@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
-var readlinkSync = require('fs').readlinkSync
-var spawn        = require('child_process').spawn
+var fs    = require('fs')
+var spawn = require('child_process').spawn
 
 
-var link = readlinkSync('out/latest').split('/');
+var link = fs.readlinkSync('out/latest').split('/');
 
 var cpu = link[link.length-2]
 
@@ -29,26 +29,57 @@ switch(cpu)
   break
 }
 
+var append =
+[
+  'ip=dhcp'
+]
+var graphicFlag
+
+switch(process.argv[2])
+{
+  case 'nographic':
+    append.push('console=ttyS0')  // redirect to terminal
+    graphicFlag = 'nographic'
+  break
+
+  case 'curses':
+    append.push('vga=extended')  // 80x50
+    graphicFlag = 'curses'
+  break
+
+  default:
+    append.push('vga=0x344')  // 1024x768x32
+}
+
 var command = 'qemu-system-'+cpu_family
 
 var args =
 [
   '-enable-kvm',
-  '--kernel', 'out/latest'
+  '-vga', 'std',
+  '--kernel', 'out/latest',
+  '-append',  append.join(' ')
 ]
 
-switch(process.argv[2])
+if(graphicFlag)
+  args.push('-'+graphicFlag)
+
+// check if kvm is supported
+var kvm = /(vmx|svm)/;
+var contents = "";
+
+try
 {
-  case 'nographic':
-    args.push('-append', 'console=ttyS0', '-nographic')
-  break
+  contents = fs.readFileSync('/proc/cpuinfo');
+} catch(e){
+  throw(e);
+}
 
-  case 'curses':
-    args.push('-append', 'vga=extended', '-curses')  // 80x50
-  break
-
-  default:
-    args.push('-append', 'vga=0x318')  // 1024x768x24
+if(kvm.test(contents) === false)
+{
+  // disable kvm
+  console.log("Your computer does not support kvm. NodeOS will be slower without it.");
+  args.shift();
 }
 
 spawn(command, args, {stdio: 'inherit'})
