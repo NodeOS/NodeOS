@@ -13,8 +13,8 @@ const DEPS='deps'
 
 const BINUTILS_VERSION = "2.25.1"
 const GCC_VERSION      = "4.7.3"  // "5.2.0"
-const LINUX_VERSION    = "4.2.3"
-const MUSL_VERSION     = "1.1.11"
+const LINUX_VERSION    = "4.3"
+const MUSL_VERSION     = "1.1.12"
 
 
 // Source URLs
@@ -23,6 +23,12 @@ const BINUTILS_URL = "http://ftpmirror.gnu.org/binutils/binutils-"+BINUTILS_VERS
 const GCC_URL      = "http://ftpmirror.gnu.org/gcc/gcc-"+GCC_VERSION+"/gcc-"+GCC_VERSION+".tar.gz"
 const LINUX_URL    = "https://www.kernel.org/pub/linux/kernel/v4.x/linux-"+LINUX_VERSION+".tar.gz"
 const MUSL_URL     = "http://www.musl-libc.org/releases/musl-"+MUSL_VERSION+".tar.gz"
+
+
+// Checksums
+
+const LINUX_SHA256 = '1bba5be47e56b3f83856f5544d0eeb729a67c83ed0e298be71e8dd4379918912'
+
 
 // Patch GCC to work with musl
 const PATCH_URL = 'https://raw.githubusercontent.com/GregorR/musl-cross/master/patches/gcc-'+GCC_VERSION+'-musl.diff'
@@ -109,7 +115,8 @@ var downloads =
   },
   {
     name: 'linux',
-    url: LINUX_URL
+    url: LINUX_URL,
+    sha256: LINUX_SHA256
   },
   {
     name: 'musl',

@@ -12,9 +12,9 @@
   "author": "Jesús Leganés Combarro \"piranna\"",
   "license": "MIT",
   "dependencies": {
-    "download-manager": "^0.0.9"
+    "download-manager": "^0.0.12"
   },
   "devDependencies": {
-    "suppose": "jprichardson/node-suppose"
+    "suppose": "^0.3.1"
   }
 }

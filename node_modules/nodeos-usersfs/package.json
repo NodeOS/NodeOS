@@ -15,6 +15,9 @@
     "nodeos-rootfs": "^0.0.0"
   },
   "dependencies": {
+    "download-manager": "^0.0.12"
+  },
+  "nodeosDependencies": {
     "npm": "*",
     "bin-ip": "*",
     "bin-sh": "*",

@@ -15,6 +15,12 @@ const NODEJS_VERSION = "v0.11.14"
 
 const NODEJS_URL="http://nodejs.org/dist/"+NODEJS_VERSION+"/node-"+NODEJS_VERSION+".tar.gz"
 
+
+// Checksums
+
+const NODEJS_SHA256 = 'ce08b0a2769bcc135ca25639c9d411a038e93e0f5f5a83000ecde9b763c4dd83'
+
+
 // Patch OpenSSL to work with musl
 const PATCH_URL = 'https://raw.githubusercontent.com/maximeh/buildroot/0400322f2d4e28faa98e31815921f54106aeb2e6/package/openssl/openssl-004-musl-termios.patch'
 
@@ -28,6 +34,7 @@ var downloads =
   {
     name: 'node',
     url: NODEJS_URL,
+    sha256: NODEJS_SHA256,
     patch: PATCH_URL,
     strip: 1,
     path: 'deps/openssl/openssl',
