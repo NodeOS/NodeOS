@@ -42,14 +42,14 @@ var timeout = setTimeout(function()
 }, 5*1000)
 
 
-const LD_LIBRARY_PATH = 'node_modules/nodeos-cross-toolchain/out/'+cpu_family+'-nodeos-linux-musl/lib'
+// [Hack] Can't be able to use x86_64 as generic x86 64 bits CPU
+var toolchainCpu = (cpu === 'nocona') ? 'x86_64' : cpu
+
+const LD_LIBRARY_PATH = 'node_modules/nodeos-cross-toolchain/out/'+toolchainCpu+'-nodeos-linux-musl/lib'
 
 process.env.LD_LIBRARY_PATH = LD_LIBRARY_PATH
 var command = 'qemu-'+cpu_family
-//var args = ['-L', 'obj/'+cpu+'/lib', 'obj/'+cpu+'/node']
-var args = [LD_LIBRARY_PATH+'/libc.so', 'obj/'+cpu+'/node', '-i']
-
-//require('child_process').spawn(command, args, {stdio: 'inherit'})
+var args = [LD_LIBRARY_PATH+'/libc.so', 'obj/'+cpu+'/node', '--interactive']
 
 exe = suppose(command, args)
 //  .debug(process.stderr)
