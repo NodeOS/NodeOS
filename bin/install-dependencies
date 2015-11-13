@@ -14,7 +14,7 @@ apt-get update -qq || exit 1
 apt-get install -qq -y gcc texinfo || exit 10
 
 # barebones
-apt-get install -qq -y bc qemu-system || exit 11
+apt-get install -qq -y bc qemu-system qemu-user || exit 11
 
 # initramfs
 apt-get install -qq -y nodejs-legacy || exit 12

@@ -9,6 +9,16 @@
 
 CONFIG_INITRAMFS_SOURCE="cpio.txt"  # ""
 
+CONFIG_RD_BZIP2=n  # y
+CONFIG_RD_LMZA=n   # y
+CONFIG_RD_XZ=n     # y
+CONFIG_RD_LZO=n    # y
+CONFIG_RD_LZ4=n    # y
+
+CONFIG_KALLSYMS=n  # y
+CONFIG_PRINTK=n    # y
+CONFIG_BUG=n       # y
+
 
 #
 # GCOV-based kernel profiling
