@@ -124,8 +124,7 @@ if [[ ! -d $OBJ_DIR ]]; then
     #
 
     mkdir -p $OBJ_DIR/etc        &&
-    cp logon.json  $OBJ_DIR/etc/ &&
-    cp resolv.conf $OBJ_DIR/etc/ || exit 24
+    cp logon.json  $OBJ_DIR/etc/ || exit 24
   ) || err $?
 
   # Force re-creation of usersfs
