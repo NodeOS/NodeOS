@@ -163,8 +163,8 @@ if [[ ! -e $OUT_DIR ]]; then
           --allow-holes                \
           --squash $OUT_DIR            || exit 40
 
-      /sbin/tune2fs -j $OUT_DIR > /dev/null    || exit 41
-      scripts/debugfs.chownr $OUT_DIR nodeos 1 || exit 42
+      /sbin/tune2fs -j $OUT_DIR > /dev/null   || exit 41
+      ../.bin/debugfs.chown $OUT_DIR nodeos 1 || exit 42
 
       ln -sf $CPU out/latest || exit 43
     ;;
