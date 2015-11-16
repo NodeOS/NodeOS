@@ -81,10 +81,18 @@ if [[ ! -d $OBJ_DIR ]]; then
 
 
     #
+    # Copy nodeos user login info
+    #
+
+    mkdir -p $OBJ_DIR/etc        &&
+    cp logon.json  $OBJ_DIR/etc/ || exit 22
+
+
+    #
     # Dummy init file for the user
     #
 
-    cp init.js $OBJ_DIR/init || exit 22
+    cp init.js $OBJ_DIR/init || exit 23
 
 
     # #
@@ -99,7 +107,7 @@ if [[ ! -d $OBJ_DIR ]]; then
     # (
     #   cd $SRC_DIR
     #
-    #   eval "$NPMi" || exit 23
+    #   eval "$NPMi" || exit 24
     # ) || exit $?
     #
     #
@@ -115,16 +123,8 @@ if [[ ! -d $OBJ_DIR ]]; then
     # (
     #   cd $SRC_DIR
     #
-    #   eval "$NPMi" --has_cairo=false --has_X11=false || exit 24
+    #   eval "$NPMi" --has_cairo=false --has_X11=false || exit 25
     # ) || exit $?
-
-
-    #
-    # Copy nodeos user login info
-    #
-
-    mkdir -p $OBJ_DIR/etc        &&
-    cp logon.json  $OBJ_DIR/etc/ || exit 24
   ) || err $?
 
   # Force re-creation of usersfs
@@ -151,7 +151,7 @@ if [[ ! -e $OUT_DIR ]]; then
       ln -sf ../obj/$CPU out/latest || exit 33
     ;;
 
-    pc_* | raspberry_* | vagga)
+    pc_* | raspberry_*)
       DISK_SIZE=384  # Size in MB
 
       $GENEXT2FS -b $((DISK_SIZE*1024)) \

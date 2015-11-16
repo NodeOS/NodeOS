@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-REV=$(tput rev)
 BLD=$(tput bold)
 GRY="\e[90m"
 

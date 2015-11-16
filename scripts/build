@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 
-REV=$(tput rev)
-BLD=$(tput bold)
-GRY="\e[90m"
-
-
 BAREBONES=`pwd`/node_modules/nodeos-barebones
 
 TOOLCHAIN=$BAREBONES/node_modules/nodeos-cross-toolchain
@@ -19,7 +14,7 @@ source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
 OUT_DIR=`pwd`/out/$CPU_FAMILY/$PLATFORM
 mkdir -p $OUT_DIR
 case $PLATFORM in
-  *_qemu|vagga)
+  *_qemu|docker|vagga)
     cp node_modules/nodeos-barebones/out/latest $OUT_DIR/barebones
     cp node_modules/nodeos-initramfs/out/latest $OUT_DIR/initramfs
   ;;

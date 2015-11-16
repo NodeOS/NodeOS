@@ -43,5 +43,8 @@
   },
   "devDependencies": {
     "publish-release": "^1.1.0"
+  },
+  "engines": {
+    "node" : "^0.12.0"
   }
 }
