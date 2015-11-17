@@ -53,6 +53,9 @@ if [[ ! -f $OBJ_DIR ]]; then
   # Exec test
   scripts/testNode $CPU || exit 15
 
+  # Delete previous products
+  rm -rf $OUT_DIR
+
   echo -e "${GRN}Successfully compiled Node.js${CLR}"
 fi
 
