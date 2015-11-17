@@ -27,5 +27,5 @@ apt-get install -qq -y autoconf automake || exit 14
 
 
 # Update Node.js to v0.12
-curl -sL https://deb.nodesource.com/setup_0.12 | -E bash -
-apt-get install -qq -y nodejs
+curl -sL https://deb.nodesource.com/setup_0.12 | bash || exit 15
+apt-get install -qq -y nodejs                         || exit 16
