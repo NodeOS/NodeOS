@@ -5,6 +5,9 @@ var readlinkSync = require('fs').readlinkSync
 var suppose = require('suppose')
 
 
+const TIMEOUT = 30
+
+
 var cpu = process.argv[2]
 
 var cpu_family;
@@ -39,7 +42,7 @@ var timeout = setTimeout(function()
 
   console.error('Timeout while waiting an answer')
   process.exit(-2)
-}, 15*1000)
+}, TIMEOUT*1000)
 
 
 var command = 'qemu-system-'+cpu_family

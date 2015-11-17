@@ -5,6 +5,9 @@ var readlinkSync = require('fs').readlinkSync
 var suppose = require('suppose')
 
 
+const TIMEOUT = 5
+
+
 var cpu = process.argv[2]
 
 var cpu_family;
@@ -39,7 +42,7 @@ var timeout = setTimeout(function()
 
   console.error('Timeout while waiting an answer')
   process.exit(-2)
-}, 5*1000)
+}, TIMEOUT*1000)
 
 
 // [Hack] Can't be able to use x86_64 as generic x86 64 bits CPU
