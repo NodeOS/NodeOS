@@ -1,0 +1,12 @@
+containers:
+  barebones:
+    setup:
+    - !Tar
+      url: ./out/latest
+
+commands:
+  run: !Command
+    description: Start NodeOS barebones layer
+    container: barebones
+    pid1mode: exec
+    run: [/init]

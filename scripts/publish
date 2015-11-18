@@ -1,0 +1,37 @@
+#!/usr/bin/env node
+
+var resolve = require('path').resolve
+
+var publishRelease = require('publish-release')
+
+
+const token = process.env.GITHUB_TOKEN
+if(!token) throw 'GITHUB_TOKEN environment variable is not defined'
+
+const tag = (new Date()).toISOString().substr(0,10)
+
+var branch_name = process.env.BRANCH_NAME
+if(branch_name && branch_name !== 'master') tag += ' ('+branch_name+')'
+
+var opts =
+{
+  token: token,
+  owner: 'NodeOS',
+  repo: 'NodeOS',
+  tag: tag,
+  prerelease: true,
+  assets:
+  [
+    'out/i386/pc_iso/i386-pc_iso.zip',
+    'out/i386/pc_qemu/i386-pc_qemu.zip',
+    'out/i386/vagga/i386-vagga.zip',
+    'out/x86_64/pc_iso/x86_64-pc_iso.zip',
+    'out/x86_64/pc_qemu/x86_64-pc_qemu.zip',
+    'out/x86_64/vagga/x86_64-vagga.zip'
+  ]
+}
+
+publishRelease(opts, function(error)
+{
+  if(error) throw error
+})

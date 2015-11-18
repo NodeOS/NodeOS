@@ -1,11 +1,9 @@
 #!/usr/bin/env node
 
-var fs = require('fs')
+var cp   = require('child_process')
+var join = require('path').join
 
-var cp = require('child_process')
-
-var Download = require('download')
-var progress = require('download-status')
+var manager = require('download-manager')
 
 
 // Dependencies versions
@@ -22,41 +20,32 @@ const GENEXT2FS_URL="https://github.com/5paceManSpiff/genext2fs/archive/nodeos-"
 // genext2fs
 //
 
-const SRC_DIR='deps/genext2fs'
-
-fs.exists(SRC_DIR, function(exists)
-{
-  if(exists) return
-
-  process.stdout.write('Downloading genext2fs... ')
-
-  var download = Download({ extract: true, strip: 1 }).get(GENEXT2FS_URL, SRC_DIR)
-
-  if(!process.env.CI) download.use(progress())
-
-  download.run(function(error)
+var downloads =
+[
   {
-    if(error) throw error;
-
-    console.log('Done')
-
-    var options = {cwd: SRC_DIR}
-
-    cp.execFile('./autogen.sh', options, function(error)
+    name: 'genext2fs',
+    url: GENEXT2FS_URL,
+    action: function(callback)
     {
-      if(error) throw error;
+      var options = {cwd: join('deps', this.name)}
 
-      cp.execFile('./configure', options, function(error)
+      cp.execFile('./autogen.sh', options, function(error)
       {
-        if(error) throw error;
+        if(error) return callback(error)
 
-        cp.exec('make', options, function(error)
+        cp.execFile('./configure', options, function(error)
         {
-          if(error) throw error;
+          if(error) return callback(error)
 
-          console.log("Successfully compiled genext2fs")
+          cp.exec('make', options, callback)
         })
       })
-    })
-  })
+    }
+  }
+]
+
+
+manager(downloads, function(error)
+{
+  if(error) throw error;
 })
