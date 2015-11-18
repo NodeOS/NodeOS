@@ -1,4 +1,10 @@
-#! /usr/bin/env sh
+#! /usr/bin/env bash
+
+set -o pipefail
+
+
+APT='apt-get -qq -y'
+
 
 #
 # Install Ubuntu dependencies
@@ -6,26 +12,30 @@
 #
 
 # Update cache
-dpkg --add-architecture i386
-apt-get update -qq || exit 1
+dpkg --add-architecture i386 &&
+$APT update                  || exit 1
+
+
+# Ubuntu 14.04 LTS has an old version of qemu-user (2.0.0)
+# Install the one from the Vivid repository
+wget -P deps \
+  http://security.ubuntu.com/ubuntu/pool/universe/q/qemu/qemu-user_2.2+dfsg-5expubuntu9.5_amd64.deb &&
+dpkg -i deps/*.deb || exit 2
 
 
 # cross-compiler
-apt-get install -qq -y gcc texinfo || exit 10
+$APT install gcc texinfo || exit 10
 
 # barebones
-apt-get install -qq -y bc qemu-system qemu-user || exit 11
-
-# initramfs
-apt-get install -qq -y nodejs-legacy || exit 12
+$APT install bc qemu-system qemu-user || exit 11
 
 # rootfs
-apt-get install -qq -y genisoimage libuuid1:i386 || exit 13
+$APT install genisoimage libuuid1:i386 || exit 12
 
 # usersfs
-apt-get install -qq -y autoconf automake || exit 14
+$APT install autoconf automake || exit 13
 
 
-# Update Node.js to v0.12
-curl -sL https://deb.nodesource.com/setup_0.12 | bash || exit 15
-apt-get install -qq -y nodejs                         || exit 16
+# Update Node.js to v0.12 from the NodeSource repository
+curl -sL https://deb.nodesource.com/setup_0.12 | bash &&
+$APT install nodejs                                   || exit 20
