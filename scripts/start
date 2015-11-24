@@ -59,6 +59,7 @@ var args =
 [
   '-enable-kvm',
   '-vga', 'std',
+  '-m', '256M',
   '--kernel', 'out/latest/barebones',
   '--initrd', 'out/latest/initramfs',
   '-hda',     'out/latest/usersfs',

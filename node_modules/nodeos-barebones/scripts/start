@@ -57,6 +57,7 @@ var args =
 [
   '-enable-kvm',
   '-vga', 'std',
+  '-m', '256M',
   '--kernel', 'out/latest',
   '-append',  append.join(' ')
 ]

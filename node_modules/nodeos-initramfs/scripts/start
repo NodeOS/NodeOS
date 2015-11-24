@@ -57,6 +57,7 @@ var args =
 [
   '-enable-kvm',
   '-vga', 'std',
+  '-m', '256M',
   '-nographic',
   '--kernel', '../nodeos-barebones/out/latest',
   '--initrd', 'out/latest',
