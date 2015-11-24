@@ -18,3 +18,5 @@ slap@0.1.28
 # Benchmarks
 performance
 loadtest
+
+oneshoot

@@ -10,6 +10,8 @@ fi
 \$QEMU                  \\
   -vga std              \\
   -m 256M               \\
+  -redir tcp:50080::80  \\
+  -redir tcp:50443::443 \\
   --kernel barebones    \\
   --initrd initramfs    \\
   -hda     usersfs      \\

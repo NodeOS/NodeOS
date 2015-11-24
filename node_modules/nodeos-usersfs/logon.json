@@ -1,4 +1,5 @@
 {
   "password": "814edc2477620718d63fcfb8b81a69dbf48bf837",
-  "shell": "nsh"
+  "shell": "nsh",
+  "guiServer": "oneshoot"
 }
