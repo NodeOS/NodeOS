@@ -34,7 +34,7 @@
   "homepage": "http://node-os.com",
   "private": true,
   "dependencies": {
-    "cpio-stream": "NodeOS/cpio-stream",
+    "cpio-stream": "^1.1.0",
     "debugfs": "^0.0.2",
     "download-manager": "^0.0.12",
     "fs-extra": "^0.26.2",
