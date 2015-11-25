@@ -4,9 +4,11 @@
   "scripts": {
     "dockerBuild": "docker import - barebones < out/latest",
     "install": "scripts/build",
+    "node": "scripts/node",
     "preinstall": "scripts/preinstall",
     "start": "scripts/start",
     "test": "scripts/test",
+    "testNode": "scripts/testNode",
     "unbuild": "scripts/unbuild"
   },
   "author": "Jesús Leganés Combarro \"piranna\"",

@@ -2,11 +2,6 @@
 
 var readlinkSync = require('fs').readlinkSync
 
-var suppose = require('suppose')
-
-
-const TIMEOUT = 5
-
 
 var cpu = process.argv[2] || readlinkSync('out/latest').split('/')[-2]
 
@@ -35,15 +30,6 @@ switch(cpu)
     process.exit(-1)
 }
 
-var exe
-var timeout = setTimeout(function()
-{
-  exe.kill()
-
-  console.error('Timeout while waiting an answer')
-  process.exit(-2)
-}, TIMEOUT*1000)
-
 
 // [Hack] Can't be able to use x86_64 as generic x86 64 bits CPU
 var toolchainCpu = (cpu === 'nocona') ? 'x86_64' : cpu
@@ -54,22 +40,4 @@ process.env.LD_LIBRARY_PATH = LD_LIBRARY_PATH
 var command = 'qemu-'+cpu_family
 var args = [LD_LIBRARY_PATH+'/libc.so', 'obj/'+cpu+'/node', '--interactive']
 
-exe = suppose(command, args)
-//  .debug(process.stderr)
-  .on(/> /).respond('setTimeout(console.log, 1000, "this is","a test")\n')
-  .on(/this is a test/, function(exe)
-  {
-    exe.kill()
-  })
-  .error(function(error)
-  {
-    if(error.message.indexOf('terminating on signal 15 from pid') < 0)
-      console.trace(error)
-  })
-  .end(function()
-  {
-    clearTimeout(timeout)
-
-    var expects = this.expects.length
-    if(expects) process.exit(expects)
-  })
+spawn(command, args)

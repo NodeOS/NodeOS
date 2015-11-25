@@ -8,7 +8,7 @@ var suppose = require('suppose')
 const TIMEOUT = 30
 
 
-var cpu = process.argv[2]
+var cpu = process.argv[2] || readlinkSync('out/latest').split('/')[-2]
 
 var cpu_family;
 switch(cpu)
