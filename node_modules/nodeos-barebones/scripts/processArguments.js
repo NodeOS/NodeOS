@@ -8,15 +8,11 @@ function processArguments(argv)
   var opts =
   {
     string: 'cpu',
-    default:
-    {
-      cpu: readlinkSync('out/latest').split('/')[-2]
-    },
     '--': true
   }
   var args = minimist(argv, opts)
 
-  var cpu = args.cpu
+  var cpu = args.cpu || readlinkSync('out/latest').split('/')[-2]
 
   var cpu_family;
   switch(cpu)
