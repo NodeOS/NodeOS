@@ -1,39 +1,16 @@
 #!/usr/bin/env node
 
-var readlinkSync = require('fs').readlinkSync
-
 var suppose = require('suppose')
+
+var processArguments = require('./processArguments')
 
 
 const TIMEOUT = 5
 
 
-var cpu = process.argv[2] || readlinkSync('out/latest').split('/')[-2]
+var args = processArguments(process.argv.slice(2))
 
-var cpu_family;
-switch(cpu)
-{
-  case 'armv6':
-    cpu_family = 'arm'
-  break
-
-  case 'i386':
-  case 'i486':
-  case 'i586':
-  case 'i686':
-  case 'i786':
-    cpu_family = 'i386'
-  break
-
-  case 'nocona':
-  case 'x86_64':
-    cpu_family = 'x86_64'
-  break
-
-  default:
-    console.error('Unknown cpu:',cpu)
-    process.exit(-1)
-}
+var cpu = args.cpu
 
 var exe
 var timeout = setTimeout(function()
@@ -51,7 +28,7 @@ var toolchainCpu = (cpu === 'nocona') ? 'x86_64' : cpu
 const LD_LIBRARY_PATH = 'node_modules/nodeos-cross-toolchain/out/'+toolchainCpu+'-nodeos-linux-musl/lib'
 
 process.env.LD_LIBRARY_PATH = LD_LIBRARY_PATH
-var command = 'qemu-'+cpu_family
+var command = 'qemu-'+args.cpu_family
 var args = [LD_LIBRARY_PATH+'/libc.so', 'obj/'+cpu+'/node', '--interactive']
 
 exe = suppose(command, args)

@@ -1,33 +1,14 @@
 #!/usr/bin/env node
 
-var fs    = require('fs')
-var spawn = require('child_process').spawn
+var readFileSync = require('fs').readFileSync
+var spawn        = require('child_process').spawn
+
+var processArguments = require('./processArguments')
 
 
-var link = fs.readlinkSync('out/latest').split('/');
+var args = processArguments(process.argv.slice(2))
 
-var cpu = link[link.length-2]
-
-var cpu_family;
-switch(cpu)
-{
-  case 'armv6':
-    cpu_family = 'arm'
-  break
-
-  case 'i386':
-  case 'i486':
-  case 'i586':
-  case 'i686':
-  case 'i786':
-    cpu_family = 'i386'
-  break
-
-  case 'nocona':
-  case 'x86_64':
-    cpu_family = 'x86_64'
-  break
-}
+var cpu = args.cpu
 
 var append =
 [
@@ -73,7 +54,7 @@ var contents = "";
 
 try
 {
-  contents = fs.readFileSync('/proc/cpuinfo');
+  contents = readFileSync('/proc/cpuinfo');
 } catch(e){
   throw(e);
 }

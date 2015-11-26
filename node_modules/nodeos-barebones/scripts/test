@@ -1,39 +1,16 @@
 #!/usr/bin/env node
 
-var readlinkSync = require('fs').readlinkSync
-
 var suppose = require('suppose')
+
+var processArguments = require('./processArguments')
 
 
 const TIMEOUT = 30
 
 
-var cpu = process.argv[2] || readlinkSync('out/latest').split('/')[-2]
+var args = processArguments(process.argv.slice(2))
 
-var cpu_family;
-switch(cpu)
-{
-  case 'armv6':
-    cpu_family = 'arm'
-  break
-
-  case 'i386':
-  case 'i486':
-  case 'i586':
-  case 'i686':
-  case 'i786':
-    cpu_family = 'i386'
-  break
-
-  case 'nocona':
-  case 'x86_64':
-    cpu_family = 'x86_64'
-  break
-
-  default:
-    console.error('Unknown cpu:',cpu)
-    process.exit(-1)
-}
+var cpu = args.cpu
 
 var exe
 var timeout = setTimeout(function()
@@ -45,7 +22,7 @@ var timeout = setTimeout(function()
 }, TIMEOUT*1000)
 
 
-var command = 'qemu-system-'+cpu_family
+var command = 'qemu-system-'+args.cpu_family
 
 var args =
 [
