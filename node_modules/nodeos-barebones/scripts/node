@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 var readlinkSync = require('fs').readlinkSync
+var spawn        = require('child_process').spawn
 
 
 var cpu = process.argv[2] || readlinkSync('out/latest').split('/')[-2]
@@ -40,4 +41,5 @@ process.env.LD_LIBRARY_PATH = LD_LIBRARY_PATH
 var command = 'qemu-'+cpu_family
 var args = [LD_LIBRARY_PATH+'/libc.so', 'obj/'+cpu+'/node', '--interactive']
 
-spawn(command, args)
+spawn(command, args, {stdio: 'inherit'})
+.on('exit', process.exit.bind(process))
