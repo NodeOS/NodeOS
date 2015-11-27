@@ -1,3 +1,13 @@
+while [ ! $# -eq 0 ]
+do
+    case "$1" in
+        --terminal | -t)
+            QEMU="$QEMU -nographic"
+            ;;
+    esac
+    shift
+done
+
 grep -q -e "vmx" -e "svm" /proc/cpuinfo
 if [ $? -eq 0 ]; then
   QEMU="$QEMU -enable-kvm"
