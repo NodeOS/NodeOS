@@ -79,7 +79,7 @@ The *iso* can be written to a CD-R or flashed to an USB pendrive, but will only
 provide the read-only rootfs and the changes will be done in memory loosing them
 after reboot, so you'll need to set manually a read-write usersfs partition if
 you want to persist them. On the other hand, if you want to flash it to an USB
-pendrive, it's recomended to so it by using `bin/istallUSB` command so it will
+pendrive, it's recomended to so it by using `bin/installUSB` command so it will
 create automatically a read-write usersfs partition to fill the remaining space
 so your changes will persist.
 
