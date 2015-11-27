@@ -5,7 +5,6 @@ do
         --terminal | -t)
             APPEND="$APPEND console=ttyAMA0,115200 console=ttyS0"
             QEMU="$QEMU -nographic"
-            echo "$APPEND $QEMU"
             ;;
     esac
     shift
