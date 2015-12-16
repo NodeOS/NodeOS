@@ -12,7 +12,7 @@ const DEPS='deps'
 // Source versions
 
 const BINUTILS_VERSION = "2.25.1"
-const GCC_VERSION      = "4.7.3"  // "5.2.0"
+const GCC_VERSION      = "5.2.0"
 const LINUX_VERSION    = "4.3"
 const MUSL_VERSION     = "1.1.12"
 
