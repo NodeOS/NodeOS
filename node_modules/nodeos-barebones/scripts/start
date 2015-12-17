@@ -32,7 +32,7 @@ switch(process.argv[2])
     append.push('vga=0x344')  // 1024x768x32
 }
 
-var command = 'qemu-system-'+cpu_family
+var command = 'qemu-system-'+args.cpu_family
 
 var args =
 [

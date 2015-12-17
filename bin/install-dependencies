@@ -19,12 +19,15 @@ $APT update                  || exit 1
 # Ubuntu 14.04 LTS has an old version of qemu-user (2.0.0)
 # Install the one from the Vivid repository
 wget -P deps \
-  http://security.ubuntu.com/ubuntu/pool/universe/q/qemu/qemu-user_2.2+dfsg-5expubuntu9.5_amd64.deb &&
+  http://security.ubuntu.com/ubuntu/pool/universe/q/qemu/qemu-user_2.2+dfsg-5expubuntu9.7_amd64.deb &&
 dpkg -i deps/*.deb || exit 2
+
+# Allow to unbuild the deps later from a regular user
+chown -R $SUDO_USER deps || exit 3
 
 
 # cross-compiler
-$APT install gcc texinfo || exit 10
+$APT install gcc g++ texinfo || exit 10
 
 # barebones
 $APT install bc qemu-system qemu-user || exit 11
