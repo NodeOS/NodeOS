@@ -43,7 +43,7 @@
     "tar-stream": "^1.3.1"
   },
   "devDependencies": {
-    "publish-release": "^1.1.0"
+    "publish-release": "piranna/publish-release"
   },
   "engines": {
     "node": "^0.12.0"

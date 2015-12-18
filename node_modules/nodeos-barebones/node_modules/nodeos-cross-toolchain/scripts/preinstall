@@ -13,7 +13,7 @@ const DEPS='deps'
 
 const BINUTILS_VERSION = "2.25.1"
 const GCC_VERSION      = "5.2.0"
-const LINUX_VERSION    = "4.3"
+const LINUX_VERSION    = "4.3.2"
 const MUSL_VERSION     = "1.1.12"
 
 
@@ -27,7 +27,7 @@ const MUSL_URL     = "http://www.musl-libc.org/releases/musl-"+MUSL_VERSION+".ta
 
 // Checksums
 
-const LINUX_SHA256 = '1bba5be47e56b3f83856f5544d0eeb729a67c83ed0e298be71e8dd4379918912'
+const LINUX_SHA256 = 'dab9f4a4e7bfb78ff3c4c4b6163a1c0111da2184efbde7e36178d81b0d4ea932'
 
 
 // Patch GCC to work with musl
