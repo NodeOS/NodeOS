@@ -11,6 +11,7 @@ NodeOS/ip
 ntp-client
 dhcpjs
 NodeOS/ifconfig
+node-wget
 
 # Editors
 slap@0.1.28
@@ -19,4 +20,5 @@ slap@0.1.28
 performance
 loadtest
 
-oneshoot
+# GUI
+davius

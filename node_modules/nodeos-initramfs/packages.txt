@@ -1,4 +1,3 @@
 nodeos-mount-filesystems
-#/home/piranna/Proyectos/nodeos-mount-filesystems
 nodeos-mount-utils
 usrbinenv
