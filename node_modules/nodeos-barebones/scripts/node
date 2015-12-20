@@ -13,7 +13,7 @@ var cpu = args.cpu
 // [Hack] Can't be able to use x86_64 as generic x86 64 bits CPU
 var toolchainCpu = (cpu === 'nocona') ? 'x86_64' : cpu
 
-const LD_LIBRARY_PATH = 'node_modules/nodeos-cross-toolchain/out/'+toolchainCpu+'-nodeos-linux-musl/lib'
+const LD_LIBRARY_PATH = 'node_modules/nodeos-cross-toolchain/out/'+toolchainCpu+'-nodeos-linux-'+args.libc+'/lib'
 
 process.env.LD_LIBRARY_PATH = LD_LIBRARY_PATH
 var command = 'qemu-'+args.cpu_family

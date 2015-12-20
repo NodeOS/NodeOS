@@ -7,7 +7,7 @@
 # RCU Subsystem
 #
 
-CONFIG_INITRAMFS_SOURCE="cpio.txt"  # ""
+CONFIG_INITRAMFS_SOURCE="$OBJ_DIR/cpio.txt"  # ""
 
 CONFIG_RD_BZIP2=n  # y
 CONFIG_RD_LMZA=n   # y

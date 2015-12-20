@@ -15,10 +15,13 @@ function processArguments(argv)
   var cpu = args.cpu || readlinkSync('out/latest').split('/')[-2]
 
   var cpu_family;
+  var libc = 'musl'
+
   switch(cpu)
   {
     case 'armv6':
       cpu_family = 'arm'
+      libc       = 'musleabihf'
     break
 
     case 'i386':
@@ -39,7 +42,7 @@ function processArguments(argv)
       process.exit(-1)
   }
 
-  return {cpu: cpu, cpu_family: cpu_family, argv: args['--'] || args._}
+  return {cpu: cpu, cpu_family: cpu_family, libc: libc, argv: args['--'] || args._}
 }
 
 

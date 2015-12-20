@@ -97,7 +97,7 @@ case $PLATFORM in
     ln -sf $CPU/barebones.tar out/latest || exit 34
   ;;
 
-  pc_* | raspberry)
+  pc_* | raspberry_*)
     if [[ ! -f $OUT_DIR/linux ]]; then
       echo -e "${WHT}Compiling Linux${CLR}"
 
@@ -114,7 +114,7 @@ case $PLATFORM in
             DEFCONFIG=${CPU_FAMILY}_defconfig
           ;;
 
-          raspberry)
+          raspberry_*)
             DEFCONFIG=bcm2835_defconfig
           ;;
 
@@ -128,7 +128,7 @@ case $PLATFORM in
       ) || err $?
 
       # Set NodeOS custom configuration
-      cat resources/config >> $OBJ_DIR/.config || err 43
+      eval "echo \"$(< resources/config)\"" >> $OBJ_DIR/.config || err 43
 
       (
         cd $SRC_DIR
@@ -141,21 +141,35 @@ case $PLATFORM in
       ) || err $?
 
       # Install
-      mkdir -p $OUT_DIR                                  &&
-      cp $OBJ_DIR/arch/$ARCH/boot/bzImage $OUT_DIR/linux || exit 46
+      mkdir -p $OUT_DIR || exit 46
+
+      case $PLATFORM in
+        pc_*)
+          cp $OBJ_DIR/arch/$ARCH/boot/bzImage $OUT_DIR/linux || exit 47
+        ;;
+
+        raspberry_*)
+          cp $OBJ_DIR/arch/$ARCH/boot/zImage $OUT_DIR/linux || exit 48
+        ;;
+
+        *)
+          echo "Unknown platform '$PLATFORM'"
+          exit 49
+        ;;
+      esac
 
       # Exec test
-      scripts/test --cpu $CPU || exit 48
+      scripts/test --cpu $CPU || exit 50
 
       echo -e "${GRN}Successfully compiled Linux${CLR}"
     fi
 
-    ln -sf $CPU/linux out/latest || exit 47
+    ln -sf $CPU/linux out/latest || exit 51
   ;;
 
   *)
     echo -e "${RED}Unknown platform '$PLATFORM'${CLR}"
-    exit 50
+    exit 52
   ;;
 esac
 
