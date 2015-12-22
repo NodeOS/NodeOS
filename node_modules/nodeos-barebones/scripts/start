@@ -41,7 +41,7 @@ var args =
   '-m', '256M',
   '-redir', 'tcp:50080::80',
   '-redir', 'tcp:50443::443',
-  '--kernel', 'out/latest',
+  '--kernel', 'out/'+cpu+'/linux',
   '-append',  append.join(' ')
 ]
 

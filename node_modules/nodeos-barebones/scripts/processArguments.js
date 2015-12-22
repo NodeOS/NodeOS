@@ -37,9 +37,13 @@ function processArguments(argv)
       cpu_family = 'x86_64'
     break
 
+    case undefined:
+      console.error('Symlink not already generated, or CPU not defined')
+      process.exit(-1)
+
     default:
       console.error('Unknown cpu:',cpu)
-      process.exit(-1)
+      process.exit(-2)
   }
 
   return {cpu: cpu, cpu_family: cpu_family, libc: libc, argv: args['--'] || args._}
