@@ -27,7 +27,7 @@ chown -R $SUDO_USER deps || exit 3
 
 
 # cross-compiler
-$APT install gcc g++ texinfo || exit 10
+$APT install gcc g++ texinfo realpath || exit 10
 
 # barebones
 $APT install bc qemu-system qemu-user || exit 11
@@ -42,6 +42,3 @@ $APT install autoconf automake || exit 13
 # Update Node.js to v0.12 from the NodeSource repository
 curl -sL https://deb.nodesource.com/setup_0.12 | bash &&
 $APT install nodejs                                   || exit 20
-
-#realpath
-$APT install realpath                                   || exit 21
