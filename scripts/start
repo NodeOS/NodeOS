@@ -7,26 +7,13 @@ var spawn = require('child_process').spawn
 
 var link = fs.readlinkSync('out/latest').split('/');
 
-var cpu = link[link.length-2]
+var cpu_family = link[link.length-2]
+var machine
 
-var cpu_family;
-switch(cpu)
+switch(cpu_family)
 {
-  case 'armv6':
-    cpu_family = 'arm'
-  break
-
-  case 'i386':
-  case 'i486':
-  case 'i586':
-  case 'i686':
-  case 'i786':
-    cpu_family = 'i386'
-  break
-
-  case 'nocona':
-  case 'x86_64':
-    cpu_family = 'x86_64'
+  case 'arm':
+    machine = 'versatilepb'
   break
 }
 
@@ -67,6 +54,8 @@ var args =
   '-hda',     'out/latest/usersfs',
   '-append',  append.join(' ')
 ]
+
+if(machine) args.unshift('-machine', machine)
 
 if(graphicFlag)
   args.push('-'+graphicFlag)

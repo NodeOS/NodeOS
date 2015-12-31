@@ -125,7 +125,10 @@ if [[ ! -d $OBJ_DIR ]]; then
         --with-mpfr-include=$SRC_DIR/mpfr/src \
         --with-mpfr-lib=`pwd`/mpfr/src/.libs  \
         --with-arch=$CPU                      \
+        --with-float=$FLOAT_ABI               \
+        --with-fpu=$FPU                       \
         --enable-languages=c                  || exit 32
+#        -mtune=$TUNE                          \
 
     # Compile
     $MAKE all-gcc all-target-libgcc || exit 33
@@ -211,7 +214,10 @@ if [[ ! -d $OBJ_DIR ]]; then
         --with-mpfr-include=$SRC_DIR/mpfr/src \
         --with-mpfr-lib=`pwd`/mpfr/src/.libs  \
         --with-arch=$CPU                      \
+        --with-float=$FLOAT_ABI               \
+        --with-fpu=$FPU                       \
         --enable-languages=c,c++              || exit 51
+#        -mtune=$TUNE                          \
 
     # Compile
     $MAKE || exit 52

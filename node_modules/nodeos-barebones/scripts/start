@@ -9,6 +9,7 @@ var processArguments = require('./processArguments')
 var args = processArguments(process.argv.slice(2))
 
 var cpu = args.cpu
+var machine = args.machine
 
 var append =
 [
@@ -44,6 +45,8 @@ var args =
   '--kernel', 'out/'+cpu+'/linux',
   '-append',  append.join(' ')
 ]
+
+if(machine) args.unshift('-machine', machine)
 
 if(graphicFlag)
   args.push('-'+graphicFlag)

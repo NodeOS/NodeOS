@@ -48,7 +48,8 @@ if [[ -z "$CPU" ]]; then
     ;;
 
     raspberry_*)
-      CPU=armv6
+      CPU=armv6j
+#      CPU=armv6zk
     ;;
 
     *)
@@ -89,11 +90,17 @@ esac
 
 # Set target and architecture for the selected CPU
 case $CPU in
-  armv6)
+  armv6j)
+#  armv6zk)
     ARCH="arm"
+    BITS=32
     CPU_FAMILY=arm
+    FLOAT_ABI=hard
+    FPU=vfp
     NODE_ARCH=arm
     TARGET=$CPU-nodeos-linux-musleabihf
+#    TUNE=arm1136jf-s
+#    TUNE=arm1176jzf-s
   ;;
   i[34567]86)
     ARCH="x86"
