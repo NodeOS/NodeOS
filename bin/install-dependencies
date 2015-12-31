@@ -27,7 +27,7 @@ chown -R $SUDO_USER deps || exit 3
 
 
 # cross-compiler
-$APT install gcc g++ texinfo || exit 10
+$APT install gcc g++ texinfo realpath || exit 10
 
 # barebones
 $APT install bc qemu-system qemu-user || exit 11

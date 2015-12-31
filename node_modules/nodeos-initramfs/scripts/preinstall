@@ -12,7 +12,7 @@ const FUSE_VERSION = "2.9.4"
 
 // Source URLs
 
-const FUSE_URL="http://downloads.sourceforge.net/fuse/fuse-"+FUSE_VERSION+".tar.gz"
+const FUSE_URL="https://github.com/libfuse/libfuse/releases/download/fuse_2_9_4/fuse-"+FUSE_VERSION+".tar.gz"
 
 
 //
