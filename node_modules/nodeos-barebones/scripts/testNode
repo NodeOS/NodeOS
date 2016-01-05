@@ -5,6 +5,7 @@ var suppose = require('suppose')
 var processArguments = require('./processArguments')
 
 
+const QEMU = './usr/bin/qemu-'
 const TIMEOUT = 5
 
 
@@ -28,7 +29,7 @@ var toolchainCpu = (cpu === 'nocona') ? 'x86_64' : cpu
 const LD_LIBRARY_PATH = 'node_modules/nodeos-cross-toolchain/out/'+toolchainCpu+'-nodeos-linux-'+args.libc+'/lib'
 
 process.env.LD_LIBRARY_PATH = LD_LIBRARY_PATH
-var command = 'qemu-'+args.cpu_family
+var command = QEMU+args.cpu_family
 var args = [LD_LIBRARY_PATH+'/libc.so', 'obj/'+cpu+'/node', '--interactive']
 //var args = ['-cpu', 'arm1176', LD_LIBRARY_PATH+'/libc.so', 'obj/'+cpu+'/node', '--interactive']
 

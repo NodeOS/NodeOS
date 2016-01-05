@@ -4,6 +4,9 @@ var fs    = require('fs')
 var spawn = require('child_process').spawn
 
 
+const QEMU_SYSTEM = '../nodeos-barebones/usr/bin/qemu-system-'
+
+
 var link = fs.readlinkSync('out/latest').split('/');
 
 var cpu = cpu[cpu.length-1]
@@ -52,7 +55,7 @@ switch(process.argv[2])
     append.push('vga=0x344')  // 1024x768x32
 }
 
-var command = 'qemu-system-'+cpu_family
+var command = QEMU_SYSTEM+cpu_family
 
 var args =
 [

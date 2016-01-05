@@ -5,6 +5,7 @@ var suppose = require('suppose')
 var processArguments = require('./processArguments')
 
 
+const QEMU_SYSTEM = './usr/bin/qemu-system-'
 const TIMEOUT = 30
 
 
@@ -23,7 +24,7 @@ var timeout = setTimeout(function()
 }, TIMEOUT*1000)
 
 
-var command = 'qemu-system-'+args.cpu_family
+var command = QEMU_SYSTEM+args.cpu_family
 
 var args =
 [

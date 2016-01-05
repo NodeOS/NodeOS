@@ -16,21 +16,11 @@ dpkg --add-architecture i386 &&
 $APT update                  || exit 1
 
 
-# Ubuntu 14.04 LTS has an old version of qemu-user (2.0.0)
-# Install the one from the Vivid repository
-wget -P deps \
-  http://security.ubuntu.com/ubuntu/pool/universe/q/qemu/qemu-user_2.2+dfsg-5expubuntu9.7_amd64.deb &&
-dpkg -i deps/*.deb || exit 2
-
-# Allow to unbuild the deps later from a regular user
-chown -R $SUDO_USER deps || exit 3
-
-
 # cross-compiler
-$APT install gcc g++ texinfo realpath || exit 10
+$APT install gcc g++ realpath texinfo || exit 10
 
 # barebones
-$APT install bc qemu-system qemu-user || exit 11
+$APT install bc || exit 11
 
 # rootfs
 $APT install genisoimage libuuid1:i386 || exit 12
@@ -39,6 +29,10 @@ $APT install genisoimage libuuid1:i386 || exit 12
 $APT install autoconf automake || exit 13
 
 
+# QEmu
+$APT install libsdl2-dev || exit 20
+
+
 # Update Node.js to v0.12 from the NodeSource repository
 curl -sL https://deb.nodesource.com/setup_0.12 | bash &&
-$APT install nodejs                                   || exit 20
+$APT install nodejs                                   || exit 30

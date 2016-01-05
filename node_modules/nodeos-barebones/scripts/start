@@ -6,6 +6,9 @@ var spawn        = require('child_process').spawn
 var processArguments = require('./processArguments')
 
 
+const QEMU_SYSTEM = './usr/bin/qemu-system-'
+
+
 var args = processArguments(process.argv.slice(2))
 
 var cpu = args.cpu
@@ -33,7 +36,7 @@ switch(process.argv[2])
     append.push('vga=0x344')  // 1024x768x32
 }
 
-var command = 'qemu-system-'+args.cpu_family
+var command = QEMU_SYSTEM+args.cpu_family
 
 var args =
 [
