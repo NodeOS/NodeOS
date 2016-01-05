@@ -80,7 +80,7 @@ var downloads =
       var options =
       {
         cwd: path.join('deps', this.name),
-        stdio: 'inherit'
+        stdio: ['ignore', 'ignore', process.stderr]
       }
 
       var args = ['clone','git://git.qemu-project.org/dtc.git']
@@ -120,5 +120,9 @@ var downloads =
 
 manager(downloads, function(error)
 {
-  if(error) throw error;
+  if(error)
+  {
+    console.error(error)
+    process.exit(1)
+  }
 })

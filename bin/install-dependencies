@@ -30,7 +30,7 @@ $APT install autoconf automake || exit 13
 
 
 # QEmu
-$APT install libsdl2-dev || exit 20
+$APT install libsdl1.2-dev || exit 20
 
 
 # Update Node.js to v0.12 from the NodeSource repository
