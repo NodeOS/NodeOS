@@ -6,7 +6,7 @@ TOOLS=`pwd`/out
 source scripts/adjustEnvVars.sh || exit $?
 
 
-LIBC="/lib/ld-musl-$CPU_FAMILY"
+LIBC="/lib/ld-musl-$CPU_PORT.so.1"
 
 (
   cd $OBJECTS

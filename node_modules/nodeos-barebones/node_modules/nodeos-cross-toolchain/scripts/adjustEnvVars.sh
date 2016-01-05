@@ -95,6 +95,7 @@ case $CPU in
     ARCH="arm"
     BITS=32
     CPU_FAMILY=arm
+    CPU_PORT=armhf
     FLOAT_ABI=hard
     FPU=vfp
     NODE_ARCH=arm
@@ -102,21 +103,26 @@ case $CPU in
 #    TUNE=arm1136jf-s
 #    TUNE=arm1176jzf-s
   ;;
+
   i[34567]86)
     ARCH="x86"
     BITS=32
     CPU_FAMILY=i386
+    CPU_PORT=$CPU_FAMILY
     NODE_ARCH=ia32
     TARGET=$CPU-nodeos-linux-musl
   ;;
+
   x86_64|nocona)
     ARCH="x86"
     BITS=64
     CPU_FAMILY=x86_64
+    CPU_PORT=$CPU_FAMILY
     NODE_ARCH=x64
 #    TARGET=$CPU-nodeos-linux-musl
     TARGET=x86_64-nodeos-linux-musl
   ;;
+
   *)
     echo "Unknown CPU '$CPU'"
     exit 1

@@ -4,8 +4,8 @@
 
 # musl
 
-file  /lib/libc.so                  $TOOLS/$TARGET/lib/libc.so 0555 0 0
-slink /lib/ld-musl-$CPU_FAMILY.so.1 libc.so                    0555 0 0
+file  /lib/libc.so                $TOOLS/$TARGET/lib/libc.so 0555 0 0
+slink /lib/ld-musl-$CPU_PORT.so.1 libc.so                    0555 0 0
 
 # gcc
 
