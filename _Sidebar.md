@@ -1,5 +1,8 @@
 [[home]]
 
+Systems
+- [[Service Starter]]
+
 Design
 - [[file system|FileSystem]]
 - [[npkg]]
