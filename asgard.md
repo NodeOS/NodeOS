@@ -1,7 +1,5 @@
-## _Warning! Deprecated_ ##
+## _Warning! Deprecated_ in place of [[PalmTree|Service Starter (PalmTree)]] ##
 NodeOS now uses PalmTree as it's service manager. But we leave this here for now as it's quite a beautiful page :smile: 
-
-
 
 ***
 
