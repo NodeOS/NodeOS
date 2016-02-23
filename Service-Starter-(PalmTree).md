@@ -1,5 +1,6 @@
 # PalmTree, the NodeOS Program Launcher #
-_REPOSITORY: _ [https://github.com/lite20/palmtree](https://github.com/lite20/palmtree)
+_REPOSITORY:_ [https://github.com/lite20/palmtree](https://github.com/lite20/palmtree)
+
 _NPM MODULE:_ [https://www.npmjs.com/package/palmtree](https://www.npmjs.com/package/palmtree)
 
 ## Introduction ##
