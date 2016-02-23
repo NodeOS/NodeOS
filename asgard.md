@@ -1,3 +1,10 @@
+## _Warning! Deprecated_ ##
+NodeOS now uses PalmTree as it's service manager. But we leave this here for now as it's quite a beautiful page :smile: 
+
+
+
+***
+
 The service-manager (code name asgard) is a task running service.
 
 Asgard provides a simple abstraction, upon which a tool like [[npkg]] can build a traditional service manager like *systemd* or *forever*.
