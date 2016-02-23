@@ -3,10 +3,10 @@
 Welcome to our humble abode. If you've come seeking explanations to NodeOS systems please take a look at the sidebar. Additionally, here is a nice listing of the documentation.
 
 Systems
-- [[Service Starter|Service Starter (PalmTree)]]
+- [[Service Starter|Service Starter (PalmTree)]] the nodeos service starter
 
 FAQ
-- [[FAQ]]
+- [[FAQ]] frequently asked questions, and solutions to common problems
 
 Design
 - [[init]] a minimal init
