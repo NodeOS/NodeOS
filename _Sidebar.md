@@ -1,7 +1,7 @@
 [[home]]
 
 Systems
-- [[Service Starter]]
+- [[Service Starter|Service Starter (PalmTree)]]
 
 Design
 - [[file system|FileSystem]]
