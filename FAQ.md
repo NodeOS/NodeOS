@@ -5,4 +5,4 @@ Not many questions will be actually answered on this page, but rather linked to 
 
 Fixing NodeOS Build Errors: [[Fixing-NodeOS-Build-Errors]]
 
-How do I add startup services?: [[PalmTree|service starter]]
+How do I add startup services?: [[PalmTree|Service Starter (PalmTree)]]
