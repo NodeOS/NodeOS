@@ -1,20 +1,19 @@
-## design
+# NodeOS Wiki #
 
-- [[file system|FileSystem]] an overview of how the file system is laid out
-- [[GUI]] guidelines to build graphical applications
+Welcome to our humble abode. If you've come seeking explanations to NodeOS systems please take a look at the sidebar. Additionally, here is a nice listing of the documentation.
 
-### components
+Systems
+- [[Service Starter|Service Starter (PalmTree)]]
 
+FAQ
+- [[FAQ]]
+
+Design
 - [[init]] a minimal init
 - [[services]] an overview of how services are managed
 - [[asgard]] the service manager's gory details
 - [[npkg]] the user-friendly interface to downloading and running services
 - [[root]] the user in charge of the above
 
-## resources
-
-- http://npkg.org
-
-## community
-
-- [[People]] who've helped
+Community
+- [[People]] Notable contributors (Maybe you'll become one some day)
