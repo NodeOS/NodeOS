@@ -135,55 +135,6 @@ I'm working on that.
 
 ```bash
 git clone git@github.com:NodeOS/NodeOS.git
-
-115
-116
-117
-118
-119
-120
-121
-122
-123
-124
-125
-126
-127
-128
-129
-130
-131
-132
-133
-134
-135
-136
-137
-138
-139
-140
-141
-# NodeOS on LXC containers (Docker and vagga)
-Currently LXC containers support is unmaintained due to the inability to mount
-filesystems from inside them. There are some NodeOS images on Docker Hub, but
-they are totally outdated. If you are interested in help or testing, you can
-build them from source code.
-## Quick Start
-1. [Install Docker](http://docs.docker.io/en/latest/installation/)
-2. One Liner
-   ```bash
-   sudo docker run -t -i nodeos/nodeos
-   ```
-   or learn how to make a [Custom Build](http://node-os.com/blog/get-involved/)
-## Build from Source
-*Warning*: the build process is hairy, it probably won't work the first time.
-I'm working on that.
-```bash
-git clone git@github.com:NodeOS/NodeOS.git
-cd NodeOS
-PLATFORM=docker npm install
-```
-
 cd NodeOS
 PLATFORM=docker npm install
 ```
