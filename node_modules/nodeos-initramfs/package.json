@@ -16,7 +16,7 @@
     "nodeos-barebones": "^0.0.0"
   },
   "dependencies": {
-    "download-manager": "^0.0.12"
+    "download-manager": "^0.0.15"
   },
   "nodeosDependencies": {
     "nodeos-mount-filesystems": "^0.0.45",

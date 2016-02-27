@@ -14,9 +14,9 @@
   "author": "Jesús Leganés Combarro \"piranna\"",
   "license": "MIT",
   "dependencies": {
-    "download-manager": "^0.0.12"
+    "download-manager": "^0.0.15"
   },
   "devDependencies": {
-    "suppose": "^0.3.1"
+    "suppose": "^0.5.1"
   }
 }

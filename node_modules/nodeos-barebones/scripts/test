@@ -37,12 +37,12 @@ var args =
 if(machine) args.unshift('-machine', machine)
 
 exe = suppose(command, args)
-  .on(/> /).respond('setTimeout(console.log, 2000, "this is","a test")\n')
-  .on(/this is a test/, function(exe)
+  .when(/> /).respond('setTimeout(console.log, 2000, "this is","a test")\n')
+  .when(/this is a test/, function(exe)
   {
     exe.kill()
   })
-  .error(function(error)
+  .on('error', function(error)
   {
     if(error.message.indexOf('terminating on signal 15 from pid') < 0)
       console.trace(error)

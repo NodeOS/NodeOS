@@ -53,9 +53,12 @@ var downloads =
     name: 'node',
     url: NODEJS_URL,
     sha256: NODEJS_SHA256,
-    patch: PATCH_URL,
-    strip: 1,
-    path: 'deps/openssl/openssl',
+    patch:
+    {
+      url: PATCH_URL,
+      strip: 1,
+      path: 'deps/openssl/openssl'
+    },
     action: function(callback)
     {
       // Allow to inspect NodeOS version from inside Node.js
