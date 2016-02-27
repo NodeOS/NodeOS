@@ -5,6 +5,9 @@ var spawn = require('child_process').spawn
 var processArguments = require('./processArguments')
 
 
+const QEMU = './usr/bin/qemu-'
+
+
 var args = processArguments(process.argv.slice(2))
 
 var cpu = args.cpu
@@ -16,7 +19,7 @@ var toolchainCpu = (cpu === 'nocona') ? 'x86_64' : cpu
 const LD_LIBRARY_PATH = 'node_modules/nodeos-cross-toolchain/out/'+toolchainCpu+'-nodeos-linux-'+args.libc+'/lib'
 
 process.env.LD_LIBRARY_PATH = LD_LIBRARY_PATH
-var command = 'qemu-'+args.cpu_family
+var command = QEMU+args.cpu_family
 var argv = [LD_LIBRARY_PATH+'/libc.so', 'obj/'+cpu+'/node', '--interactive']
 
 if(args.argv)

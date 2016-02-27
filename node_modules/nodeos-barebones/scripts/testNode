@@ -6,7 +6,7 @@ var processArguments = require('./processArguments')
 
 
 const QEMU = './usr/bin/qemu-'
-const TIMEOUT = 5
+const TIMEOUT = 15
 
 
 var args = processArguments(process.argv.slice(2))
