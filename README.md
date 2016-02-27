@@ -6,7 +6,7 @@ Lightweight operating system using [Node.js](http://nodejs.org) as userspace.
 
 NodeOS is an operating system build entirely in Javascript and managed by
 [npm](https://www.npmjs.com). Any package in npm is a NodeOS package, which at
-last count was 206,609 packages. The goal of NodeOS is to provide just enough to
+last count was 244,180 packages. The goal of NodeOS is to provide just enough to
 let npm provide the rest. Since anyone can contribute to npm, anyone can create
 NodeOS packages.
 
@@ -18,22 +18,22 @@ and the Granada University [2nd Free Projects prize](http://osl.ugr.es/bases-de-
 
 [![Join the Discussion](http://i.imgur.com/hUjSLXt.png)](https://github.com/NodeOS/NodeOS/issues)
 
-## find us
+## Find us
 
 - Web: please use [github issues](https://github.com/NodeOS/NodeOS/issues) for
   discussion
 - IRC: join `#node-os` on Freenode
 
-## introduction
+## Introduction
 
 NodeOS is a Node.js based operating system, built-off of the Linux kernel.
-The eventual goal of NodeOS is to produce images that can be run on
+The NodeOS Project is aiming to, and can already run on some of the following platforms:
 
-- **real hardware** like desktop PCs, laptops, servers or Raspberry Pi
+- **real hardware** like desktops, laptops, or SoS's (Raspberry Pi)
 - **cloud providers** like Joyent, Amazon or Rackspace
 - **virtual machines** like QEmu, VirtualBox, VMWare and KVM
 - **PaaS providers** like Heroku or Joyent's Manta
-- **container providers** like Docker or vagga
+- **container providers** like Docker & Vagga
 
 Core development is being done in layers. There could be some differences to
 adjust better to each target platform, but the general structure is:
@@ -68,7 +68,7 @@ or craft a system without global services (no `root` user) or also dedicate a
 full NodeOS instance to a single Node.js application.
 
 
-# Pre-build images
+# Pre-built Images
 
 Ready to use [pre-build images](https://github.com/NodeOS/NodeOS/releases) are
 automatically generated after each commit in master branch that sucessfully
@@ -114,9 +114,9 @@ open an [issue](https://github.com/NodeOS/NodeOS/issues).
 
 # NodeOS on LXC containers (Docker and vagga)
 
-Currently LXC containers support is unmaintained due to imposibility of mount
+Currently LXC containers support is unmaintained due to the inability to mount
 filesystems from inside them. There are some NodeOS images on Docker Hub, but
-they are totally outdated. If you are interested on help or testing, you can
+they are totally outdated. If you are interested in help or testing, you can
 build them from source code.
 
 ## Quick Start
