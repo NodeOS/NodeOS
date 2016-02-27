@@ -116,6 +116,7 @@ if [[ ! -d $OBJ_DIR ]]; then
 
     eval "$NPMi" -g `grep -v "^#" packages.txt` || exit 24
 
+    mkdir -p $OBJ_DIR/sbin                                  &&
     ln -fs /bin/nodeos-mount-filesystems $OBJ_DIR/sbin/init || exit 27
 
 
