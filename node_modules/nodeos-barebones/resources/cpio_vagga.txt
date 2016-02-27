@@ -1,0 +1,5 @@
+#
+# Set Node.js binary as init
+#
+
+slink /init bin/node 0100 0 0

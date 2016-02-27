@@ -24,12 +24,14 @@ var targetList =
 
 // Source versions
 
+const INIT_VERSION = "master"
 const NODEJS_VERSION = "v0.11.14"
 const QEMU_VERSION = "raspi"
 
 
 // Source URLs
 
+const INIT_URL="https://github.com/piranna/nodeos-init/archive/"+INIT_VERSION+".tar.gz"
 const NODEJS_URL="http://nodejs.org/dist/"+NODEJS_VERSION+"/node-"+NODEJS_VERSION+".tar.gz"
 const QEMU_URL="https://github.com/0xabu/qemu/archive/"+QEMU_VERSION+".tar.gz"
 
@@ -49,6 +51,10 @@ const PATCH_URL = 'https://raw.githubusercontent.com/maximeh/buildroot/0400322f2
 
 var downloads =
 [
+  {
+    name: 'init',
+    url: INIT_URL
+  },
   {
     name: 'node',
     url: NODEJS_URL,

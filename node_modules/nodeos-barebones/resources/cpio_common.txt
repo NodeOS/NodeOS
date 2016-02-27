@@ -20,10 +20,3 @@ slink /lib/libstdc++.so.6 libstdc++.so.6.0.21 0444 0 0
 #
 
 file /bin/node $OBJECTS/node 0555 0 0
-
-
-#
-# Set Node.js as /init
-#
-
-slink /init bin/node 0100 0 0

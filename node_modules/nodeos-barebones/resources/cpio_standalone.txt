@@ -1,6 +1,15 @@
-dir /bin 0555 0 0
-dir /dev 0000 0 0
-dir /lib 0111 0 0
+dir /bin  0555 0 0
+dir /dev  0000 0 0
+dir /lib  0111 0 0
+dir /sbin 0100 0 0
+
+
+#
+# Set Node.js binary as init
+#
+
+file  /init      $OBJECTS/init 0100 0 0
+slink /sbin/init /bin/node     0100 0 0
 
 
 #

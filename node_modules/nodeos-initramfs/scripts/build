@@ -116,15 +116,7 @@ if [[ ! -d $OBJ_DIR ]]; then
 
     eval "$NPMi" -g `grep -v "^#" packages.txt` || exit 24
 
-    if [[ $PLATFORM = vagga ]]; then
-      ln -fs bin/nodeos-mount-filesystems $OBJ_DIR/init || exit 25
-    else
-      eval "$NPMi" -g NodeOS/node-century &&
-      ln -fs bin/century $OBJ_DIR/init    || exit 26
-
-      mkdir -p $OBJ_DIR/sbin                                    &&
-      ln -fs ../bin/nodeos-mount-filesystems $OBJ_DIR/sbin/init || exit 27
-    fi
+    ln -fs /bin/nodeos-mount-filesystems $OBJ_DIR/sbin/init || exit 27
 
 
     #

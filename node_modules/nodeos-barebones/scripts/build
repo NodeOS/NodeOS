@@ -14,6 +14,39 @@ source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
 
 
 #
+# init
+#
+
+SRC_DIR=`pwd`/deps/init
+OBJ_DIR=$OBJECTS/init
+
+if [[ ! -f $OBJ_DIR && $PLATFORM != vagga ]]; then
+  echo -e "${WHT}Compiling init${CLR}"
+
+  # Delete previous kernel
+  rm -rf $OUT_DIR
+
+  (
+#    cd $OBJ_DIR
+    cd $SRC_DIR && $MAKE clean  # nodeos-init don't support out-of-tree builds yet
+
+    # Compile
+    CC=$TARGET-gcc \
+    $MAKE          || exit 10
+
+    # Strip binary
+    $TARGET-strip init || exit 11
+  ) || err $?
+
+  # Install
+  mkdir -p $OBJECTS         &&
+  cp $SRC_DIR/init $OBJ_DIR || exit 12
+
+  echo -e "${GRN}Successfully compiled init${CLR}"
+fi
+
+
+#
 # Node.js
 #
 
@@ -23,7 +56,7 @@ OBJ_DIR=$OBJECTS/node
 if [[ ! -f $OBJ_DIR ]]; then
   echo -e "${WHT}Compiling Node.js${CLR}"
 
-  # Delete previous products
+  # Delete previous kernel
   rm -rf $OUT_DIR
 
   (
@@ -40,21 +73,21 @@ if [[ ! -f $OBJ_DIR ]]; then
         --dest-os=linux       \
         --without-dtrace      \
         --without-npm         \
-        --without-snapshot    || exit 11
+        --without-snapshot    || exit 20
 
     # Compile
-    $MAKE || exit 12
+    $MAKE || exit 21
 
     # Strip binary
-    $TARGET-strip node || exit 13
+    $TARGET-strip node || exit 22
   ) || err $?
 
   # Install
   mkdir -p $OBJECTS         &&
-  cp $SRC_DIR/node $OBJ_DIR || exit 14
+  cp $SRC_DIR/node $OBJ_DIR || exit 23
 
   # Exec test
-  scripts/testNode --cpu $CPU || exit 15
+  scripts/testNode --cpu $CPU || exit 24
 
   echo -e "${GRN}Successfully compiled Node.js${CLR}"
 fi
@@ -70,36 +103,42 @@ OBJ_DIR=$OBJECTS/linux
 mkdir -p $OBJ_DIR
 
 # Generate initramfs configuration file
-cat resources/cpio_root.txt > $OBJ_DIR/cpio.txt || exit 20
+cat resources/cpio_root.txt > $OBJ_DIR/cpio.txt || exit 30
 if [[ $PLATFORM != vagga ]]; then
-  cat resources/cpio_standalone.txt >> $OBJ_DIR/cpio.txt || exit 21
+  eval "echo \"$(< resources/cpio_standalone.txt)\"" >> $OBJ_DIR/cpio.txt || exit 31
+else
+  cat resources/cpio_vagga.txt >> $OBJ_DIR/cpio.txt || exit 32
 fi
-eval "echo \"$(< resources/cpio_common.txt)\"" >> $OBJ_DIR/cpio.txt || exit 22
+eval "echo \"$(< resources/cpio_common.txt)\"" >> $OBJ_DIR/cpio.txt || exit 33
 
 case $PLATFORM in
   docker|vagga)
     if [[ ! -f $OUT_DIR/barebones.tar ]]; then
       (
         cd $SRC_DIR/usr     &&
-        $MAKE gen_init_cpio || exit 30
+        $MAKE gen_init_cpio || exit 40
 
         mkdir -p         $OBJ_DIR/usr &&
-        mv gen_init_cpio $OBJ_DIR/usr || exit 31
+        mv gen_init_cpio $OBJ_DIR/usr || exit 41
       ) || exit $?
 
       mkdir -p $OUT_DIR                             &&
       $OBJ_DIR/usr/gen_init_cpio $OBJ_DIR/cpio.txt  | \
-          scripts/cpio2tar > $OUT_DIR/barebones.tar || exit 32
+          scripts/cpio2tar > $OUT_DIR/barebones.tar || exit 42
 
-      rm -f $OBJ_DIR/.config || exit 33
+      rm -f $OBJ_DIR/.config || exit 43
     fi
 
-    ln -sf $CPU/barebones.tar out/latest || exit 34
+    ln -sf $CPU/barebones.tar out/latest || exit 44
   ;;
 
-  pc_* | raspberry_*)
-    if [[ ! -f $OUT_DIR/linux ]]; then
+  pc_* | raspberry_* | versatilepb_*)
+    if [[ `ls $OBJ_DIR | wc -l` -eq 1 ]] \
+    || [[ ! -f $OUT_DIR/linux         ]]; then
       echo -e "${WHT}Compiling Linux${CLR}"
+
+      # Delete previous products
+      rm -f $OUT_DIR/linux || exit 50
 
       MAKE="$MAKE O=$OBJ_DIR ARCH=$ARCH CROSS_COMPILE=$TARGET-"
 
@@ -107,7 +146,7 @@ case $PLATFORM in
         cd $SRC_DIR
 
         # Configure
-        $MAKE1 mrproper || exit 40
+        $MAKE1 mrproper || exit 51
 
         case $PLATFORM in
           pc_*)
@@ -120,32 +159,32 @@ case $PLATFORM in
 
           *)
             echo "Unknown platform '$PLATFORM'"
-            exit 41
+            exit 52
           ;;
         esac
 
-        $MAKE $DEFCONFIG || exit 42
+        $MAKE $DEFCONFIG || exit 53
       ) || err $?
 
       # Set NodeOS custom configuration
-      eval "echo \"$(< resources/config)\"" >> $OBJ_DIR/.config || err 43
+      eval "echo \"$(< resources/config)\"" >> $OBJ_DIR/.config || err 54
 
       (
         cd $SRC_DIR
 
         # Fix and clean configuration
-        $MAKE oldnoconfig || exit 44
+        $MAKE oldnoconfig || exit 55
 
         # Compile
-        $MAKE || exit 45
+        $MAKE || exit 56
       ) || err $?
 
       # Install
-      mkdir -p $OUT_DIR || exit 46
+      mkdir -p $OUT_DIR || exit 57
 
       case $PLATFORM in
         pc_*)
-          cp $OBJ_DIR/arch/$ARCH/boot/bzImage $OUT_DIR/linux || exit 47
+          cp $OBJ_DIR/arch/$ARCH/boot/bzImage $OUT_DIR/linux || exit 58
         ;;
 
         raspberry_*)
@@ -154,22 +193,22 @@ case $PLATFORM in
 
         *)
           echo "Unknown platform '$PLATFORM'"
-          exit 49
+          exit 61
         ;;
       esac
 
       # Exec test
-      scripts/test --cpu $CPU || exit 50
+      scripts/test --cpu $CPU || exit 62
 
       echo -e "${GRN}Successfully compiled Linux${CLR}"
     fi
 
-    ln -sf $CPU/linux out/latest || exit 51
+    ln -sf $CPU/linux out/latest || exit 63
   ;;
 
   *)
     echo -e "${RED}Unknown platform '$PLATFORM'${CLR}"
-    exit 52
+    exit 70
   ;;
 esac
 
