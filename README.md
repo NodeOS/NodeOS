@@ -29,7 +29,7 @@ and the Granada University [2nd Free Projects prize](http://osl.ugr.es/bases-de-
 NodeOS is a Node.js based operating system, built-off of the Linux kernel.
 The NodeOS Project is aiming to, and can already run on some of the following platforms:
 
-- **real hardware** like desktops, laptops, or SoS's (Raspberry Pi)
+- **real hardware** like desktops, laptops, or SoC's (Raspberry Pi)
 - **cloud providers** like Joyent, Amazon or Rackspace
 - **virtual machines** like QEmu, VirtualBox, VMWare and KVM
 - **PaaS providers** like Heroku or Joyent's Manta
