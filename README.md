@@ -19,14 +19,9 @@ and the Granada University [2nd Free Projects prize](http://osl.ugr.es/bases-de-
 * [1.0 Roadmap](https://github.com/NodeOS/NodeOS/issues/37)
 * [1.1 Roadmap](https://github.com/NodeOS/NodeOS/issues/146)
 * [media files](https://github.com/NodeOS/media) (logos, wallpapers...)
+* [discussion](https://github.com/NodeOS/NodeOS/issues)
 
 [![Join the Discussion](http://i.imgur.com/hUjSLXt.png)](https://github.com/NodeOS/NodeOS/issues)
-
-## Find us
-
-- Web: please use [github issues](https://github.com/NodeOS/NodeOS/issues) for
-  discussion
-- IRC: join `#node-os` on Freenode
 
 ## Introduction
 
