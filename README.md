@@ -14,7 +14,11 @@ This project won the spanish [9th National Free Software Championship](https://w
 and it's a current participant of its [10th edition](https://www.concursosoftwarelibre.org/1516)
 and the Granada University [2nd Free Projects prize](http://osl.ugr.es/bases-de-los-premios-a-proyectos-libres-de-la-ugr)
 
-[Roadmap](https://github.com/NodeOS/NodeOS/issues/37)
+## Useful links
+
+[1.0 Roadmap](https://github.com/NodeOS/NodeOS/issues/37)
+[1.1 Roadmap](https://github.com/NodeOS/NodeOS/issues/146)
+[media files](https://github.com/NodeOS/media) (logos, wallpapers...)
 
 [![Join the Discussion](http://i.imgur.com/hUjSLXt.png)](https://github.com/NodeOS/NodeOS/issues)
 
