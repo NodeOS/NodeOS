@@ -6,7 +6,6 @@ TOOLCHAIN=$BAREBONES/node_modules/nodeos-cross-toolchain
 
 source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
 
-
 #
 # Wrap the system up and pack it
 #
