@@ -12,7 +12,7 @@ function processArguments(argv)
   }
   var args = minimist(argv, opts)
 
-  var cpu = args.cpu || readlinkSync('out/latest').split('/')[-2]
+  var cpu = args.cpu || readlinkSync('out/latest').split('/')[0]
 
   var cpu_family
   var libc = 'musl'

@@ -4,33 +4,16 @@ var fs    = require('fs')
 var spawn = require('child_process').spawn
 
 
+var processArguments = require('../../nodeos-barebones/scripts/processArguments')
+
+
 const QEMU_SYSTEM = '../nodeos-barebones/usr/bin/qemu-system-'
 
 
-var link = fs.readlinkSync('out/latest').split('/')
+var args = processArguments(process.argv.slice(2))
 
-var cpu = link[link.length-1]
-
-var cpu_family;
-switch(cpu)
-{
-  case 'armv6':
-    cpu_family = 'arm'
-  break
-
-  case 'i386':
-  case 'i486':
-  case 'i586':
-  case 'i686':
-  case 'i786':
-    cpu_family = 'i386'
-  break
-
-  case 'nocona':
-  case 'x86_64':
-    cpu_family = 'x86_64'
-  break
-}
+var cpu = args.cpu
+var machine = args.machine
 
 var append =
 [
@@ -54,7 +37,7 @@ switch(process.argv[2])
     append.push('vga=0x344')  // 1024x768x32
 }
 
-var command = QEMU_SYSTEM+cpu_family
+var command = QEMU_SYSTEM+args.cpu_family
 
 var args =
 [
