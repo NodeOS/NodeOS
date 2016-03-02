@@ -7,12 +7,14 @@ var manager = require('download-manager')
 
 // Source versions
 
-const FUSE_VERSION = "2.9.4"
+const FUSE_VERSION = "2.9.5"
 
 
 // Source URLs
 
-const FUSE_URL="https://github.com/libfuse/libfuse/releases/download/fuse_2_9_4/fuse-"+FUSE_VERSION+".tar.gz"
+var fuse_dir_version = FUSE_VERSION.split('.').join('_')
+
+const FUSE_URL="https://github.com/libfuse/libfuse/releases/download/fuse_"+fuse_dir_version+"/fuse-"+FUSE_VERSION+".tar.gz"
 
 
 //
