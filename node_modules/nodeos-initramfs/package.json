@@ -19,8 +19,11 @@
     "download-manager": "^0.0.15"
   },
   "nodeosDependencies": {
-    "nodeos-mount-filesystems": "^0.0.45",
-    "nodeos-mount-utils": "^0.0.26",
+    "nodeos-mount-filesystems": "^0.1.1",
+    "nodeos-mount-utils": "^0.1.0",
     "usrbinenv": "^0.0.2"
+  },
+  "engines": {
+    "node": "<5"
   }
 }

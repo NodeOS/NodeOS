@@ -25,7 +25,7 @@ var targetList =
 // Source versions
 
 const INIT_VERSION = "master"
-const NODEJS_VERSION = "v0.11.14"
+const NODEJS_VERSION = "v4.3.1"
 const QEMU_VERSION = "raspi"
 
 
@@ -38,11 +38,7 @@ const QEMU_URL="https://github.com/0xabu/qemu/archive/"+QEMU_VERSION+".tar.gz"
 
 // Checksums
 
-const NODEJS_SHA256 = 'ce08b0a2769bcc135ca25639c9d411a038e93e0f5f5a83000ecde9b763c4dd83'
-
-
-// Patch OpenSSL to work with musl
-const PATCH_URL = 'https://raw.githubusercontent.com/maximeh/buildroot/0400322f2d4e28faa98e31815921f54106aeb2e6/package/openssl/openssl-004-musl-termios.patch'
+const NODEJS_SHA256 = '61e2d58e861b6c9dbf0ac7624b718198cbd59b88a9de31a39a05de95a32eee73'
 
 
 //
@@ -59,12 +55,6 @@ var downloads =
     name: 'node',
     url: NODEJS_URL,
     sha256: NODEJS_SHA256,
-    patch:
-    {
-      url: PATCH_URL,
-      strip: 1,
-      path: 'deps/openssl/openssl'
-    },
     action: function(callback)
     {
       // Allow to inspect NodeOS version from inside Node.js
