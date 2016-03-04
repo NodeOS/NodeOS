@@ -25,7 +25,7 @@ var targetList =
 // Source versions
 
 const INIT_VERSION = "master"
-const NODEJS_VERSION = "v4.3.1"
+const NODEJS_VERSION = "v4.3.2"
 const QEMU_VERSION = "raspi"
 
 
@@ -38,7 +38,7 @@ const QEMU_URL="https://github.com/0xabu/qemu/archive/"+QEMU_VERSION+".tar.gz"
 
 // Checksums
 
-const NODEJS_SHA256 = '61e2d58e861b6c9dbf0ac7624b718198cbd59b88a9de31a39a05de95a32eee73'
+const NODEJS_SHA256 = '1f92f6d31f7292ce56db57d6703efccf3e6c945948f5901610cefa69e78d3498'
 
 
 //

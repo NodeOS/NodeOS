@@ -5,6 +5,7 @@ piranna/nsh#patch-1
 bin-man
 bin-fs
 bin-pwd
+pstree
 
 # Network
 NodeOS/ip
