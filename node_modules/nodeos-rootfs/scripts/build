@@ -23,7 +23,6 @@ if [[ -d $OBJECTS ]]; then
   chmod -R u+w $OBJECTS &&
   rm    -rf    $OBJECTS || exit 10
 fi
-mkdir -p $OBJECTS || exit 11
 
 
 #
