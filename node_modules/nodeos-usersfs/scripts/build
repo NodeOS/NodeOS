@@ -11,7 +11,7 @@ INITRAMFS=`pwd`/../nodeos-initramfs
 
 NODE_DIR=$BAREBONES/deps/node
 
-GENEXT2FS=`pwd`/deps/genext2fs/genext2fs
+GENEXT2FS=`pwd`/node_modules/genext2fs/genext2fs
 
 TOOLCHAIN=$BAREBONES/node_modules/nodeos-cross-toolchain
 TOOLS=$TOOLCHAIN/out

@@ -4,7 +4,6 @@
   "scripts": {
     "dockerBuild": "docker build -t usersfs .",
     "install": "scripts/build",
-    "preinstall": "scripts/preinstall",
     "start": "scripts/start",
     "test": "scripts/test",
     "unbuild": "scripts/unbuild"
@@ -13,9 +12,6 @@
   "license": "MIT",
   "peerDependencies": {
     "nodeos-rootfs": "^0.0.0"
-  },
-  "dependencies": {
-    "download-manager": "^0.0.15"
   },
   "nodeosDependencies": {
     "npm": "*",
@@ -26,5 +22,8 @@
     "bin-fs": "*",
     "bin-pwd": "*",
     "bin-ifconfig": "netlovers/node-bin-ifconfig"
+  },
+  "dependencies": {
+    "genext2fs": "nodeos/genext2fs"
   }
 }
