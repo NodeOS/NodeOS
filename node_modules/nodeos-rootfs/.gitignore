@@ -1,3 +1,2 @@
 deps/
-obj/
-out/
+node_modules/

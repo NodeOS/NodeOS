@@ -8,13 +8,11 @@ var manager = require('download-manager')
 
 // Source versions
 
-const GENFATFS_VERSION = "master"
 const SYSLINUX_VERSION = "6.03"
 
 
 // Dependencies URLs
 
-const GENFATFS_URL="https://github.com/NodeOS/genfatfs/archive/"+GENFATFS_VERSION+".tar.gz"
 const SYSLINUX_URL="https://www.kernel.org/pub/linux/utils/boot/syslinux/syslinux-"+SYSLINUX_VERSION+".tar.gz"
 
 
@@ -24,15 +22,6 @@ const SYSLINUX_URL="https://www.kernel.org/pub/linux/utils/boot/syslinux/syslinu
 
 var downloads =
 [
-  {
-    name: 'genfatfs',
-    url: GENFATFS_URL,
-    action: function(callback)
-    {
-      exec('make', {cwd: join('deps', this.name)}, callback)
-    }
-  },
-
   {
     name: 'syslinux',
     url: SYSLINUX_URL
