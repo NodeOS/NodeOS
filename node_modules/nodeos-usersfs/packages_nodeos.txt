@@ -15,7 +15,7 @@ NodeOS/ifconfig
 node-wget
 
 # Editors
-slap
+#slap
 
 # Benchmarks
 performance
