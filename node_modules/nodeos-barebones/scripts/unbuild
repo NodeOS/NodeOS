@@ -1,7 +1,3 @@
 #!/usr/bin/env sh
 
-rm -rf bzImage .vagga/ deps/ obj/ out/ &&
-(
-  cd node_modules/nodeos-cross-toolchain &&
-  npm run unbuild                        || exit 40
-) || exit $?
+rm -rf bzImage .vagga/ deps/ obj/ out/ || exit $?

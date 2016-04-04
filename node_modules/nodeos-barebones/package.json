@@ -15,6 +15,7 @@
   "license": "MIT",
   "dependencies": {
     "download-manager": "^0.0.15",
+    "nodeos-cross-toolchain": "NodeOS/nodeos-cross-toolchain",
     "qemu": "nodeos/qemu#raspi"
   },
   "devDependencies": {
