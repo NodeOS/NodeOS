@@ -4,9 +4,7 @@ BLD=$(tput bold)
 GRY="\e[90m"
 
 
-BAREBONES=`pwd`/node_modules/nodeos-barebones
-
-TOOLCHAIN=$BAREBONES/node_modules/nodeos-cross-toolchain
+TOOLCHAIN=`pwd`/node_modules/nodeos-cross-toolchain
 
 source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
 

@@ -13,7 +13,7 @@ INITRAMFS=`pwd`/../nodeos-initramfs
 
 NODE_DIR=$BAREBONES/deps/node
 
-TOOLCHAIN=$BAREBONES/node_modules/nodeos-cross-toolchain
+TOOLCHAIN=`pwd`/../nodeos-cross-toolchain
 TOOLS=$TOOLCHAIN/out
 
 source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?

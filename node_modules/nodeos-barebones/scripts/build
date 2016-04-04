@@ -7,7 +7,7 @@
 set -o pipefail
 
 
-TOOLCHAIN=`pwd`/node_modules/nodeos-cross-toolchain
+TOOLCHAIN=`pwd`/../nodeos-cross-toolchain
 TOOLS=$TOOLCHAIN/out
 
 source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
@@ -97,7 +97,7 @@ fi
 # Wrap the system up and pack it
 #
 
-SRC_DIR=$TOOLCHAIN/deps/linux
+SRC_DIR=deps/linux
 OBJ_DIR=$OBJECTS/linux
 
 mkdir -p $OBJ_DIR

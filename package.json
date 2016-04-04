@@ -41,6 +41,7 @@
     "genfatfs": "nodeos/genfatfs",
     "genext2fs": "nodeos/genext2fs",
     "minimist": "^1.2.0",
+    "nodeos-cross-toolchain": "NodeOS/nodeos-cross-toolchain",
     "qemu": "nodeos/qemu#raspi",
     "suppose": "^0.5.1",
     "tar-stream": "^1.3.2"
