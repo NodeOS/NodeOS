@@ -135,6 +135,7 @@ case $PLATFORM in
   ;;
 
   pc_iso)
+    mkdir -p        $OBJECTS &&
     cp syslinux.cfg $OBJECTS || exit 52
 
     createIsoImage || exit $?
