@@ -34,5 +34,5 @@ $APT install libsdl1.2-dev || exit 20
 
 
 # Update Node.js to v0.12 from the NodeSource repository
-curl -sL https://deb.nodesource.com/setup_0.12 | bash &&
-$APT install nodejs                                   || exit 30
+curl -sL https://deb.nodesource.com/setup_4.x | bash &&
+$APT install nodejs                                  || exit 30
