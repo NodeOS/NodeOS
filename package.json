@@ -38,6 +38,8 @@
     "debugfs": "^0.0.2",
     "download-manager": "^0.0.15",
     "fs-extra": "^0.26.5",
+    "genfatfs": "nodeos/genfatfs",
+    "genext2fs": "nodeos/genext2fs",
     "minimist": "^1.2.0",
     "qemu": "nodeos/qemu#raspi",
     "suppose": "^0.5.1",
