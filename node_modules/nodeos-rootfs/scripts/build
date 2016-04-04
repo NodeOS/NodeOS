@@ -38,7 +38,7 @@ EFIBOOT_IMG=`pwd`/obj/efiboot.img
 # Wrap the system up and pack it
 #
 
-GENFATFS=node_modules/genfatfs/genfatfs
+GENFATFS=../../node_modules/genfatfs/genfatfs
 
 function createPartitionImage() {
   # Copy kernel and initramfs on the partition image
