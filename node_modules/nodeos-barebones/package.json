@@ -14,7 +14,8 @@
   "author": "Jesús Leganés Combarro \"piranna\"",
   "license": "MIT",
   "dependencies": {
-    "download-manager": "^0.0.15"
+    "download-manager": "^0.0.15",
+    "qemu": "nodeos/qemu#raspi"
   },
   "devDependencies": {
     "suppose": "^0.5.1"

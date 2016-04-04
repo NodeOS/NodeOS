@@ -26,14 +26,12 @@ var targetList =
 
 const INIT_VERSION = "master"
 const NODEJS_VERSION = "v4.4.0"
-const QEMU_VERSION = "raspi"
 
 
 // Source URLs
 
 const INIT_URL="https://github.com/piranna/nodeos-init/archive/"+INIT_VERSION+".tar.gz"
 const NODEJS_URL="http://nodejs.org/dist/"+NODEJS_VERSION+"/node-"+NODEJS_VERSION+".tar.gz"
-const QEMU_URL="https://github.com/0xabu/qemu/archive/"+QEMU_VERSION+".tar.gz"
 
 
 // Checksums
@@ -69,49 +67,6 @@ var downloads =
       var data = "exports.nodeos = '"+version+"'"
 
       fs.appendFile(path.join('deps', this.name, 'lib/os.js'), data, callback)
-    }
-  },
-  {
-    name: 'qemu',
-    url: QEMU_URL,
-    action: function(callback)
-    {
-      var options =
-      {
-        cwd: path.join('deps', this.name),
-        stdio: ['ignore', 'ignore', process.stderr]
-      }
-
-      var args = ['clone','git://git.qemu-project.org/dtc.git']
-
-      cp.spawn('git', args, options)
-      .on('exit', function(error)
-      {
-        if(error) return callback(error)
-
-        var args =
-        [
-          '--prefix='+path.resolve('usr'),
-          '--target-list='+targetList.join(','),
-          '--disable-docs',
-          '--disable-vnc',
-          '--enable-sdl'
-        ]
-
-        cp.execFile('./configure', args, options, function(error)
-        {
-          if(error) return callback(error)
-
-          cp.spawn('make', ['-j'+JOBS], options)
-          .on('exit', function(error)
-          {
-            if(error) return callback(error)
-
-            cp.spawn('make', ['install'], options)
-            .on('exit', callback)
-          })
-        })
-      })
     }
   }
 ]
