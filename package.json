@@ -39,6 +39,7 @@
     "download-manager": "^0.0.15",
     "fs-extra": "^0.26.5",
     "minimist": "^1.2.0",
+    "qemu": "nodeos/qemu#raspi",
     "suppose": "^0.5.1",
     "tar-stream": "^1.3.2"
   },

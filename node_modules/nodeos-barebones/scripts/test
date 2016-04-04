@@ -5,7 +5,7 @@ var suppose = require('suppose')
 var processArguments = require('./processArguments')
 
 
-const QEMU_SYSTEM = './usr/bin/qemu-system-'
+const QEMU_SYSTEM = 'node_modules/qemu/usr/bin/qemu-system-'
 const TIMEOUT = 30
 
 

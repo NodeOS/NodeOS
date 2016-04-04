@@ -5,7 +5,7 @@ var fs = require('fs');
 var spawn = require('child_process').spawn
 
 
-const QEMU_SYSTEM = './node_modules/nodeos-barebones/usr/bin/qemu-system-'
+const QEMU_SYSTEM = 'qemu-system-'
 
 
 var link = fs.readlinkSync('out/latest').split('/');

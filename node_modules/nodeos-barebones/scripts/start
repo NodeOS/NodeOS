@@ -6,7 +6,7 @@ var spawn        = require('child_process').spawn
 var processArguments = require('./processArguments')
 
 
-const QEMU_SYSTEM = './usr/bin/qemu-system-'
+const QEMU_SYSTEM = 'node_modules/qemu/usr/bin/qemu-system-'
 
 
 var args = processArguments(process.argv.slice(2))
