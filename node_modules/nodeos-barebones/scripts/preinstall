@@ -25,8 +25,8 @@ var targetList =
 // Source versions
 
 const INIT_VERSION   = "master"
-const LINUX_VERSION  = "4.4.5"
-const NODEJS_VERSION = "v4.4.0"
+const LINUX_VERSION  = "4.5"
+const NODEJS_VERSION = "v4.4.2"
 
 
 // Source URLs
@@ -38,8 +38,8 @@ const NODEJS_URL = "http://nodejs.org/dist/"+NODEJS_VERSION+"/node-"+NODEJS_VERS
 
 // Checksums
 
-const LINUX_SHA256  = '7173fc97c0e6def46518fa26f9194b6c2a5f04acd40f5197263f03e74cd7a466'
-const NODEJS_SHA256 = '2cfc76292576d17a8f2434329221675972c96e5fd60cd694610f53134079f92e'
+const LINUX_SHA256  = '2011b1dbb8c9a5c89279984657b7bb0fd58fdf94c5bdff100cc9f25351e948d8'
+const NODEJS_SHA256 = 'ae91cb0a31f87b5b13bb2665178845d99abf1037dc3636fa88f442b4a4c65297'
 
 
 //
