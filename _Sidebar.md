@@ -1,19 +1,17 @@
-- [[What is NodeOS]]
+- [[What is NodeOS|Home]]
 - [[Introduction]]
-- [[Getting Started]]
-
+- Getting Started
   - [[Using precompiled Binaries]]
   - [[Building From Source]]
-
-    - [[Building From Source#Step 1: Prerequisites|Prerequisites]]
+    - [[Prerequisites|Building From Source#Step 1: Prerequisites]]
     - [[Debian/Ubuntu dependencies|Building From Source#Step 2a: Debian/Ubuntu dependencies]]
     - [[Arch Linux dependencies|Building From Source#Step 2b: Arch Linux dependencies]]
     - [[Installation|Building From Source#Step 3: Installation]]
     - [[Run the build|Building From Source#Step 4: Run your fresh NodeOS build]]
-
-  - [[Service Starter]]
-
-- [[Roadmap]]
+  - [[Service Starter|PalmTree]]
+  - [[Commands]]
+  - [[Filesystem]]
+- Roadmaps
+  - [[Alpha Roadmap|https://github.com/NodeOS/NodeOS/issues/37]]
+  - [[Beta Roadmap|https://github.com/NodeOS/NodeOS/issues/146]]
 - [[Contributing]]
-
-  - [[Contributors|people]]
