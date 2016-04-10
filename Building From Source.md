@@ -52,10 +52,10 @@ $ bin/install-debian-deps
 
 Once you have installed the prerequisites you need the dependencies for Arch Linux
 
-- cross compiler dependencies: `pacman -S gcc g++ realpath texinfo python2`
-- barebones dependencies: `pacman -S bc pixman lib32-pixman libpixman-1-dev`
-- rootfs dependencies: `pacman -S genisoimage`
-- initramfs dependencies: `pacman -S gpio`
+- cross compiler dependencies: `pacman -S gcc texinfo python2`
+- barebones dependencies: `pacman -S bc pixman lib32-pixman`
+- rootfs dependencies: `pacman -S cdrkit`
+- initramfs dependencies: `pacman -S cpio`
 - userfs dependencies: `pacman -S autoconf automake`
 - qemu dependencies: `pacman -S sdl`
 
@@ -64,7 +64,7 @@ Once you have installed the prerequisites you need the dependencies for Arch Lin
 Or as one liner:
 
 ```bash
-$ pacman -S gcc g++ realpath texinfo python2 bc pixman lib32-pixman libpixman-1-dev genisoimage gpio autoconf automake sdl
+$ pacman -S gcc texinfo python2 bc pixman lib32-pixman cdrkit cpio autoconf automake sdl
 ```
 
 Or just run if you're outside the folder
