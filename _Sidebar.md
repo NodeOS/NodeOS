@@ -1,17 +1,24 @@
 - [[What is NodeOS|Home]]
 - [[Introduction]]
 - Getting Started
+
   - [[Using precompiled Binaries]]
   - [[Building From Source]]
-    - [Prerequisites](https://github.com/NodeOS/NodeOS/wiki/Building-From-Source#Step 1: Prerequisites)
-    - [Debian/Ubuntu dependencies](https://github.com/NodeOS/NodeOS/wiki/Building-From-Source#Step 2a: Debian/Ubuntu dependencies)
-    - [Arch Linux dependencies](https://github.com/NodeOS/NodeOS/wiki/Building-From-Source#Step 2b: Arch Linux dependencies)
-    - [Installation](https://github.com/NodeOS/NodeOS/wiki/Building-From-Source#Step 3: Installation)
-    - [Run the build](https://github.com/NodeOS/NodeOS/wiki/Building-From-Source#Step 4: Run your fresh NodeOS build)
+
+    - [Prerequisites](https://github.com/NodeOS/NodeOS/wiki/Building-From-Source#step-1-prerequisites)
+    - [Debian/Ubuntu dependencies](https://github.com/NodeOS/NodeOS/wiki/Building-From-Source#step-2a-debianubuntu-dependencies)
+    - [Arch Linux dependencies](<https://github.com/NodeOS/NodeOS/wiki/Building-From-Source#step-2b-arch-linux-dependencies>
+    - [Installation](https://github.com/NodeOS/NodeOS/wiki/Building-From-Source#step-3-installation)
+    - [Run the build](https://github.com/NodeOS/NodeOS/wiki/Building-From-Source#step-4-run-your-fresh-nodeos-build)
+
   - [[Service Starter|PalmTree]]
   - [[Commands]]
   - [[Filesystem]]
+
 - Roadmaps
-  - [[Alpha Roadmap|<https://github.com/NodeOS/NodeOS/issues/37>]]
-  - [[Beta Roadmap|<https://github.com/NodeOS/NodeOS/issues/146>]]
+
+  - [Alpha Roadmap](https://github.com/NodeOS/NodeOS/issues/37)
+  - [Beta Roadmap](https://github.com/NodeOS/NodeOS/issues/146)
+
 - [[Contributing]]
+- [[Troubleshooting]]
