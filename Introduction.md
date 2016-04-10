@@ -1,5 +1,3 @@
-# Introduction
-
 Welcome to the developer doucmentation for NodeOS. NodeOS is a open source, high performance Operating System.
 
 This documentation is aimed at all Javascript developers who want to use Node.js as their main Operating System, as well as anyone interested in NodeOS's design and performance. This document introduces you to NodeOS, while the remaining documentation shows you how to use NodeOS for developing on it.
