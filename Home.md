@@ -1,19 +1,22 @@
-# NodeOS Wiki #
+<img src="https://cdn.rawgit.com/NodeOS/media/master/NodeOS.svg" alt="NodeOS" width="256" />
 
-Welcome to our humble abode. If you've come seeking explanations to NodeOS systems please take a look at the sidebar. Additionally, here is a nice listing of the documentation.
+# What is NodeOS?
 
-Systems
-- [[Service Starter|Service Starter (PalmTree)]] the nodeos service starter
+NodeOs is a lightweight operating system using Node.js as userspace. NodeOS is an operating system build entirely in Javascript and managed by npm. Any package in npm is a NodeOS package, which at last count was 244,180 packages. The goal of NodeOS is to provide just enough to let npm provide the rest. Since anyone can contribute to npm, anyone can create NodeOS packages.
 
-FAQ
-- [[FAQ]] frequently asked questions, and solutions to common problems
+**Quick links:** [[Getting Started]] | [[Building From Source]]
 
-Design
-- [[init]] a minimal init
-- [[services]] an overview of how services are managed
-- [[asgard]] the service manager's gory details
-- [[npkg]] the user-friendly interface to downloading and running services
-- [[root]] the user in charge of the above
+## Contributers
 
-Community
-- [[People]] Notable contributors (Maybe you'll become one some day)
+Here are some great people who have helped NodeOS in some significant way. In no particular order:
+
+- [David Xu](https://twitter.com/dvdxu) (Early website, testing, and adoption)
+- [Forrest Norvell](https://twitter.com/othiym23) (NodeOS on Raspberry Pi)
+- [Max Ogden](https://twitter.com/maxogden) (Docker testing, deploy, and evangelizing)
+- [Max Bernstein](https://github.com/tekknolagi) (Crazy asm madness and docker testing)
+- [Jake Verbaten](https://github.com/raynos) (Giving the wiki a push)
+- [Jesús Leganés Combarro](https://github.com/piranna) (In depth discussions)
+- [Adam Ulvi](https://github.com/aulvi) (for taking charge of #node-os on irc)
+- [Philipp Czarnetzki](https://github.com/luii) (Updating the Wiki)
+
+Everyone above is awesome!
