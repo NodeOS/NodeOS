@@ -8,7 +8,7 @@
     - [Arch Linux dependencies](https://github.com/NodeOS/NodeOS/wiki/Building-From-Source#step-2b-arch-linux-dependencies)
     - [Installation](https://github.com/NodeOS/NodeOS/wiki/Building-From-Source#step-3-installation)
     - [Run the build](https://github.com/NodeOS/NodeOS/wiki/Building-From-Source#step-4-run-your-fresh-nodeos-build)
-  - [[Service Starter|PalmTree]]
+  - [Service Starter](https://github.com/NodeOS/NodeOS/wiki/Service-Starter-(PalmTree))
   - [[Commands]]
   - [[Filesystem]]
 - Roadmaps
