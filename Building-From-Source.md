@@ -18,7 +18,7 @@ After you installed the prerequisites just clone the repository
 $ git clone https://github.com/NodeOS/NodeOS.git
 ```
 
-## Step 2a: Debian/Ubuntu dependencies
+## Step 2 (Debian/Ubuntu): Dependencies
 
 Once you've installed the prerequisites you need the dependencies for Debian/Ubuntu using `apt-get`. First you need to update your cache. To do so run
 
@@ -48,7 +48,7 @@ $ cd NodeOS/
 $ bin/install-debian-deps
 ```
 
-## Step 2b: Arch Linux dependencies
+## Step 2 (Arch Linux): Dependencies
 
 Once you have installed the prerequisites you need the dependencies for Arch Linux
 
@@ -78,7 +78,7 @@ $ bin/install-arch-deps
 
 Once you've installed the correct dependencies for your operating system you can start with the installation of NodeOS.
 
-**_Note: If you have Arch Linux you need to set python2 as default binary when you run `python`. Because the standart python binary is python3 and nodegyp dont uses it._** To do this, run following commands:
+**_Note: If you have Arch Linux you need to set python2 as default binary when you run `python`. Because the standard python binary is python3 and nodegyp doesn't uses it._** To do this, run following commands:
 
 ```bash
 $ cd /usr/bin
@@ -91,7 +91,7 @@ The next step is to install the npm dependencies and the bundled dependencies to
 $ npm install
 ```
 
-If you want to change the Platform for running your NodeOS just write this infront of `npm install`. This would build NodeOS for QEMU 32bit
+If you want to change the target platform to build NodeOS for, just prepend the `PLATFORM` argument before `npm install`. Example (NodeOS for QEMU 32bit):
 
 ```bash
 $ PLATFORM=qemu_32 npm install
@@ -99,7 +99,7 @@ or
 $ PLATFORM=docker npm install
 ```
 
-Now it should install correctly, this process can take some time! Pick some microwave pop-corn and go to see a movie. No, really, do it.
+Now it should install correctly. This process can take some time, so pick some microwave pop-corn and go to see a movie. No, really... do it.
 
 ## Step 4: Run your fresh NodeOS build
 
@@ -109,7 +109,7 @@ Now you can run your fresh build with:
 $ npm start
 ```
 
-If NodeOS not boots into the REPL unless you want that then everything was compiled correctly. **If not look under [[Troubleshooting]]**
+If NodeOS does not boot into the REPL, unless you wanted that, then everything was compiled correctly. **If not look under [[Troubleshooting]]**
 
 After NodeOS has booted up you should see something like:
 
@@ -117,7 +117,7 @@ After NodeOS has booted up you should see something like:
 Hello! I'm a user init script :-)
 ```
 
-Now you're prompted to enter your username and password. For now the username and password is `nodeos`
+Now you're prompted to enter your username and password. By default, the username and password is `nodeos` and cannot be changed without altering code.
 
 ```
 $ username: nodeos
