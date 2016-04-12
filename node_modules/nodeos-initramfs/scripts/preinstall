@@ -30,7 +30,7 @@ var downloads =
 ]
 
 
-manager(downloads, function(error)
+manager(downloads, {path: 'deps'}, function(error)
 {
   if(error) throw error;
 })
