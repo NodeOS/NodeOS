@@ -19,4 +19,5 @@ Here are some great people who have helped NodeOS in some significant way. In no
 - [Adam Ulvi](https://github.com/aulvi) (for taking charge of #node-os on irc)
 - [Philipp Czarnetzki](https://github.com/luii) (Updating the Wiki)
 - [Lite20](https://twitter.com/lightningboy24) (Wiki Maintainer)
+
 Everyone above is awesome!
