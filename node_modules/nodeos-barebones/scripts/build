@@ -134,9 +134,9 @@ case $PLATFORM in
         mv gen_init_cpio $OBJ_DIR/usr || exit 41
       ) || exit $?
 
-      mkdir -p $OUT_DIR                             &&
-      $OBJ_DIR/usr/gen_init_cpio $OBJ_DIR/cpio.txt  | \
-          scripts/cpio2tar > $OUT_DIR/barebones.tar || exit 42
+      mkdir -p $OUT_DIR                            &&
+      $OBJ_DIR/usr/gen_init_cpio $OBJ_DIR/cpio.txt | \
+          cpio2tar > $OUT_DIR/barebones.tar        || exit 42
 
       rm -f $OBJ_DIR/.config || exit 43
     fi
