@@ -34,17 +34,16 @@
   "homepage": "http://node-os.com",
   "private": true,
   "dependencies": {
-    "cpio-stream": "^1.2.3",
+    "cpio2tar": "0.0.1",
     "debugfs": "^0.0.2",
     "download-manager": "^0.0.15",
     "fs-extra": "^0.26.5",
-    "genfatfs": "nodeos/genfatfs",
     "genext2fs": "nodeos/genext2fs",
+    "genfatfs": "nodeos/genfatfs",
     "minimist": "^1.2.0",
     "nodeos-cross-toolchain": "NodeOS/nodeos-cross-toolchain",
     "qemu": "nodeos/qemu#raspi",
-    "suppose": "^0.5.1",
-    "tar-stream": "^1.3.2"
+    "suppose": "^0.5.1"
   },
   "devDependencies": {
     "publish-release": "piranna/publish-release"
