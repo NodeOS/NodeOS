@@ -43,7 +43,9 @@
     "minimist": "^1.2.0",
     "nodeos-cross-toolchain": "NodeOS/nodeos-cross-toolchain",
     "qemu": "nodeos/qemu#raspi",
-    "suppose": "^0.5.1"
+    "suppose": "^0.5.1",
+    "tar-stream": "piranna/tar-stream",
+    "cpio-stream": "1.2.3"
   },
   "devDependencies": {
     "publish-release": "piranna/publish-release"
