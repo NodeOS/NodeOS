@@ -148,8 +148,8 @@ case $PLATFORM in
 
       (
         cd "$OBJ_DIR";
-        find | cpio --owner 0:0 -o -H ustar
-      ) > $OUT_DIR.tar || exit 40
+        tar --owner 0 --group 0 -H pax -c * || exit 40
+      ) > $OUT_DIR.tar || exit $?
     fi
 
     ln -sf $CPU.tar out/latest || exit 41
@@ -164,8 +164,8 @@ case $PLATFORM in
 
       (
         cd "$OBJ_DIR";
-        find | cpio --owner 0:0 -o -H newc | gzip
-      ) > $OUT_DIR.cpio.gz || exit 50
+        find | cpio --owner 0:0 -o -H newc | gzip || exit 50
+      ) > $OUT_DIR.cpio.gz || exit $?
     fi
 
     ln -sf $CPU.cpio.gz out/latest || exit 51
