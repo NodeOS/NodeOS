@@ -6,7 +6,7 @@ NodeOs is a lightweight operating system using Node.js as userspace. NodeOS is a
 
 **Quick links:** [[Getting Started]] | [[Building From Source]]
 
-## Contributers
+## Contributors
 
 Here are some great people who have helped NodeOS in some significant way. In no particular order:
 
