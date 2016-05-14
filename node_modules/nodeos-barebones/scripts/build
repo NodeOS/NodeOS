@@ -178,8 +178,11 @@ case $PLATFORM in
         $MAKE $DEFCONFIG || exit 53
       ) || err $?
 
-      # Set NodeOS custom configuration
-      eval "echo \"$(< resources/config)\"" >> $OBJ_DIR/.config || err 54
+      # Set NodeOS custom configurations
+      eval "echo \"$(< resources/config_common)\"" >> $OBJ_DIR/.config || err 54
+
+      eval "echo \"$(< resources/config_workstation)\"" >> $OBJ_DIR/.config || err 54
+#      eval "echo \"$(< resources/config_mainframe)\"" >> $OBJ_DIR/.config || err 54
 
       (
         cd $SRC_DIR

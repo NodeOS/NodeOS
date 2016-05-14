@@ -1,0 +1,10 @@
+#
+# NodeOS Linux Kernel customizations
+# Flavour "Mainframe"
+#
+
+#
+# Frame buffer hardware drivers
+#
+
+CONFIG_FB=n # y

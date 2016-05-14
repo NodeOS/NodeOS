@@ -42,6 +42,11 @@ const LINUX_SHA256  = '2011b1dbb8c9a5c89279984657b7bb0fd58fdf94c5bdff100cc9f2535
 const NODEJS_SHA256 = 'ae91cb0a31f87b5b13bb2665178845d99abf1037dc3636fa88f442b4a4c65297'
 
 
+// Patche Linux kernel to add Unicode BMP support on `fbcon`
+const LINUX_CJKTTY_VERSION = "4.4"
+const LINUX_CJKTTY_PATCH = "https://raw.githubusercontent.com/NodeOS/cjktty-patch/master/patches/linux-"+LINUX_CJKTTY_VERSION+"-cjktty.diff"
+
+
 //
 // Node.js
 //
@@ -55,7 +60,8 @@ var downloads =
   {
     name: 'linux',
     url: LINUX_URL,
-    sha256: LINUX_SHA256
+    sha256: LINUX_SHA256,
+    patch: LINUX_CJKTTY_PATCH
   },
   {
     name: 'node',

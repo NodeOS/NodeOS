@@ -1,6 +1,6 @@
 #
 # NodeOS Linux Kernel customizations
-# Linux/x86 3.18.1 Kernel Configuration
+# Common
 #
 
 #
@@ -84,24 +84,6 @@ CONFIG_DEVTMPFS_MOUNT=n  # y
 #
 
 CONFIG_X86_PKG_TEMP_THERMAL=n  # m
-
-
-#
-# Frame buffer hardware drivers
-#
-
-#CONFIG_FB_CIRRUS=y  # n
-CONFIG_FB_VESA=y    # n
-CONFIG_FB_EFI=n     # y
-
-
-#
-# Console display driver support
-#
-
-CONFIG_LOGO=y
-CONFIG_LOGO_LINUX_MONO=n     #y
-CONFIG_LOGO_LINUX_CLUT224=n  #y
 
 
 #
