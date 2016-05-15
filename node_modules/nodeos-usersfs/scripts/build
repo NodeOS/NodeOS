@@ -31,6 +31,9 @@ if [[ ! -d $OBJ_DIR ]]; then
 
   mkdir -p $OBJ_DIR || exit 10
 
+  # Force re-creation of usersfs
+  rm -rf $OUT_DIR || exit 14
+
   (
     #
     # Install system dependencies
@@ -54,9 +57,6 @@ if [[ ! -d $OBJ_DIR ]]; then
     ln -sf bin/forever-starter $OBJ_DIR/init || exit 13
   ) || err $?
 
-  # Force re-creation of usersfs
-  rm -rf $OUT_DIR || exit 14
-
   echo -e "${GRN}Successfully generated root user folder${CLR}"
 fi
 
@@ -71,6 +71,9 @@ if [[ ! -d $OBJ_DIR ]]; then
   echo -e "${WHT}Generating nodeos user folder${CLR}"
 
   mkdir -p $OBJ_DIR || exit 20
+
+  # Force re-creation of usersfs
+  rm -rf $OUT_DIR || exit 25
 
   (
     #
@@ -95,22 +98,22 @@ if [[ ! -d $OBJ_DIR ]]; then
     cp init.js $OBJ_DIR/init || exit 23
 
 
-    # #
-    # # blessed-contrib examples
-    # #
     #
-    # BLESSED_URL=https://github.com/yaronn/blessed-contrib/archive/master.tar.gz
-    # SRC_DIR=$OBJ_DIR/blessed-contrib
+    # blessed-contrib examples
     #
-    # mkdir -p $SRC_DIR                                                 &&
-    # curl -L $BLESSED_URL | tar xzf - -C $SRC_DIR --strip-components=1 &&
-    # (
-    #   cd $SRC_DIR
-    #
-    #   eval "$NPMi" || exit 24
-    # ) || exit $?
-    #
-    #
+
+    BLESSED_URL=https://github.com/yaronn/blessed-contrib/archive/master.tar.gz
+    SRC_DIR=$OBJ_DIR/blessed-contrib
+
+    mkdir -p $SRC_DIR                                                 &&
+    curl -L $BLESSED_URL | tar xzf - -C $SRC_DIR --strip-components=1 &&
+    (
+      cd $SRC_DIR
+
+      eval "$NPMi" || exit 24
+    ) || exit $?
+
+
     # #
     # # node-canvas examples
     # #
@@ -126,9 +129,6 @@ if [[ ! -d $OBJ_DIR ]]; then
     #   eval "$NPMi" --has_cairo=false --has_X11=false || exit 25
     # ) || exit $?
   ) || err $?
-
-  # Force re-creation of usersfs
-  rm -rf $OUT_DIR || exit 25
 
   echo -e "${GRN}Successfully generated nodeos user folder${CLR}"
 fi
