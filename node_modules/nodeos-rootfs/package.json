@@ -15,7 +15,7 @@
     "nodeos-initramfs": "^0.0.0"
   },
   "dependencies": {
-    "download-manager": "^0.0.15",
+    "download-manager": "^0.0.19",
     "genfatfs": "nodeos/genfatfs"
   }
 }

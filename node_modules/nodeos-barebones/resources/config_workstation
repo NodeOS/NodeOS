@@ -17,3 +17,12 @@ CONFIG_FB_EFI=n     # y
 #
 
 CONFIG_LOGO=y
+
+
+#
+# Library routines
+#
+
+CONFIG_FONTS=n     # Select to use default fonts or CJK one
+CONFIG_FONT_8x8=n  # y
+CONFIG_FONT_8x16=n # y

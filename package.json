@@ -37,7 +37,7 @@
   "dependencies": {
     "cpio2tar": "0.0.1",
     "debugfs": "^0.0.2",
-    "download-manager": "^0.0.15",
+    "download-manager": "^0.0.19",
     "fs-extra": "^0.26.5",
     "genext2fs": "nodeos/genext2fs",
     "genfatfs": "nodeos/genfatfs",

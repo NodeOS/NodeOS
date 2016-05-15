@@ -61,7 +61,11 @@ var downloads =
     name: 'linux',
     url: LINUX_URL,
     sha256: LINUX_SHA256,
-    patch: LINUX_CJKTTY_PATCH
+    patch:
+    {
+      url: LINUX_CJKTTY_PATCH,
+      strip: 1
+    }
   },
   {
     name: 'node',
