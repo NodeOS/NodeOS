@@ -27,7 +27,7 @@ source scripts/utils.sh                    || exit $?
 grep -q "CONFIG_FUSE_FS=y" $BAREBONES/obj/$CPU/linux/.config
 HAS_FUSE=$?
 
-if [ $HAS_FUSE -eq 0 ]; then
+if [ $HAS_FUSE -eq 0 || $PLATFORM == docker ]; then
   SRC_DIR=`pwd`/deps/fuse
   OBJ_DIR=$OBJECTS/fuse
 

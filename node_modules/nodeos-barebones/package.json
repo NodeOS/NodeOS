@@ -2,6 +2,7 @@
   "name": "nodeos-barebones",
   "version": "1.0.0-RC1",
   "scripts": {
+    "docker": "docker run",
     "dockerBuild": "docker import - barebones < out/latest",
     "install": "scripts/build",
     "node": "scripts/node",
