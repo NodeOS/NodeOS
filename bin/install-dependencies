@@ -17,7 +17,7 @@ $APT update                  || exit 1
 
 
 # cross-compiler
-$APT install gcc realpath || exit 10
+$APT install gcc git realpath || exit 10
 
 # barebones
 $APT install bc libpixman-1-dev || exit 11

@@ -1,0 +1,16 @@
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index 49d61ad..cfab2a2 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -112,7 +112,10 @@ mksysmap()
+
+ sortextable()
+ {
+-	${objtree}/scripts/sortextable ${1}
++	# http://stackexchange.com/users/7162641/josh-sanford
++	cp ${1} /tmp/.${1}
++	$(objtree)/scripts/sortextable /tmp/.${1}
++	cp /tmp/.${1} ${1}
+ }
+
+ # Delete output files in case of error

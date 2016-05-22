@@ -62,10 +62,16 @@ var downloads =
     url: LINUX_URL,
     sha256: LINUX_SHA256,
     patch:
-    {
-      url: LINUX_CJKTTY_PATCH,
-      strip: 1
-    }
+    [
+      {
+        url: LINUX_CJKTTY_PATCH,
+        strip: 1
+      },
+      {
+        url: 'resources/linux-vagrant.patch',
+        strip: 1
+      }
+    ]
   },
   {
     name: 'node',
