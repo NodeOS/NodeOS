@@ -2,7 +2,7 @@
   "name": "nodeos-usersfs",
   "version": "0.0.0",
   "scripts": {
-    "docker": "docker run -t -i --cap-add SYS_ADMIN --device /dev/fuse -v `pwd`/out/latest:/dev/sdb2",
+    "docker": "scripts/docker",
     "dockerBuild": "docker build -t usersfs .",
     "install": "scripts/build",
     "start": "scripts/start",

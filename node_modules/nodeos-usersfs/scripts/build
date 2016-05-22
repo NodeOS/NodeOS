@@ -29,6 +29,9 @@ OBJ_DIR=$OBJECTS/root
 if [[ ! -d $OBJ_DIR ]]; then
   echo -e "${WHT}Generating root user folder${CLR}"
 
+  # Force re-creation of usersfs
+  rm -rf $OUT_DIR || exit 14
+
   mkdir -p $OBJ_DIR || exit 10
 
   # Force re-creation of usersfs
@@ -69,6 +72,9 @@ OBJ_DIR=$OBJECTS/nodeos
 
 if [[ ! -d $OBJ_DIR ]]; then
   echo -e "${WHT}Generating nodeos user folder${CLR}"
+
+  # Force re-creation of usersfs
+  rm -rf $OUT_DIR || exit 25
 
   mkdir -p $OBJ_DIR || exit 20
 

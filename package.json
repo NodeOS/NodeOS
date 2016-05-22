@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "BigRedButton": "scripts/BigRedButton",
-    "docker": "docker run -t -i --cap-add SYS_ADMIN --device /dev/fuse -v `pwd`/out/latest/usersfs:/dev/sdb2 NodeOS",
+    "docker": "scripts/docker",
     "dockerBuild": "scripts/dockerBuild",
     "install": "scripts/build",
     "postinstall": "scripts/postinstall",
