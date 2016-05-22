@@ -14,7 +14,7 @@
   "author": "Jesús Leganés Combarro \"piranna\"",
   "license": "MIT",
   "dependencies": {
-    "download-manager": "^0.0.19",
+    "download-manager": "^0.0.20",
     "nodeos-cross-toolchain": "NodeOS/nodeos-cross-toolchain",
     "qemu": "nodeos/qemu#raspi"
   },
