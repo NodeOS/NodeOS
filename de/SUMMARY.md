@@ -1,3 +1,3 @@
-* [Was ist NodeOS](what-is-nodeos.md)
-* [Einleitung](introduction.md)
+* [Was ist NodeOS](was-ist-nodeos.md)
+* [Einleitung](einleitung.md)
 * 
