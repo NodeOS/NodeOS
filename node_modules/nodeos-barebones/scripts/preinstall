@@ -76,22 +76,7 @@ var downloads =
   {
     name: 'node',
     url: NODEJS_URL,
-    sha256: NODEJS_SHA256,
-    action: function(callback)
-    {
-      // Allow to inspect NodeOS version from inside Node.js
-      try
-      {
-        var version = require('../../../package.json').version
-      }
-      catch(e)
-      {
-        var version = '(unknown)'
-      }
-      var data = "exports.nodeos = '"+version+"'"
-
-      fs.appendFile(path.join('deps', this.name, 'lib/os.js'), data, callback)
-    }
+    sha256: NODEJS_SHA256
   }
 ]
 

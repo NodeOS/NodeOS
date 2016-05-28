@@ -1,6 +1,6 @@
 {
   "name": "NodeOS",
-  "version": "0.0.0",
+  "version": "1.0.0-RC1",
   "description": "Lightweight operating system using Node.js as userspace",
   "bundleDependencies": [
     "nodeos-barebones",

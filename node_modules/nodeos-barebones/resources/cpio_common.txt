@@ -20,3 +20,11 @@ slink /lib/libstdc++.so.6 libstdc++.so.6.0.21 0444 0 0
 #
 
 file /bin/node $OBJECTS/node 0555 0 0
+
+
+#
+# NodeOS version
+#
+
+dir  /etc                                0555 0 0
+file /etc/os-release $OBJECTS/os-release 0444 0 0
