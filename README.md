@@ -2,6 +2,8 @@
 [![Stories in Ready](https://badge.waffle.io/NodeOS/NodeOS.png?label=ready&title=Ready)](https://waffle.io/NodeOS/NodeOS)
 # NodeOS
 
+[![Join the chat at https://gitter.im/NodeOS/NodeOS](https://badges.gitter.im/NodeOS/NodeOS.svg)](https://gitter.im/NodeOS/NodeOS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Lightweight operating system using [Node.js](http://nodejs.org) as userspace.
 
 NodeOS is an operating system build entirely in Javascript and managed by
