@@ -106,6 +106,21 @@ fi
 
 
 #
+# NodeOS version
+#
+
+OBJ_DIR=$OBJECTS/os-release
+
+mkdir -p $OBJ_DIR
+
+VERSION=`node -p "require('../../../package.json').version"` || VERSION="(unknown)"
+CODENAME="Amanda"
+BUILD_ID=`node -p "(new Date()).toISOString().substr(0,10)"`
+
+eval "echo \"$(< resources/os-release)\"" > $OBJ_DIR || exit 30
+
+
+#
 # Wrap the system up and pack it
 #
 

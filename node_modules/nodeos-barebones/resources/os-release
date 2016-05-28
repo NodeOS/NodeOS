@@ -1,0 +1,15 @@
+NAME=NodeOS
+VERSION="$VERSION ($CODENAME)"
+ID=nodeos
+ID_LIKE="clfs lfs"
+VERSION_ID=$VERSION
+PRETTY_NAME="NodeOS $VERSION ($CODENAME)"
+#ANSI_COLOR=
+#CPE_NAME=
+HOME_URL=http://node-os.com/
+SUPPORT_URL=https://github.com/NodeOS/NodeOS/
+BUG_REPORT_URL=https://github.com/NodeOS/NodeOS/issues/
+#PRIVACY_POLICY_URL=
+BUILD_ID=$BUILD_ID
+VARIANT=Workstation
+VARIANT_ID=workstation
