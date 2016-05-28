@@ -90,28 +90,36 @@ so your changes will persist.
 # Build NodeOS in five steps
 
 1. Download the project source code:
+
    ```bash
    git clone git@github.com:NodeOS/NodeOS.git
    cd NodeOS
    ```
+
 2. Install the required build tools, on a Ubuntu based system you can do it by
    executing
+
    ```bash
    sudo bin/install-dependencies
    ```
+
 3. Build NodeOS:
+
    ```bash
    npm install
    ```
+
    By default it generate some files that can be used with QEmu, compiled for
    your current architecture. You can be able to configure the build process by
    passing some environment variables. For example, to force to build for 32
    bits, use `PLATFORM=qemu_32 npm install` instead.
 4. Pick some microwave pop-corn and go to see a movie. No, really, do it.
 5. Exec your fresh compiled NodeOS image:
+
    ```bash
    npm start
    ```
+
    It will automatically detect what CPU architecture will need to be used on
    QEmu and exec the correct emulation.
 
@@ -132,9 +140,11 @@ build them from source code.
 
 1. [Install Docker](http://docs.docker.io/en/latest/installation/)
 2. One Liner
+
    ```bash
    sudo docker run -t -i nodeos/nodeos
    ```
+
    or learn how to make a [Custom Build](http://node-os.com/blog/get-involved/)
 
 ## Build from Source
