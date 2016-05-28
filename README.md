@@ -8,18 +8,21 @@ Lightweight operating system using [Node.js](http://nodejs.org) as userspace.
 
 NodeOS is an operating system build entirely in Javascript and managed by
 [npm](https://www.npmjs.com). Any package in npm is a NodeOS package, which at
-last count was 244,180 packages. The goal of NodeOS is to provide just enough to
+last count was 291,107 packages. The goal of NodeOS is to provide just enough to
 let npm provide the rest. Since anyone can contribute to npm, anyone can create
 NodeOS packages.
 
 This project won the spanish [9th National Free Software Championship](https://www.concursosoftwarelibre.org/1415)
-and it's a current participant of its [10th edition](https://www.concursosoftwarelibre.org/1516)
-and the Granada University [2nd Free Projects prize](http://osl.ugr.es/bases-de-los-premios-a-proyectos-libres-de-la-ugr)
+on the Systems category and was Honorable Mention of its [10th edition](https://www.concursosoftwarelibre.org/1516),
+and it's a current participant the Granada University [2nd Free Projects prize](http://osl.ugr.es/bases-de-los-premios-a-proyectos-libres-de-la-ugr).
+It was also presented as the degree thesis of [Jesús Leganes Combarro](https://github.com/piranna)
+with a qualification of 10/10 with distinction.
 
 ## Useful links
 
+* [pre-build releases images](https://github.com/NodeOS/NodeOS/releases)
 * [1.0 Roadmap](https://github.com/NodeOS/NodeOS/issues/37)
-* [1.1 Roadmap](https://github.com/NodeOS/NodeOS/issues/146)
+* [2.0 Roadmap](https://github.com/NodeOS/NodeOS/issues/146)
 * [media files](https://github.com/NodeOS/media) (logos, wallpapers...)
 * [discussion](https://github.com/NodeOS/NodeOS/issues)
 
@@ -84,28 +87,33 @@ pendrive, it's recomended to so it by using `bin/installUSB` command so it will
 create automatically a read-write usersfs partition to fill the remaining space
 so your changes will persist.
 
-# Build NodeOS in three steps
+# Build NodeOS in five steps
 
-NodeOS require to have first installed some build tools, on a Ubuntu based
-system you can install them by executing the file `bin/install-dependencies`
-
-1. Download the project source code and build NodeOS for QEmu:
+1. Download the project source code:
    ```bash
    git clone git@github.com:NodeOS/NodeOS.git
    cd NodeOS
+   ```
+2. Install the required build tools, on a Ubuntu based system you can do it by
+   executing
+   ```bash
+   sudo bin/install-dependencies
+   ```
+3. Build NodeOS:
+   ```bash
    npm install
    ```
    By default it generate some files that can be used with QEmu, compiled for
    your current architecture. You can be able to configure the build process by
    passing some environment variables. For example, to force to build for 32
    bits, use `PLATFORM=qemu_32 npm install` instead.
-2. Pick some microwave pop-corn and go to see a movie. No, really, do it.
-3. Exec your fresh compiled NodeOS image:
+4. Pick some microwave pop-corn and go to see a movie. No, really, do it.
+5. Exec your fresh compiled NodeOS image:
    ```bash
    npm start
    ```
    It will automatically detect what CPU architecture will need to be used on
-   QEmu.
+   QEmu and exec the correct emulation.
 
 ...and profit! :-D
 
