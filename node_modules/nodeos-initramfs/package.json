@@ -1,6 +1,6 @@
 {
   "name": "nodeos-initramfs",
-  "version": "0.0.0",
+  "version": "1.0.0-RC1",
   "description": "The included script generate a initramfs image that boots a NodeOS rootfs given as a ROOT parameter on boot time. If it fails to do so, it boots to a Node.js [REPL](http://nodejs.org/api/repl.html) prompt.",
   "scripts": {
     "dockerBuild": "docker build -t initramfs .",
@@ -10,13 +10,17 @@
     "test": "scripts/test",
     "unbuild": "scripts/unbuild"
   },
-  "author": "Jesús Leganés Combarro \"piranna\"",
+  "author": "Jesús Leganés Combarro 'piranna' <piranna@gmail.com>",
   "license": "MIT",
   "peerDependencies": {
-    "nodeos-barebones": "^0.0.0"
+    "nodeos-barebones": "^1.0.0-RC1"
   },
   "dependencies": {
-    "download-manager": "^0.0.20"
+    "download-manager": "^0.0.20",
+    "nodeos-cross-toolchain": "NodeOS/nodeos-cross-toolchain"
+  },
+  "devDependencies": {
+    "qemu": "NodeOS/qemu"
   },
   "nodeosDependencies": {
     "nodeos-mount-filesystems": "^0.1.1",
