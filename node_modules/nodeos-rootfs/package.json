@@ -1,6 +1,6 @@
 {
   "name": "nodeos-rootfs",
-  "version": "0.0.0",
+  "version": "1.0.0-RC1",
   "scripts": {
     "dockerBuild": "docker build -t rootfs .",
     "install": "scripts/build",
@@ -9,13 +9,17 @@
     "test": "scripts/test",
     "unbuild": "scripts/unbuild"
   },
-  "author": "Jesús Leganés Combarro \"piranna\"",
+  "author": "Jesús Leganés Combarro 'piranna' <piranna@gmail.com>",
   "license": "MIT",
   "peerDependencies": {
-    "nodeos-initramfs": "^0.0.0"
+    "nodeos-barebones": "^1.0.0-RC1",
+    "nodeos-initramfs": "^1.0.0-RC1"
   },
   "dependencies": {
     "download-manager": "^0.0.20",
     "genfatfs": "nodeos/genfatfs"
+  },
+  "devDependencies": {
+    "qemu": "NodeOS/qemu"
   }
 }

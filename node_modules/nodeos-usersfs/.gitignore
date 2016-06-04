@@ -1,4 +1,4 @@
 deps/
-obj/
+build/
 out/
 node_modules/
