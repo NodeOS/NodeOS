@@ -1,25 +1,7 @@
 #!/usr/bin/env node
 
-var cp   = require('child_process')
-var cpus = require('os').cpus
-var fs   = require('fs')
-var path = require('path')
 
 var manager = require('download-manager')
-
-
-const JOBS = cpus().length
-
-
-var targetList =
-[
-  'arm-softmmu',
-  'i386-softmmu',
-  'x86_64-softmmu',
-  'arm-linux-user',
-  'i386-linux-user',
-  'x86_64-linux-user'
-]
 
 
 // Source versions
@@ -42,7 +24,7 @@ const LINUX_SHA256  = '2011b1dbb8c9a5c89279984657b7bb0fd58fdf94c5bdff100cc9f2535
 const NODEJS_SHA256 = 'ae91cb0a31f87b5b13bb2665178845d99abf1037dc3636fa88f442b4a4c65297'
 
 
-// Patche Linux kernel to add Unicode BMP support on `fbcon`
+// Patch Linux kernel to add Unicode BMP support on `fbcon`
 const LINUX_CJKTTY_VERSION = "4.4"
 const LINUX_CJKTTY_PATCH = "https://raw.githubusercontent.com/NodeOS/cjktty-patch/master/patches/linux-"+LINUX_CJKTTY_VERSION+"-cjktty.diff"
 
