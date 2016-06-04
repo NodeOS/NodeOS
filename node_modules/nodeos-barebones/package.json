@@ -1,6 +1,6 @@
 {
   "name": "nodeos-barebones",
-  "version": "0.0.0",
+  "version": "1.0.0-RC1",
   "scripts": {
     "dockerBuild": "docker import - barebones < out/latest",
     "install": "scripts/build",
@@ -11,14 +11,16 @@
     "testNode": "scripts/testNode",
     "unbuild": "scripts/unbuild"
   },
-  "author": "Jesús Leganés Combarro \"piranna\"",
+  "author": "Jesús Leganés Combarro 'piranna' <piranna@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "cpio2tar": "^0.0.1",
     "download-manager": "^0.0.20",
-    "nodeos-cross-toolchain": "NodeOS/nodeos-cross-toolchain",
-    "qemu": "nodeos/qemu#raspi"
+    "minimist": "^1.2.0",
+    "nodeos-cross-toolchain": "NodeOS/nodeos-cross-toolchain"
   },
   "devDependencies": {
+    "qemu": "NodeOS/qemu",
     "suppose": "^0.5.1"
   }
 }

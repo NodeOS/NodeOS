@@ -1,6 +1,6 @@
 .vagga/
 deps/
-obj/
 out/
-usr/
 node_modules/
+
+build/
