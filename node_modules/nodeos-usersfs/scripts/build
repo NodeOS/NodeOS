@@ -6,35 +6,49 @@ GRN="\e[32m"
 CLR="\e[0m"
 
 
-BAREBONES=`pwd`/../nodeos-barebones
-INITRAMFS=`pwd`/../nodeos-initramfs
+TOOLCHAIN=`node -p "require('nodeos-cross-toolchain')"`
+BAREBONES=`node -p "require('nodeos-barebones')"`
+INITRAMFS=`node -p "require('nodeos-initramfs')"`
 
 NODE_DIR=$BAREBONES/deps/node
 
-GENEXT2FS=`pwd`/../../node_modules/genext2fs/genext2fs
-
-TOOLCHAIN=`pwd`/../nodeos-cross-toolchain
-TOOLS=$TOOLCHAIN/out
-
 source $TOOLCHAIN/scripts/adjustEnvVars.sh &&
 source $INITRAMFS/scripts/utils.sh         || exit $?
+
+PATH=$TOOLCHAIN/bin:$PATH
+
+
+# Clean object dir and return the input error
+function err(){
+  rmStep $STEP_DIR
+  exit $1
+}
+
+
+#
+# Define steps paths
+#
+
+OBJ_ROOT=$OBJECTS/root
+OBJ_NODEOS=$OBJECTS/nodeos
+OUT_DIR=`pwd`/out/$CPU
 
 
 #
 # root home
 #
 
-OBJ_DIR=$OBJECTS/root
+STEP_DIR=$OBJ_ROOT
 
-if [[ ! -d $OBJ_DIR ]]; then
+if [[ ! -d $STEP_DIR ]]; then
   echo -e "${WHT}Generating root user folder${CLR}"
-
-  mkdir -p $OBJ_DIR || exit 10
 
   # Force re-creation of usersfs
   rm -rf $OUT_DIR || exit 14
 
   (
+    mkdir -p $STEP_DIR || exit 10
+
     #
     # Install system dependencies
     #
@@ -46,15 +60,15 @@ if [[ ! -d $OBJ_DIR ]]; then
     # Services to be started at boot
     #
 
-    mkdir -p $OBJ_DIR/etc                 &&
-    cp forever-starter.json $OBJ_DIR/etc/ || exit 12
+    mkdir -p $STEP_DIR/etc                 &&
+    cp forever-starter.json $STEP_DIR/etc/ || exit 12
 
 
     #
     # Init file for the user
     #
 
-    ln -sf bin/forever-starter $OBJ_DIR/init || exit 13
+    ln -sf bin/forever-starter $STEP_DIR/init || exit 13
   ) || err $?
 
   echo -e "${GRN}Successfully generated root user folder${CLR}"
@@ -65,17 +79,17 @@ fi
 # nodeos home
 #
 
-OBJ_DIR=$OBJECTS/nodeos
+STEP_DIR=$OBJ_NODEOS
 
-if [[ ! -d $OBJ_DIR ]]; then
+if [[ ! -d $STEP_DIR ]]; then
   echo -e "${WHT}Generating nodeos user folder${CLR}"
-
-  mkdir -p $OBJ_DIR || exit 20
 
   # Force re-creation of usersfs
   rm -rf $OUT_DIR || exit 25
 
   (
+    mkdir -p $STEP_DIR || exit 20
+
     #
     # Install user dependencies
     #
@@ -87,15 +101,15 @@ if [[ ! -d $OBJ_DIR ]]; then
     # Copy nodeos user login info
     #
 
-    mkdir -p $OBJ_DIR/etc        &&
-    cp logon.json  $OBJ_DIR/etc/ || exit 22
+    mkdir -p $STEP_DIR/etc        &&
+    cp logon.json  $STEP_DIR/etc/ || exit 22
 
 
     #
     # Dummy init file for the user
     #
 
-    cp init.js $OBJ_DIR/init || exit 23
+    cp init.js $STEP_DIR/init || exit 23
 
 
     #
@@ -103,7 +117,7 @@ if [[ ! -d $OBJ_DIR ]]; then
     #
 
     BLESSED_URL=https://github.com/yaronn/blessed-contrib/archive/master.tar.gz
-    SRC_DIR=$OBJ_DIR/blessed-contrib
+    SRC_DIR=$STEP_DIR/blessed-contrib
 
     mkdir -p $SRC_DIR                                                 &&
     curl -L $BLESSED_URL | tar xzf - -C $SRC_DIR --strip-components=1 &&
@@ -148,13 +162,13 @@ if [[ ! -e $OUT_DIR ]]; then
 
       chmod -R go= "$OBJECTS" || exit 32
 
-      ln -sf ../obj/$CPU out/latest || exit 33
+      ln -sf ../build/$CPU out/latest || exit 33
     ;;
 
     pc_* | raspberry_*)
-      DISK_SIZE=384  # Size in MB
+      DISK_SIZE=512  # Size in MB
 
-      $GENEXT2FS -b $((DISK_SIZE*1024)) \
+      genext2fs -b $((DISK_SIZE*1024)) \
           --root $OBJECTS              \
           --block-size          1024   \
           --bytes-per-inode     4096   \
@@ -163,8 +177,8 @@ if [[ ! -e $OUT_DIR ]]; then
           --allow-holes                \
           --squash $OUT_DIR            || exit 40
 
-      /sbin/tune2fs -j $OUT_DIR > /dev/null   || exit 41
-      ../.bin/debugfs.chown $OUT_DIR nodeos 1 || exit 42
+      /sbin/tune2fs -j $OUT_DIR > /dev/null || exit 41
+      debugfs.chown    $OUT_DIR nodeos 1    || exit 42
 
       ln -sf $CPU out/latest || exit 43
     ;;
