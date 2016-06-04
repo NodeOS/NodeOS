@@ -4,13 +4,13 @@
 
 # musl
 
-file  /lib/libc.so                $TOOLS/$TARGET/lib/libc.so 0555 0 0
-slink /lib/ld-musl-$CPU_PORT.so.1 libc.so                    0555 0 0
+file  /lib/libc.so                $TOOLCHAIN/$TARGET/lib/libc.so 0555 0 0
+slink /lib/ld-musl-$CPU_PORT.so.1 libc.so                        0555 0 0
 
 # gcc
 
-file /lib/libgcc_s.so.1       $TOOLS/$TARGET/lib/libgcc_s.so.1       0444 0 0
-file /lib/libstdc++.so.6.0.21 $TOOLS/$TARGET/lib/libstdc++.so.6.0.21 0444 0 0
+file /lib/libgcc_s.so.1       $TOOLCHAIN/$TARGET/lib/libgcc_s.so.1       0444 0 0
+file /lib/libstdc++.so.6.0.21 $TOOLCHAIN/$TARGET/lib/libstdc++.so.6.0.21 0444 0 0
 
 slink /lib/libstdc++.so.6 libstdc++.so.6.0.21 0444 0 0
 

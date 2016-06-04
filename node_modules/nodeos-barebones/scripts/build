@@ -7,10 +7,29 @@
 set -o pipefail
 
 
-TOOLCHAIN=`pwd`/../nodeos-cross-toolchain
-TOOLS=$TOOLCHAIN/out
+TOOLCHAIN=`node -p "require('nodeos-cross-toolchain')"`
 
 source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
+
+PATH=$TOOLCHAIN/bin:$PATH
+
+
+# Clean object dir and return the input error
+function err(){
+  rmStep $STEP_DIR
+  exit $1
+}
+
+
+#
+# Define steps paths
+#
+
+OBJ_INIT=$OBJECTS/init
+OBJ_NODE=$OBJECTS/node
+OBJ_RELEASE=$OBJECTS/os-release
+OBJ_LINUX=$OBJECTS/linux
+OUT_DIR=`pwd`/out/$CPU
 
 
 #
@@ -18,16 +37,16 @@ source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
 #
 
 SRC_DIR=`pwd`/deps/init
-OBJ_DIR=$OBJECTS/init
+STEP_DIR=$OBJ_INIT
 
-if [[ ! -f $OBJ_DIR && $PLATFORM != vagga ]]; then
+if [[ ! -f $STEP_DIR && $PLATFORM != vagga ]]; then
   echo -e "${WHT}Compiling init${CLR}"
 
   # Delete previous kernel
-  rm -rf $OUT_DIR
+  rm -rf $OBJ_LINUX
 
   (
-#    cd $OBJ_DIR
+#    cd $STEP_DIR
     cd $SRC_DIR && $MAKE clean  # nodeos-init don't support out-of-tree builds yet
 
     # Compile
@@ -39,8 +58,8 @@ if [[ ! -f $OBJ_DIR && $PLATFORM != vagga ]]; then
   ) || err $?
 
   # Install
-  mkdir -p $OBJECTS         &&
-  cp $SRC_DIR/init $OBJ_DIR || exit 12
+  mkdir -p $OBJECTS          &&
+  cp $SRC_DIR/init $STEP_DIR || exit 12
 
   echo -e "${GRN}Successfully compiled init${CLR}"
 fi
@@ -51,16 +70,16 @@ fi
 #
 
 SRC_DIR=`pwd`/deps/node
-OBJ_DIR=$OBJECTS/node
+STEP_DIR=$OBJ_INIT
 
-if [[ ! -f $OBJ_DIR ]]; then
+if [[ ! -f $STEP_DIR ]]; then
   echo -e "${WHT}Compiling Node.js${CLR}"
 
   # Delete previous kernel
-  rm -rf $OUT_DIR
+  rm -rf $OBJ_LINUX
 
   (
-#    cd $OBJ_DIR
+#    cd $STEP_DIR
     cd $SRC_DIR && $MAKE clean  # Node.js don't support out-of-tree builds yet
 
     # Configure
@@ -83,23 +102,23 @@ if [[ ! -f $OBJ_DIR ]]; then
   ) || err $?
 
   # Install
-  mkdir -p $OBJECTS         &&
-  cp $SRC_DIR/node $OBJ_DIR || exit 23
+  mkdir -p $OBJECTS          &&
+  cp $SRC_DIR/node $STEP_DIR || exit 23
 
   # Exec test
 #  scripts/testNode --cpu $CPU || exit 24
 
-  # [Hack] Try to exec test five times before throwing error
-  # SemaphoreCI is giving random errors at this point...
-  i="1"
-  while [ `scripts/testNode --cpu $CPU` ]; do
-    if [ $i -eq 5 ]; then
-      exit 24
-    fi
-
-    i=$[$i+1]
-    echo Running test the $i time...
-  done
+  # # [Hack] Try to exec test five times before throwing error
+  # # SemaphoreCI is giving random errors at this point...
+  # i="1"
+  # while [ `scripts/testNode --cpu $CPU` ]; do
+  #   if [ $i -eq 5 ]; then
+  #     exit 24
+  #   fi
+  #
+  #   i=$[$i+1]
+  #   echo Running test the $i time...
+  # done
 
   echo -e "${GRN}Successfully compiled Node.js${CLR}"
 fi
@@ -109,15 +128,15 @@ fi
 # NodeOS version
 #
 
-OBJ_DIR=$OBJECTS/os-release
+STEP_DIR=$OBJ_RELEASE
 
-mkdir -p $OBJ_DIR
+mkdir -p `dirname $STEP_DIR`
 
-VERSION=`node -p "require('../../../package.json').version"` || VERSION="(unknown)"
+VERSION=`node -p "require('./package.json').version"` || VERSION="(unknown)"
 CODENAME="Amanda"
 BUILD_ID=`node -p "(new Date()).toISOString().substr(0,10)"`
 
-eval "echo \"$(< resources/os-release)\"" > $OBJ_DIR || exit 30
+eval "echo \"$(< resources/os-release)\"" > $STEP_DIR || err 30
 
 
 #
@@ -125,18 +144,18 @@ eval "echo \"$(< resources/os-release)\"" > $OBJ_DIR || exit 30
 #
 
 SRC_DIR=deps/linux
-OBJ_DIR=$OBJECTS/linux
+STEP_DIR=$OBJ_LINUX
 
-mkdir -p $OBJ_DIR
+mkdir -p $STEP_DIR
 
 # Generate initramfs configuration file
-cat resources/cpio_root.txt > $OBJ_DIR/cpio.txt || exit 30
+cat resources/cpio_root.txt > $STEP_DIR/cpio.txt || err 30
 if [[ $PLATFORM != vagga ]]; then
-  eval "echo \"$(< resources/cpio_standalone.txt)\"" >> $OBJ_DIR/cpio.txt || exit 31
+  eval "echo \"$(< resources/cpio_standalone.txt)\"" >> $STEP_DIR/cpio.txt || err 31
 else
-  cat resources/cpio_vagga.txt >> $OBJ_DIR/cpio.txt || exit 32
+  cat resources/cpio_vagga.txt >> $STEP_DIR/cpio.txt || err 32
 fi
-eval "echo \"$(< resources/cpio_common.txt)\"" >> $OBJ_DIR/cpio.txt || exit 33
+eval "echo \"$(< resources/cpio_common.txt)\"" >> $STEP_DIR/cpio.txt || err 33
 
 case $PLATFORM in
   docker|vagga)
@@ -145,29 +164,29 @@ case $PLATFORM in
         cd $SRC_DIR/usr     &&
         $MAKE gen_init_cpio || exit 40
 
-        mkdir -p         $OBJ_DIR/usr &&
-        mv gen_init_cpio $OBJ_DIR/usr || exit 41
-      ) || exit $?
+        mkdir -p         $STEP_DIR/usr &&
+        mv gen_init_cpio $STEP_DIR/usr || exit 41
+      ) || err $?
 
-      mkdir -p $OUT_DIR                            &&
-      $OBJ_DIR/usr/gen_init_cpio $OBJ_DIR/cpio.txt | \
-        scripts/cpio2tar > $OUT_DIR/barebones.tar  || exit 42
+      mkdir -p $OUT_DIR                              &&
+      $STEP_DIR/usr/gen_init_cpio $STEP_DIR/cpio.txt | \
+        cpio2tar > $OUT_DIR/barebones.tar            || err 42
 
-      rm -f $OBJ_DIR/.config || exit 43
+      rm -f $STEP_DIR/.config || err 43
     fi
 
-    ln -sf $CPU/barebones.tar out/latest || exit 44
+    ln -sf $CPU/barebones.tar out/latest || err 44
   ;;
 
   pc_* | raspberry_* | versatilepb_*)
-    if [[ `ls $OBJ_DIR | wc -l` -eq 1 ]] \
-    || [[ ! -f $OUT_DIR/linux         ]]; then
+    if [[ `ls $STEP_DIR | wc -l` -eq 1 ]] \
+    || [[ ! -f $OUT_DIR/linux          ]]; then
       echo -e "${WHT}Compiling Linux${CLR}"
 
       # Delete previous products
       rm -f $OUT_DIR/linux || exit 50
 
-      MAKE="$MAKE O=$OBJ_DIR ARCH=$ARCH CROSS_COMPILE=$TARGET-"
+      MAKE="$MAKE O=$STEP_DIR ARCH=$ARCH CROSS_COMPILE=$TARGET-"
 
       (
         cd $SRC_DIR
@@ -194,10 +213,10 @@ case $PLATFORM in
       ) || err $?
 
       # Set NodeOS custom configurations
-      eval "echo \"$(< resources/config_common)\"" >> $OBJ_DIR/.config || err 54
+      eval "echo \"$(< resources/config_common)\"" >> $STEP_DIR/.config || err 54
 
-      eval "echo \"$(< resources/config_workstation)\"" >> $OBJ_DIR/.config || err 54
-#      eval "echo \"$(< resources/config_mainframe)\"" >> $OBJ_DIR/.config || err 54
+      eval "echo \"$(< resources/config_workstation)\"" >> $STEP_DIR/.config || err 54
+#      eval "echo \"$(< resources/config_mainframe)\"" >> $STEP_DIR/.config || err 54
 
       (
         cd $SRC_DIR
@@ -214,11 +233,11 @@ case $PLATFORM in
 
       case $PLATFORM in
         pc_*)
-          cp $OBJ_DIR/arch/$ARCH/boot/bzImage $OUT_DIR/linux || exit 58
+          cp $STEP_DIR/arch/$ARCH/boot/bzImage $OUT_DIR/linux || exit 58
         ;;
 
         raspberry_*)
-          cp $OBJ_DIR/arch/$ARCH/boot/zImage $OUT_DIR/linux || exit 48
+          cp $STEP_DIR/arch/$ARCH/boot/zImage $OUT_DIR/linux || exit 48
         ;;
 
         *)
