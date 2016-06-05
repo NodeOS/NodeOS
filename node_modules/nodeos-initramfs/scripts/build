@@ -44,7 +44,7 @@ OUT_DIR=`pwd`/out/$CPU
 grep -q "CONFIG_FUSE_FS=y" $BAREBONES/build/$CPU/linux/.config
 HAS_FUSE=$?
 
-if [ $HAS_FUSE -eq 0 ]; then
+if [[ $HAS_FUSE -eq 0 || $PLATFORM == docker ]]; then
   SRC_FUSE=`pwd`/deps/fuse
   STEP_DIR=$OBJ_FUSE
 
