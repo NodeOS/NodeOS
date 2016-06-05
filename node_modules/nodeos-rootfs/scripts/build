@@ -8,15 +8,20 @@ GRN="\e[32m"
 CLR="\e[0m"
 
 
-BAREBONES=`pwd`/../nodeos-barebones
-INITRAMFS=`pwd`/../nodeos-initramfs
-
-NODE_DIR=$BAREBONES/deps/node
-
-TOOLCHAIN=`pwd`/../nodeos-cross-toolchain
-TOOLS=$TOOLCHAIN/out
+TOOLCHAIN=`node -p "require('nodeos-cross-toolchain')"`
+BAREBONES=`node -p "require('nodeos-barebones')"`
+INITRAMFS=`node -p "require('nodeos-initramfs')"`
 
 source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
+
+PATH=$TOOLCHAIN/bin:$PATH
+
+
+# Clean object dir and return the input error
+function err(){
+  rmStep $STEP_DIR
+  exit $1
+}
 
 
 if [[ -d $OBJECTS ]]; then
@@ -26,25 +31,34 @@ fi
 
 
 #
+# Define steps paths
+#
+
+EFIBOOT_DIR=$OBJECTS/efiboot
+EFIBOOT_IMG=$EFIBOOT_DIR.img
+IMG_DIR=$OBJECTS/img
+ISO_DIR=$OBJECTS/iso
+OUT_DIR=`pwd`/out/$CPU
+
+
+#
 # SysLinux
 #
 
 SRC_DIR=`pwd`/deps/syslinux
-OBJ_DIR=`pwd`/obj/efiboot
-EFIBOOT_IMG=`pwd`/obj/efiboot.img
 
 
 #
 # Wrap the system up and pack it
 #
 
-GENFATFS=../../node_modules/genfatfs/genfatfs
-
 function createPartitionImage() {
+  STEP_DIR=$IMG_DIR
+
   # Copy kernel and initramfs on the partition image
 
-  cp $BAREBONES/out/latest $OBJECTS/kernel.img &&
-  cp $INITRAMFS/out/latest $OBJECTS/initram.gz || exit 20
+  cp $BAREBONES/out/latest $STEP_DIR/kernel.img &&
+  cp $INITRAMFS/out/latest $STEP_DIR/initram.gz || exit 20
 
   # Create partition image
 
@@ -55,53 +69,57 @@ function createPartitionImage() {
 #    DISK_SIZE=`du -ks $OBJECTS | cut -f1`
   DISK_SIZE=$((16*1024))
 
-  $GENFATFS -b $DISK_SIZE \
-      --root $OBJECTS     \
-      $OUT_DIR            || exit 21
+  genfatfs -b $DISK_SIZE \
+      --root $STEP_DIR   \
+      $OUT_DIR           || exit 21
 }
 
 function createEfiImage() {
-  rm -rf $OBJ_DIR   &&
-  mkdir -p $OBJ_DIR || exit 30
+  STEP_DIR=$EFIBOOT_DIR
 
-  cp syslinux.cfg $OBJ_DIR || exit 31
+  rm -rf $STEP_DIR   &&
+  mkdir -p $STEP_DIR || exit 30
+
+  cp syslinux.cfg $STEP_DIR || exit 31
 
   # Copy kernel and initramfs on the ISO image
 
-  cp $BAREBONES/out/latest $OBJ_DIR/kernel.img &&
-  cp $INITRAMFS/out/latest $OBJ_DIR/initram.gz || exit 32
+  cp $BAREBONES/out/latest $STEP_DIR/kernel.img &&
+  cp $INITRAMFS/out/latest $STEP_DIR/initram.gz || exit 32
 
   # Copy SysLinux files
 
   cp $SRC_DIR/efi$BITS/efi/syslinux.efi                     \
      $SRC_DIR/efi$BITS/com32/elflink/ldlinux/ldlinux.e$BITS \
-     $OBJ_DIR                                               || exit 33
+     $STEP_DIR                                              || exit 33
 
   # Create EFI disk image
 
 #    DISK_SIZE=`du -ks $OBJECTS | cut -f1`
   DISK_SIZE=$((16*1024))
 
-  $GENFATFS -b $DISK_SIZE \
-    --root $OBJ_DIR       \
-    $EFIBOOT_IMG          || exit 34
+  genfatfs -b $DISK_SIZE \
+    --root $STEP_DIR     \
+    $EFIBOOT_IMG         || exit 34
 }
 
 function createIsoImage() {
+  STEP_DIR=$ISO_DIR
+
   # Create EFI boot image
-  createEfiImage           || exit $?
-  cp $EFIBOOT_IMG $OBJECTS || exit 40
+  createEfiImage            || exit $?
+  cp $EFIBOOT_IMG $STEP_DIR || exit 40
 
   # Copy kernel and initramfs on the ISO image
 
-  cp $BAREBONES/out/latest $OBJECTS/kernel.img &&
-  cp $INITRAMFS/out/latest $OBJECTS/initram.gz || exit 41
+  cp $BAREBONES/out/latest $STEP_DIR/kernel.img &&
+  cp $INITRAMFS/out/latest $STEP_DIR/initram.gz || exit 41
 
   # Copy IsoLinux files
 
   cp $SRC_DIR/bios/core/isolinux.bin                 \
      $SRC_DIR/bios/com32/elflink/ldlinux/ldlinux.c32 \
-     $OBJECTS                                        || exit 42
+     $STEP_DIR                                       || exit 42
 
   # Create ISO image
 
@@ -120,7 +138,7 @@ function createIsoImage() {
     -eltorito-alt-boot    \
     -efi-boot efiboot.img \
       -no-emul-boot       \
-    $OBJECTS              || exit 43
+    $STEP_DIR             || exit 43
 
   $SRC_DIR/bios/utils/isohybrid $OUT_DIR || exit 44
 }
@@ -135,8 +153,10 @@ case $PLATFORM in
   ;;
 
   pc_iso)
-    mkdir -p        $OBJECTS &&
-    cp syslinux.cfg $OBJECTS || exit 52
+    STEP_DIR=$ISO_DIR
+
+    mkdir -p        $STEP_DIR &&
+    cp syslinux.cfg $STEP_DIR || exit 52
 
     createIsoImage || exit $?
 
@@ -144,6 +164,8 @@ case $PLATFORM in
   ;;
 
   raspberry_image)
+    STEP_DIR=$IMG_DIR
+
     # Copy Raspberry PI extra files
     # http://elinux.org/RPi_Advanced_Setup#Setting_up_the_boot_partition
     #

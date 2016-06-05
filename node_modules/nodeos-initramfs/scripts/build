@@ -32,7 +32,6 @@ function err(){
 # Define steps paths
 #
 
-SRC_FUSE=`pwd`/deps/fuse
 OBJ_FUSE=$OBJECTS/fuse
 OBJ_INITRAMFS=$OBJECTS/initramfs
 OUT_DIR=`pwd`/out/$CPU
@@ -46,7 +45,7 @@ grep -q "CONFIG_FUSE_FS=y" $BAREBONES/build/$CPU/linux/.config
 HAS_FUSE=$?
 
 if [ $HAS_FUSE -eq 0 ]; then
-  SRC_DIR=$SRC_FUSE
+  SRC_FUSE=`pwd`/deps/fuse
   STEP_DIR=$OBJ_FUSE
 
   if [[ ! -d $STEP_DIR ]]; then
@@ -67,7 +66,7 @@ if [ $HAS_FUSE -eq 0 ]; then
       MOUNT_FUSE_PATH=/bin  \
       CC=$TARGET-gcc        \
       CXX=$TARGET-g++       \
-      $SRC_DIR/configure    \
+      $SRC_FUSE/configure   \
           --silent          \
           --prefix=/        \
           --host=$TARGET    \
