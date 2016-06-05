@@ -28,6 +28,10 @@
     "Linux",
     "npm"
   ],
+  "author": "Jacob Groundwater <groundwater@gmail.com>",
+  "contributors": [
+    "Jesús Leganés Combarro 'piranna' <piranna@gmail.com>"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/NodeOS/NodeOS/issues"
@@ -35,21 +39,18 @@
   "homepage": "http://node-os.com",
   "private": true,
   "dependencies": {
-    "cpio2tar": "0.0.1",
+    "cpio2tar": "^0.0.1",
     "debugfs": "^0.0.2",
     "download-manager": "^0.0.20",
-    "fs-extra": "^0.26.5",
     "genext2fs": "nodeos/genext2fs",
     "genfatfs": "nodeos/genfatfs",
     "minimist": "^1.2.0",
-    "nodeos-cross-toolchain": "NodeOS/nodeos-cross-toolchain",
-    "qemu": "nodeos/qemu#raspi",
-    "suppose": "^0.5.1",
-    "tar-stream": "piranna/tar-stream",
-    "cpio-stream": "1.2.3"
+    "nodeos-cross-toolchain": "NodeOS/nodeos-cross-toolchain"
   },
   "devDependencies": {
-    "publish-release": "piranna/publish-release"
+    "publish-release": "1.0.2",
+    "qemu": "NodeOS/qemu",
+    "suppose": "^0.5.2"
   },
   "engines": {
     "node": "^0.12.0"
