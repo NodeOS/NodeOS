@@ -70,7 +70,7 @@ fi
 #
 
 SRC_DIR=`pwd`/deps/node
-STEP_DIR=$OBJ_INIT
+STEP_DIR=$OBJ_NODE
 
 if [[ ! -f $STEP_DIR ]]; then
   echo -e "${WHT}Compiling Node.js${CLR}"
