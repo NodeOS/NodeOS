@@ -43,7 +43,7 @@
     "genfatfs": "nodeos/genfatfs",
     "minimist": "^1.2.0",
     "nodeos-cross-toolchain": "NodeOS/nodeos-cross-toolchain",
-    "qemu": "nodeos/qemu#raspi",
+    "qemu": "^2.6.0",
     "suppose": "^0.5.1",
     "tar-stream": "piranna/tar-stream",
     "cpio-stream": "1.2.3"
