@@ -78,14 +78,21 @@ if [[ ! -f $STEP_DIR ]]; then
   rm -rf $OBJ_LINUX
 
   # Install
-#  CROSS_COMPILE="$TARGET-" \
-  CC=$TARGET-gcc           \
-  CXX=$TARGET-g++          \
-  npm install              \
-    --quiet --no-spin      \
-    --arch=$NODE_ARCH      \
-    --jobs=$JOBS           \
-  NodeOS/nodejs            || err 20
+  npm install         \
+    --quiet --no-spin \
+    --ignore-scripts  \
+    NodeOS/nodejs     || err 20
+
+  (
+    cd node_modules/nodejs
+
+    #  CROSS_COMPILE="$TARGET-" \
+      CC=$TARGET-gcc           \
+      CXX=$TARGET-g++          \
+      npm run install          \
+        --                     \
+        --arch=$NODE_ARCH      || exit 20
+  ) || err $?
 
   OBJ_NODE=`node -p "require('nodejs')"`/bin/$CPU
 
