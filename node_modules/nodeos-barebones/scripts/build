@@ -26,7 +26,7 @@ function err(){
 #
 
 OBJ_INIT=$OBJECTS/init
-OBJ_NODE=$OBJECTS/node
+OBJ_NODE=`node -p "require('nodejs')"`/bin/$CPU
 OBJ_RELEASE=$OBJECTS/os-release
 OBJ_LINUX=$OBJECTS/linux
 OUT_DIR=`pwd`/out/$CPU
@@ -69,58 +69,27 @@ fi
 # Node.js
 #
 
-SRC_DIR=`pwd`/deps/node
 STEP_DIR=$OBJ_NODE
 
 if [[ ! -f $STEP_DIR ]]; then
-  echo -e "${WHT}Compiling Node.js${CLR}"
+  echo -e "${WHT}Installing Node.js${CLR}"
 
   # Delete previous kernel
   rm -rf $OBJ_LINUX
 
-  (
-#    cd $STEP_DIR
-    cd $SRC_DIR && $MAKE clean  # Node.js don't support out-of-tree builds yet
-
-    # Configure
-#    CROSS_COMPILE="$TARGET-"  \
-    CC=$TARGET-gcc            \
-    CXX=$TARGET-g++           \
-    $SRC_DIR/configure        \
-        --prefix=/            \
-        --dest-cpu=$NODE_ARCH \
-        --dest-os=linux       \
-        --without-dtrace      \
-        --without-npm         \
-        --without-snapshot    || exit 20
-
-    # Compile
-    $MAKE || exit 21
-
-    # Strip binary
-    $TARGET-strip node || exit 22
-  ) || err $?
-
   # Install
-  mkdir -p $OBJECTS          &&
-  cp $SRC_DIR/node $STEP_DIR || exit 23
+#  CROSS_COMPILE="$TARGET-" \
+  CC=$TARGET-gcc           \
+  CXX=$TARGET-g++          \
+  npm install              \
+    --quiet --no-spin      \
+    --arch=$NODE_ARCH      \
+    --jobs=$JOBS           \
+  NodeOS/nodejs            || err 20
 
-  # Exec test
-#  scripts/testNode --cpu $CPU || exit 24
+  OBJ_NODE=`node -p "require('nodejs')"`/bin/$CPU
 
-  # # [Hack] Try to exec test five times before throwing error
-  # # SemaphoreCI is giving random errors at this point...
-  # i="1"
-  # while [ `scripts/testNode --cpu $CPU` ]; do
-  #   if [ $i -eq 5 ]; then
-  #     exit 24
-  #   fi
-  #
-  #   i=$[$i+1]
-  #   echo Running test the $i time...
-  # done
-
-  echo -e "${GRN}Successfully compiled Node.js${CLR}"
+  echo -e "${GRN}Successfully installed Node.js${CLR}"
 fi
 
 

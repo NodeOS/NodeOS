@@ -19,7 +19,7 @@ slink /lib/libstdc++.so.6 libstdc++.so.6.0.21 0444 0 0
 # Node.js binary
 #
 
-file /bin/node $OBJECTS/node 0555 0 0
+file /bin/node $OBJ_NODE 0555 0 0
 
 
 #

@@ -1,27 +1,23 @@
 #!/usr/bin/env node
 
-
 var manager = require('download-manager')
 
 
 // Source versions
 
-const INIT_VERSION   = "master"
-const LINUX_VERSION  = "4.5"
-const NODEJS_VERSION = "v4.4.2"
+const INIT_VERSION  = "master"
+const LINUX_VERSION = "4.6"
 
 
 // Source URLs
 
-const INIT_URL   = "https://github.com/piranna/nodeos-init/archive/"+INIT_VERSION+".tar.gz"
-const LINUX_URL  = "https://www.kernel.org/pub/linux/kernel/v4.x/linux-"+LINUX_VERSION+".tar.gz"
-const NODEJS_URL = "http://nodejs.org/dist/"+NODEJS_VERSION+"/node-"+NODEJS_VERSION+".tar.gz"
+const INIT_URL  = "https://github.com/piranna/nodeos-init/archive/"+INIT_VERSION+".tar.gz"
+const LINUX_URL = "https://www.kernel.org/pub/linux/kernel/v4.x/linux-"+LINUX_VERSION+".tar.gz"
 
 
 // Checksums
 
-const LINUX_SHA256  = '2011b1dbb8c9a5c89279984657b7bb0fd58fdf94c5bdff100cc9f25351e948d8'
-const NODEJS_SHA256 = 'ae91cb0a31f87b5b13bb2665178845d99abf1037dc3636fa88f442b4a4c65297'
+const LINUX_SHA256 = 'cca08a5bba56d38dd94332f3927d52889231184ba20081f0bf612d32985d5ff5'
 
 
 // Patch Linux kernel to add Unicode BMP support on `fbcon`
@@ -54,11 +50,6 @@ var downloads =
         strip: 1
       }
     ]
-  },
-  {
-    name: 'node',
-    url: NODEJS_URL,
-    sha256: NODEJS_SHA256
   }
 ]
 
