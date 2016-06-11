@@ -1,6 +1,6 @@
 {
   "name": "NodeOS",
-  "version": "0.0.0",
+  "version": "1.0.0-RC1",
   "description": "Lightweight operating system using Node.js as userspace",
   "bundleDependencies": [
     "nodeos-barebones",
@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "BigRedButton": "scripts/BigRedButton",
-    "docker": "docker run -t -i --cap-add SYS_ADMIN --device /dev/fuse -v `pwd`/out/latest/usersfs:/dev/sdb2 NodeOS",
+    "docker": "scripts/docker",
     "dockerBuild": "scripts/dockerBuild",
     "install": "scripts/build",
     "postinstall": "scripts/postinstall",
@@ -28,6 +28,10 @@
     "Linux",
     "npm"
   ],
+  "author": "Jacob Groundwater <groundwater@gmail.com>",
+  "contributors": [
+    "Jesús Leganés Combarro 'piranna' <piranna@gmail.com>"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/NodeOS/NodeOS/issues"
@@ -35,21 +39,19 @@
   "homepage": "http://node-os.com",
   "private": true,
   "dependencies": {
-    "cpio2tar": "0.0.1",
+    "cpio2tar": "^0.0.1",
     "debugfs": "^0.0.2",
-    "download-manager": "^0.0.19",
-    "fs-extra": "^0.26.5",
+    "download-manager": "^0.0.20",
     "genext2fs": "nodeos/genext2fs",
     "genfatfs": "nodeos/genfatfs",
     "minimist": "^1.2.0",
-    "nodeos-cross-toolchain": "NodeOS/nodeos-cross-toolchain",
-    "qemu": "^2.6.0",
-    "suppose": "^0.5.1",
-    "tar-stream": "piranna/tar-stream",
-    "cpio-stream": "1.2.3"
+    "nodeos-cross-toolchain": "NodeOS/nodeos-cross-toolchain"
   },
   "devDependencies": {
-    "publish-release": "piranna/publish-release"
+    "prebuild-install": "1.0.2",
+    "publish-release": "1.0.2",
+    "qemu": "NodeOS/qemu",
+    "suppose": "^0.5.2"
   },
   "engines": {
     "node": "^0.12.0"
