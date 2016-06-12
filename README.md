@@ -20,6 +20,7 @@ with a qualification of 10/10 with distinction.
 
 ## Useful links
 
+* [New Wiki (under work)](https://nodeos.gitbooks.io/nodeos/content/)
 * [pre-build releases images](https://github.com/NodeOS/NodeOS/releases)
 * [1.0 Roadmap](https://github.com/NodeOS/NodeOS/issues/37)
 * [2.0 Roadmap](https://github.com/NodeOS/NodeOS/issues/146)
