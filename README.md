@@ -3,8 +3,8 @@
 # Read wiki...
 
 [in ENGLISH](./en/)
-[en ESpañol](./es/)
-
-
+[en ESPAÑOL](./es/)
+[en FRANÇAIS](./fr/)
+[auf Deutsch](./de/)
 
 
