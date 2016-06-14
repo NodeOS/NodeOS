@@ -17,5 +17,5 @@
   npm run unbuild                  || exit 40
 ) &&
 (
-  rm -rf deps/ out/                || exit 50
+  rm -rf deps/ out/ prebuilds/     || exit 50
 ) || exit $?

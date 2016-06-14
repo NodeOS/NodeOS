@@ -48,8 +48,8 @@
     "nodeos-cross-toolchain": "NodeOS/nodeos-cross-toolchain"
   },
   "devDependencies": {
+    "prebuild": "piranna/prebuild#prerelease",
     "prebuild-install": "1.0.2",
-    "publish-release": "1.0.2",
     "qemu": "NodeOS/qemu",
     "suppose": "^0.5.2"
   },
