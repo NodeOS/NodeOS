@@ -7,7 +7,7 @@ var spawn = require('child_process').spawn
 var processArguments = require('../../nodeos-barebones/scripts/processArguments')
 
 
-const QEMU_SYSTEM = '../nodeos-barebones/usr/bin/qemu-system-'
+const QEMU_SYSTEM = require('qemu')+'/bin/qemu-system-'
 
 
 var args = processArguments(process.argv.slice(2))
@@ -47,7 +47,8 @@ var args =
   '-redir', 'tcp:50080::80',
   '-redir', 'tcp:50443::443',
   '-nographic',
-  '--kernel', '../nodeos-barebones/out/latest',
+//  '--kernel', '../nodeos-barebones/out/latest',
+  '--kernel', require('nodeos-barebones')+'/out/latest',
   '--initrd', 'out/latest',
   '-append',  append.join(' ')
 ]

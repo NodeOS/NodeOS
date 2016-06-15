@@ -12,8 +12,8 @@
     "BigRedButton": "scripts/BigRedButton",
     "docker": "scripts/docker",
     "dockerBuild": "scripts/dockerBuild",
-    "install": "scripts/build",
-    "postinstall": "scripts/postinstall",
+    "build": "scripts/build",
+    "postbuild": "scripts/postbuild",
     "publish": "scripts/publish",
     "start": "scripts/start",
     "test": "scripts/test",
@@ -39,21 +39,18 @@
   "homepage": "http://node-os.com",
   "private": true,
   "dependencies": {
-    "cpio2tar": "^0.0.1",
-    "debugfs": "^0.0.2",
-    "download-manager": "^0.0.20",
-    "genext2fs": "nodeos/genext2fs",
-    "genfatfs": "nodeos/genfatfs",
-    "minimist": "^1.2.0",
-    "nodeos-cross-toolchain": "NodeOS/nodeos-cross-toolchain"
+    "nodeos-barebones": "NodeOS/nodeos-barebones",
+    "nodeos-initramfs": "NodeOS/nodeos-initramfs",
+    "nodeos-rootfs": "NodeOS/nodeos-rootfs",
+    "nodeos-usersfs": "NodeOS/nodeos-usersfs"
   },
   "devDependencies": {
     "prebuild": "piranna/prebuild#prerelease",
-    "prebuild-install": "1.0.2",
     "qemu": "NodeOS/qemu",
     "suppose": "^0.5.2"
   },
   "engines": {
-    "node": "^0.12.0"
+    "node": "^0.12.0",
+    "npm" : "^3.0.0"
   }
 }

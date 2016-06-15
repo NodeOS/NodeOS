@@ -10,10 +10,10 @@ TOOLCHAIN=`node -p "require('nodeos-cross-toolchain')"`
 BAREBONES=`node -p "require('nodeos-barebones')"`
 INITRAMFS=`node -p "require('nodeos-initramfs')"`
 
-NODE_DIR=$BAREBONES/node_modules/nodejs
+NODE_DIR=`node -p "require('nodejs')"`
 
 source $TOOLCHAIN/scripts/adjustEnvVars.sh &&
-source $INITRAMFS/scripts/utils.sh         || exit $?
+source scripts/utils.sh                    || exit $?
 
 PATH=$TOOLCHAIN/bin:$PATH
 

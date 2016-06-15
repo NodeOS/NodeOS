@@ -13,7 +13,7 @@ CLR="\e[0m"
 TOOLCHAIN=`node -p "require('nodeos-cross-toolchain')"`
 BAREBONES=`node -p "require('nodeos-barebones')"`
 
-NODE_DIR=$BAREBONES/node_modules/nodejs
+NODE_DIR=`node -p "require('nodejs')"`
 
 source $TOOLCHAIN/scripts/adjustEnvVars.sh &&
 source scripts/utils.sh                    || exit $?
