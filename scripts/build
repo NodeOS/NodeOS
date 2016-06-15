@@ -6,6 +6,16 @@ source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
 
 
 #
+# Build each layer up
+#
+
+( cd node_modules/nodeos-barebones ; npm run build ) &&
+( cd node_modules/nodeos-initramfs ; npm run build ) &&
+( cd node_modules/nodeos-rootfs    ; npm run build ) &&
+( cd node_modules/nodeos-usersfs   ; npm run build ) || err $?
+
+
+#
 # Wrap the system up and pack it
 #
 

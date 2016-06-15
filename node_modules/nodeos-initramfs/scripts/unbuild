@@ -6,4 +6,4 @@ if [[ -d $OBJECTS ]]; then
   chmod -R +w $OBJECTS
 fi
 
-rm -rf initramfs.cpio.gz deps/ obj/ out/ || exit $?
+rm -rf initramfs.cpio.gz deps/ build/ out/ || exit $?

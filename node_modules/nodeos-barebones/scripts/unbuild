@@ -1,3 +1,3 @@
 #!/usr/bin/env sh
 
-rm -rf bzImage .vagga/ deps/ obj/ out/ || exit $?
+rm -rf bzImage .vagga/ deps/ build/ out/ || exit $?
