@@ -39,6 +39,7 @@ function createDiskImage() {
 if [[ ! -z "$RELEASE" ]]; then
   ZIP_FILE=prebuilds/$CPU_FAMILY-$PLATFORM.zip
 
+  mkdir -p prebuilds
   rm -f $ZIP_FILE
 
   case $PLATFORM in
