@@ -34,6 +34,7 @@
   "private": true,
   "dependencies": {
     "nodeos-barebones": "NodeOS/nodeos-barebones",
+    "nodeos-cross-toolchain": "NodeOS/nodeos-cross-toolchain",
     "nodeos-initramfs": "NodeOS/nodeos-initramfs",
     "nodeos-rootfs": "NodeOS/nodeos-rootfs",
     "nodeos-usersfs": "NodeOS/nodeos-usersfs"
