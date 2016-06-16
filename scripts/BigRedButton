@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 
-PLATFORM=iso_32    npm install --no-spin || exit 1
-PLATFORM=iso_64    npm install --no-spin || exit 2
-PLATFORM=qemu_32   npm install --no-spin || exit 3
-PLATFORM=qemu_64   npm install --no-spin || exit 4
-#PLATFORM=raspberry npm install --no-spin || exit 5
-PLATFORM=vagga_32  npm install --no-spin || exit 6
-PLATFORM=vagga_64  npm install --no-spin || exit 7
+PLATFORM=iso_32    npm run build --no-spin || exit 1
+PLATFORM=iso_64    npm run build --no-spin || exit 2
+PLATFORM=qemu_32   npm run build --no-spin || exit 3
+PLATFORM=qemu_64   npm run build --no-spin || exit 4
+#PLATFORM=raspberry npm run build --no-spin || exit 5
+PLATFORM=vagga_32  npm run build --no-spin || exit 6
+PLATFORM=vagga_64  npm run build --no-spin || exit 7
