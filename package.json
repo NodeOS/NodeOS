@@ -2,12 +2,6 @@
   "name": "NodeOS",
   "version": "1.0.0-RC1",
   "description": "Lightweight operating system using Node.js as userspace",
-  "bundleDependencies": [
-    "nodeos-barebones",
-    "nodeos-initramfs",
-    "nodeos-rootfs",
-    "nodeos-usersfs"
-  ],
   "scripts": {
     "BigRedButton": "scripts/BigRedButton",
     "docker": "scripts/docker",
