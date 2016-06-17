@@ -1,3 +1,0 @@
-nodeos-mount-filesystems
-nodeos-mount-utils
-usrbinenv
