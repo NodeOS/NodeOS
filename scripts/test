@@ -1,5 +1,12 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
-cd node_modules/nodeos-barebones
+(
+  cd node_modules/nodeos-barebones
 
-npm test || exit 1
+  npm test || exit 1
+) &&
+(
+  cd node_modules/nodeos-initramfs
+
+  npm test || exit 2
+) || exit $?
