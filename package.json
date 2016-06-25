@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "prebuild": "piranna/prebuild#prerelease",
-    "qemu": "^2.6.0",
+    "qemu": "NodeOS/qemu",
     "suppose": "^0.5.2"
   },
   "engines": {
