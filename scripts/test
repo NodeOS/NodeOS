@@ -8,8 +8,7 @@ var suppose = require('suppose')
 var processArguments = require('nodeos-barebones/scripts/processArguments')
 
 
-const QEMU_SYSTEM = 'qemu-system-'
-const TIMEOUT = 30
+const TIMEOUT = 300  // seconds
 
 
 var link = fs.readlinkSync('out/latest').split('/');
@@ -34,7 +33,7 @@ var timeout = setTimeout(function()
 }, TIMEOUT*1000)
 
 
-var command = QEMU_SYSTEM+args.cpu_family
+var command = 'qemu-system-'+args.cpu_family
 
 var args =
 [
@@ -64,10 +63,16 @@ switch(type)
   break
 
   case 'qemu':
+    var append =
+    [
+      'root=/dev/sda',
+      'console=ttyS0'
+    ]
+
     args.push('--kernel', join(outDir, 'barebones'))
     args.push('--initrd', join(outDir, 'initramfs'))
     args.push('-hda',     join(outDir, 'usersfs'))
-    args.push('-append', 'console=ttyS0')
+    args.push('-append', append.join(' '))
   break
 
   default:
@@ -94,9 +99,9 @@ switch(type)
 
 if(machine) args.unshift('-machine', machine)
 
-exe = suppose(command, args, {debug: true})
-  .when(/username: /).respond('nodeos\n')
-  .when(/password: /).respond('nodeos\n')
+exe = suppose(command, args, {debug: true, stripAnsi: true})
+  .when(/username:  /).respond('nodeos\n')
+  .when(/password:  /).respond('nodeos\n')
   .when(/# /).respond('node\n')
   .when(/> /).respond('setTimeout(console.log, 2000, "this is","a test")\n')
   .when(/this is a test/, function(exe)
