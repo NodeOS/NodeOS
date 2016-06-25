@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-var fs = require('fs');
-
+var fs    = require('fs')
+var join  = require('path').join
 var spawn = require('child_process').spawn
 
 
@@ -11,8 +11,11 @@ const QEMU_SYSTEM = 'qemu-system-'
 var link = fs.readlinkSync('out/latest').split('/');
 
 var cpu_family = link[link.length-2]
-var machine
+var platform   = link[link.length-1]
 
+var type = platform.split('_')[1]
+
+var machine
 switch(cpu_family)
 {
   case 'arm':
@@ -51,12 +54,32 @@ var args =
   '-vga', 'std',
   '-m', '256M',
   '-redir', 'tcp:50080::80',
-  '-redir', 'tcp:50443::443',
-  '--kernel', 'out/latest/barebones',
-  '--initrd', 'out/latest/initramfs',
-  '-hda',     'out/latest/usersfs',
-  '-append',  append.join(' ')
+  '-redir', 'tcp:50443::443'
 ]
+
+const outDir = join('out', cpu_family, platform)
+switch(type)
+{
+  case 'img':
+    args.push('-hda', join(outDir, 'rootfs'))
+    args.push('-hdb', join(outDir, 'usersfs'))
+  break
+
+  case 'iso':
+    args.push('-cdrom', join(outDir, 'rootfs'))
+    args.push('-hdb'  , join(outDir, 'usersfs'))
+  break
+
+  case 'qemu':
+    args.push('--kernel', join(outDir, 'barebones'))
+    args.push('--initrd', join(outDir, 'initramfs'))
+    args.push('-hda',     join(outDir, 'usersfs'))
+    args.push('-append', append.join(' '))
+  break
+
+  default:
+    throw 'Unknown platform "'+platform+'"'
+}
 
 if(machine) args.unshift('-machine', machine)
 
