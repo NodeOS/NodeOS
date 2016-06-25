@@ -1,13 +1,17 @@
 {
   "name": "NodeOS",
-  "version": "0.0.0",
+  "version": "1.0.0-RC2",
   "description": "Lightweight operating system using Node.js as userspace",
   "scripts": {
     "BigRedButton": "scripts/BigRedButton",
-    "install": "scripts/install",
+    "docker": "scripts/docker",
+    "dockerBuild": "scripts/dockerBuild",
+    "build": "scripts/build",
+    "postbuild": "scripts/postbuild",
+    "publish": "scripts/publish",
     "start": "scripts/start",
     "test": "scripts/test",
-    "uninstall": "scripts/uninstall"
+    "unbuild": "scripts/unbuild"
   },
   "repository": {
     "type": "git",
@@ -18,6 +22,10 @@
     "Linux",
     "npm"
   ],
+  "author": "Jacob Groundwater <groundwater@gmail.com>",
+  "contributors": [
+    "Jesús Leganés Combarro 'piranna' <piranna@gmail.com>"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/NodeOS/NodeOS/issues"
@@ -25,12 +33,19 @@
   "homepage": "http://node-os.com",
   "private": true,
   "dependencies": {
-    "nodeos-barebones": "^0.0.0",
-    "nodeos-initramfs": "^0.0.1",
-    "nodeos-rootfs": "^0.0.0",
-    "nodeos-usersfs": "^0.0.16"
+    "nodeos-barebones": "1.0.0-RC2.3",
+    "nodeos-cross-toolchain": "1.0.0-RC2.11",
+    "nodeos-initramfs": "1.0.0-RC2.4",
+    "nodeos-rootfs": "1.0.0-RC2.1",
+    "nodeos-usersfs": "1.0.0-RC2"
   },
   "devDependencies": {
-    "publish-release": "^1.0.2"
+    "prebuild": "piranna/prebuild#prerelease",
+    "qemu": "NodeOS/qemu",
+    "suppose": "^0.6.1"
+  },
+  "engines": {
+    "node": "^0.12.0",
+    "npm": "^3.0.0"
   }
 }
