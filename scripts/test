@@ -99,7 +99,7 @@ switch(type)
 
 if(machine) args.unshift('-machine', machine)
 
-exe = suppose(command, args, {debug: true, stripAnsi: true})
+exe = suppose(command, args, {stripAnsi: true})
   .when(/username:  /).respond('nodeos\n')
   .when(/password:  /).respond('nodeos\n')
   .when(/# /).respond('node\n')
