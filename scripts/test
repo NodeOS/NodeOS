@@ -69,10 +69,20 @@ switch(type)
       'console=ttyS0'
     ]
 
-    args.push('--kernel', join(outDir, 'barebones'))
-    args.push('--initrd', join(outDir, 'initramfs'))
-    args.push('-hda',     join(outDir, 'usersfs'))
-    args.push('-append', append.join(' '))
+    args.push('--kernel', join(outDir, 'barebones'),
+              '--initrd', join(outDir, 'initramfs'),
+              '-hda',     join(outDir, 'usersfs'),
+              '-append',  append.join(' '))
+  break
+
+  case 'vagga':
+    fs.accessSync(join(outDir, 'barebones'))
+    fs.accessSync(join(outDir, 'initramfs'))
+    fs.accessSync(join(outDir, 'usersfs'))
+    process.exit()
+
+//    args.push('-cdrom', join(outDir, 'rootfs'))
+//    args.push('-hdb'  , join(outDir, 'usersfs'))
   break
 
   default:
@@ -99,7 +109,7 @@ switch(type)
 
 if(machine) args.unshift('-machine', machine)
 
-exe = suppose(command, args, {debug:true, stripAnsi: true})
+exe = suppose(command, args, {debug: true, stripAnsi: true})
   .when('username:  ').respond('nodeos\n')
   .when('password:  ').respond('nodeos\n')
   .when('# ').respond('node\n')
