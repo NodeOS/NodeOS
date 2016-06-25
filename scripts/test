@@ -8,7 +8,7 @@ var suppose = require('suppose')
 var processArguments = require('nodeos-barebones/scripts/processArguments')
 
 
-const TIMEOUT = 600  // seconds
+const TIMEOUT = 300  // seconds
 
 
 var link = fs.readlinkSync('out/latest').split('/');
@@ -16,7 +16,7 @@ var link = fs.readlinkSync('out/latest').split('/');
 var cpu_family = link[link.length-2]
 var platform   = link[link.length-1]
 
-var type = platform.split('_')[1]
+var type = platform.split('_')[1] || platform
 
 var args = processArguments(process.argv.slice(2))
 
