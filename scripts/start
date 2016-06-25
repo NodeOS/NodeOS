@@ -23,28 +23,6 @@ switch(cpu_family)
   break
 }
 
-var append =
-[
-  'root=/dev/sda',
-  'ip=dhcp'
-]
-var graphicFlag
-
-switch(process.argv[2])
-{
-  case 'nographic':
-    append.push('console=ttyS0')  // redirect to terminal
-    graphicFlag = 'nographic'
-  break
-
-  case 'curses':
-    append.push('vga=extended')  // 80x50
-    graphicFlag = 'curses'
-  break
-
-  default:
-    append.push('vga=0x344')  // 1024x768x32
-}
 
 var command = QEMU_SYSTEM+cpu_family
 
@@ -71,6 +49,28 @@ switch(type)
   break
 
   case 'qemu':
+    var append =
+    [
+      'root=/dev/sda',
+      'ip=dhcp'
+    ]
+
+    switch(process.argv[2])
+    {
+      case 'nographic':
+        append.push('console=ttyS0')  // redirect to terminal
+        args.push('-nographic')
+      break
+
+      case 'curses':
+        append.push('vga=extended')  // 80x50
+        args.push('-curses')
+      break
+
+      default:
+        append.push('vga=0x344')  // 1024x768x32
+    }
+
     args.push('--kernel', join(outDir, 'barebones'))
     args.push('--initrd', join(outDir, 'initramfs'))
     args.push('-hda',     join(outDir, 'usersfs'))
@@ -82,9 +82,6 @@ switch(type)
 }
 
 if(machine) args.unshift('-machine', machine)
-
-if(graphicFlag)
-  args.push('-'+graphicFlag)
 
 // check if kvm is supported
 var kvm = /(vmx|svm)/;
