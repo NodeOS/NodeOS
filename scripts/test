@@ -8,7 +8,7 @@ var suppose = require('suppose')
 var processArguments = require('nodeos-barebones/scripts/processArguments')
 
 
-const TIMEOUT = 300  // seconds
+const TIMEOUT = 600  // seconds
 
 
 var link = fs.readlinkSync('out/latest').split('/');
@@ -99,11 +99,11 @@ switch(type)
 
 if(machine) args.unshift('-machine', machine)
 
-exe = suppose(command, args, {stripAnsi: true})
-  .when(/username:  /).respond('nodeos\n')
-  .when(/password:  /).respond('nodeos\n')
-  .when(/# /).respond('node\n')
-  .when(/> /).respond('setTimeout(console.log, 2000, "this is","a test")\n')
+exe = suppose(command, args, {debug:true, stripAnsi: true})
+  .when('username:  ').respond('nodeos\n')
+  .when('password:  ').respond('nodeos\n')
+  .when('# ').respond('node\n')
+  .when('> ').respond('setTimeout(console.log, 2000, "this is","a test")\n')
   .when(/this is a test/, function(exe)
   {
     exe.kill()
