@@ -3,7 +3,7 @@
 
 PLATFORM=iso_32    npm run build --no-spin && npm test || exit 1
 PLATFORM=iso_64    npm run build --no-spin && npm test || exit 2
-PLATFORM=qemu_32   npm run build --no-spin && npm test || exit 3
+PLATFORM=qemu_32   npm run build --no-spin             || exit 3
 PLATFORM=qemu_64   npm run build --no-spin && npm test || exit 4
 #PLATFORM=raspberry npm run build --no-spin && npm test || exit 5
 PLATFORM=vagga_32  npm run build --no-spin && npm test || exit 6
