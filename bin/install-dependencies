@@ -30,6 +30,6 @@ $APT install genisoimage libc6-i386 libuuid1:i386 || exit 12
 $APT install libsdl1.2-dev || exit 20
 
 
-# Update Node.js to v5.x (npm3) from the NodeSource repository
-curl -sL https://deb.nodesource.com/setup_5.x | bash &&
+# Update Node.js to v6.x (npm3) from the NodeSource repository
+curl -sL https://deb.nodesource.com/setup_6.x | bash &&
 $APT install nodejs                                  || exit 30
