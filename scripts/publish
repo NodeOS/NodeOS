@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-var readdir = require('fs').readdir
+const readdir = require('fs').readdir
 
-var upload = require('prebuild/upload')
+const upload = require('prebuild/upload')
 
 
 const PREBUILDS = 'prebuilds'
@@ -12,16 +12,16 @@ const PKG = require('../package.json')
 const token = process.env.GITHUB_TOKEN
 if(!token) throw 'GITHUB_TOKEN environment variable is not defined'
 
-const prerelease = (new Date()).toISOString().substr(0,10)
+var prerelease = (new Date()).toISOString().substr(0,10)
 
-var branch_name = process.env.BRANCH_NAME
+const branch_name = process.env.BRANCH_NAME
 if(branch_name && branch_name !== 'master') prerelease += '.'+branch_name
 
 readdir(PREBUILDS, function(err, files)
 {
   if(err) throw err
 
-  var opts =
+  const opts =
   {
     upload: token,
     pkg: PKG,
