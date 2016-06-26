@@ -15,7 +15,7 @@ if(!token) throw 'GITHUB_TOKEN environment variable is not defined'
 var prerelease = (new Date()).toISOString().substr(0,10)
 
 const branch_name = process.env.BRANCH_NAME
-if(branch_name && branch_name !== 'master') prerelease += '.'+branch_name
+if(branch_name && branch_name !== 'master') return
 
 readdir(PREBUILDS, function(err, files)
 {
