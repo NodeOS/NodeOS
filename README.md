@@ -53,7 +53,7 @@ adjust better to each target platform, but the general structure is:
 
 All the layers are bootable, leading *barebones* to a raw naked Node.js
 [REPL](http://nodejs.org/api/repl.html) prompt as PID 1, while *initramfs* (and
-by extension *rootfs*) exec actual NodeOS code to mount the *usersfs* particion.
+by extension *rootfs*) exec actual NodeOS code to mount the *usersfs* partition.
 In all the cases, it will be used an initramfs as root filesystem and all the
 changes will be lost when powered-off.
 
