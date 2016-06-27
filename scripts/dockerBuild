@@ -22,7 +22,7 @@ source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
   npm run dockerBuild              || exit 30
 ) &&
 (
-  docker build -t NodeOS .         || exit 40
+  docker build -t nodeos .         || exit 40
 ) || exit $?
 
 
