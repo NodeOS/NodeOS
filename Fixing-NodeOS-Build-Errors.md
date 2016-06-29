@@ -3,7 +3,7 @@
 
 You need to install genext2fs: `sudo apt-get install genext2fs`
 
-> cannnot find a C compiler
+> can not find a C compiler
 
 The build probably got closed while in progress.  Delete the `out` and `obj` folders you find in the sub folders of `node_modules`
 
