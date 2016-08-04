@@ -1,3 +1,4 @@
+**Note: This document has not yet been revised.**
 # Building From Source
 
 ## Step 1: Prerequisites
