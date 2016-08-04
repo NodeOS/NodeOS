@@ -1,6 +1,8 @@
 # Summary
 
 * [Introduction](README.md)
+* Contribution Guide
 * [Building From Source](building_from_source.md)
-* Inner Workings
+* System Modules
+* Additional Modules
 
