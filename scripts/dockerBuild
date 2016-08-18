@@ -4,9 +4,7 @@ BLD=$(tput bold)
 GRY="\e[90m"
 
 
-BAREBONES=`pwd`/node_modules/nodeos-barebones
-
-TOOLCHAIN=$BAREBONES/node_modules/nodeos-cross-toolchain
+TOOLCHAIN=`pwd`/node_modules/nodeos-cross-toolchain
 
 source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
 
@@ -24,11 +22,7 @@ source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
   npm run dockerBuild              || exit 30
 ) &&
 (
-  cd node_modules/nodeos-usersfs   &&
-  npm run dockerBuild              || exit 40
-) &&
-(
-  docker build -t NodeOS .         || exit 50
+  docker build -t nodeos .         || exit 40
 ) || exit $?
 
 
@@ -39,7 +33,7 @@ echo -e "${GRY}------------------------------------------${CLR}"
 echo
 echo -e "- Interactively run your image with:"
 
-echo -e "${WHT}    docker run -t -i NodeOS${CLR}"
+echo -e "${WHT}    npm run docker${CLR}"
 echo
 echo -e "- Share your creation with:"
 echo -e "${WHT}    docker push NodeOS${CLR}"

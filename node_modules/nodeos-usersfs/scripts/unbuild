@@ -1,3 +1,0 @@
-#!/usr/bin/env sh
-
-rm -rf usersfs.img deps/ obj/ out/ || exit $?

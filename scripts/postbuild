@@ -4,9 +4,7 @@ BLD=$(tput bold)
 GRY="\e[90m"
 
 
-BAREBONES=`pwd`/node_modules/nodeos-barebones
-
-TOOLCHAIN=$BAREBONES/node_modules/nodeos-cross-toolchain
+TOOLCHAIN=`pwd`/node_modules/nodeos-cross-toolchain
 
 source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
 
@@ -39,8 +37,9 @@ function createDiskImage() {
 
 
 if [[ ! -z "$RELEASE" ]]; then
-  ZIP_FILE=$OUT_DIR/$CPU_FAMILY-$PLATFORM.zip
+  ZIP_FILE=prebuilds/$CPU_FAMILY-$PLATFORM.zip
 
+  mkdir -p prebuilds
   rm -f $ZIP_FILE
 
   case $PLATFORM in
@@ -51,49 +50,52 @@ if [[ ! -z "$RELEASE" ]]; then
         $OUT_DIR/initramfs          \
         $OUT_DIR/usersfs            || exit 20
 
-      eval "echo -e \"$(< resources/runners/qemu.sh)\"" > /tmp/run.sh
+      eval "echo -e \"$(< resources/runners/runner_header.sh)\"" > /tmp/run.sh &&
+      cat resources/runners/qemu.sh                             >> /tmp/run.sh || exit 21
 
-      chmod +x /tmp/run.sh
-      zip -j $ZIP_FILE /tmp/run.sh || exit 21
+      chmod +x /tmp/run.sh         &&
+      zip -j $ZIP_FILE /tmp/run.sh || exit 22
     ;;
 
     pc_iso)
       zip -j $ZIP_FILE              \
         resources/runners/README.md \
         $OUT_DIR/rootfs             \
-        $OUT_DIR/usersfs            || exit 22
+        $OUT_DIR/usersfs            || exit 30
 
-      eval "echo -e \"$(< resources/runners/iso.sh)\"" > /tmp/run.sh
+      eval "echo -e \"$(< resources/runners/runner_header.sh)\"" > /tmp/run.sh &&
+      cat resources/runners/iso.sh                              >> /tmp/run.sh || exit 31
 
-      chmod +x /tmp/run.sh
-      zip -j $ZIP_FILE /tmp/run.sh || exit 23
+      chmod +x /tmp/run.sh         &&
+      zip -j $ZIP_FILE /tmp/run.sh || exit 32
     ;;
 
     raspberry_image)
       createDiskImage || exit $?
 
-      eval "echo -e \"$(< resources/runners/raspberry.sh)\"" > /tmp/run.sh
+      eval "echo -e \"$(< resources/runners/runner_header.sh)\"" > /tmp/run.sh &&
+      cat resources/runners/raspberry.sh                        >> /tmp/run.sh || exit 40
 
-      chmod +x /tmp/run.sh
-      zip -j $ZIP_FILE /tmp/run.sh || exit 24
+      chmod +x /tmp/run.sh         &&
+      zip -j $ZIP_FILE /tmp/run.sh || exit 41
 
-      zip -j $ZIP_FILE resources/runners/README.md || exit 25
+      zip -j $ZIP_FILE resources/runners/README.md || exit 42
     ;;
 
     vagga)
-      cp resources/runners/README_vagga.md /tmp/README.md
+      cp resources/runners/README_vagga.md /tmp/README.md || exit 50
 
       zip -j $ZIP_FILE       \
         /tmp/README.md       \
         $OUT_DIR/barebones   \
         $OUT_DIR/initramfs   \
         $OUT_DIR/usersfs     \
-        resources/vagga.yaml || exit 26
+        resources/vagga.yaml || exit 51
     ;;
 
     *)
       echo -e "${RED}Unknown platform '$PLATFORM'${CLR}"
-      exit 27
+      exit 60
     ;;
   esac
 fi
@@ -125,6 +127,6 @@ case $PLATFORM in
 
   *)
     echo -e "${RED}Unknown platform '$PLATFORM'${CLR}"
-    exit 30
+    exit 70
   ;;
 esac
