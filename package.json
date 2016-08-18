@@ -11,7 +11,8 @@
     "publish": "scripts/publish",
     "start": "scripts/start",
     "test": "scripts/test",
-    "unbuild": "scripts/unbuild"
+    "unbuild": "scripts/unbuild",
+    "csCheck": "nodeos-standard $(grep -ril './scripts' -e '/usr/bin/env node')"
   },
   "repository": {
     "type": "git",
@@ -40,6 +41,7 @@
     "nodeos-usersfs": "1.0.0-RC2"
   },
   "devDependencies": {
+    "nodeos-standard": "^0.1.2",
     "prebuild": "piranna/prebuild#prerelease",
     "qemu": "NodeOS/qemu",
     "suppose": "^0.6.1"
