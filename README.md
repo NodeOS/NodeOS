@@ -156,7 +156,7 @@ build them from source code.
 I'm working on that.
 
 ```bash
-git clone git@github.com:NodeOS/NodeOS.git
+git clone https://github.com/NodeOS/NodeOS.git
 cd NodeOS
 PLATFORM=docker npm install
 ```
