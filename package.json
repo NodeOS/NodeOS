@@ -10,9 +10,9 @@
     "postbuild": "scripts/postbuild",
     "publish": "scripts/publish",
     "start": "scripts/start",
-    "test": "scripts/test && npm run csCheck",
+    "test": "scripts/test && npm run cs-check",
     "unbuild": "scripts/unbuild",
-    "csCheck": "nodeos-standard $(grep -ril './scripts' -e '/usr/bin/env node') ; exit 0"
+    "cs-check": "nodeos-standard $(grep -ril './scripts' -e '/usr/bin/env node') ; exit 0"
   },
   "repository": {
     "type": "git",
