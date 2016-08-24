@@ -33,11 +33,11 @@
   "homepage": "http://node-os.com",
   "private": true,
   "dependencies": {
-    "nodeos-barebones": "1.0.0-RC2.3",
-    "nodeos-cross-toolchain": "1.0.0-RC2.11",
-    "nodeos-initramfs": "1.0.0-RC2.4",
-    "nodeos-rootfs": "1.0.0-RC2.1",
-    "nodeos-usersfs": "1.0.0-RC2"
+    "nodeos-barebones": "NodeOS/nodeos-barebones",
+    "nodeos-cross-toolchain": "NodeOS/nodeos-cross-toolchain",
+    "nodeos-initramfs": "NodeOS/nodeos-initramfs",
+    "nodeos-rootfs": "NodeOS/nodeos-rootfs",
+    "nodeos-usersfs": "NodeOS/nodeos-usersfs"
   },
   "devDependencies": {
     "prebuild": "piranna/prebuild#prerelease",
