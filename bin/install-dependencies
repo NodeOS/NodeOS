@@ -16,20 +16,23 @@ dpkg --add-architecture i386 &&
 $APT update                  || exit 1
 
 
+# Install dependencies $ Node.js
+$APT install curl || exit 10
+
 # cross-compiler
-$APT install gcc git || exit 10
+$APT install gcc git || exit 20
 
 # barebones
-$APT install bc || exit 11
+$APT install bc || exit 21
 
 # rootfs
-$APT install genisoimage libc6-i386 libuuid1:i386 || exit 12
+$APT install genisoimage libc6-i386 libuuid1:i386 || exit 22
 
 
 # qemu
-$APT install libsdl1.2-dev || exit 20
+$APT install libsdl1.2-dev || exit 30
 
 
 # Update Node.js to v6.x (npm3) from the NodeSource repository
 curl -sL https://deb.nodesource.com/setup_6.x | bash &&
-$APT install nodejs                                  || exit 30
+$APT install nodejs                                  || exit 40

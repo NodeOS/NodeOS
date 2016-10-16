@@ -106,17 +106,25 @@ so your changes will persist.
    sudo bin/install-dependencies
    ```
 
-3. Build NodeOS:
+3. Install NodeOS build dependencies:
 
    ```bash
    npm install
-   ```
+  ```
 
-   By default it generate some files that can be used with QEmu, compiled for
-   your current architecture. You can be able to configure the build process by
-   passing some environment variables. For example, to force to build for 32
-   bits, use `PLATFORM=qemu_32 npm install` instead.
+3. Build NodeOS:
+
+    ```bash
+    npm run build
+    ```
+
+   By default it will generate some files that can be used with QEmu, compiled
+   for your current machine architecture. You can be able to configure the build
+   process by passing some environment variables. For example, to force to build
+   for 32 bits, use `PLATFORM=qemu_32 npm install` instead.
+
 4. Pick some microwave pop-corn and go to see a movie. No, really, do it.
+
 5. Exec your fresh compiled NodeOS image:
 
    ```bash
