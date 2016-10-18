@@ -1,0 +1,101 @@
+- NodeOS - Lightweight operating system using Node.js as userspace - FAQ -
+--------------------------------------------------------------------------
+
+
+1. NodeOS is a fantastic project, what can I do to help it?
+
+- Linux kernel programmers
+- Node.js programmers
+- Designers
+- Testers
+
+
+2. How to run NodeOS on my computer?
+
+- Running it on Qemu
+-- Download a prebuild version at https://github.com/NodeOS/NodeOS/releases
+-- Uncompress and execute run.sh
+-- Ports maped on your system to Qemu (50080 => 80, 50443 => 443)
+
+- Running it on Docker
+-- http://node-os.com/blog/get-involved
+-- Get NodeOS to access the internet
+--- ...
+
+
+3. NodeOS is a complex project, it is made by a lot of other projects. What are they? 
+
+ You may find your self helping NodeOS by pull-requesting in one of the following projects on https://github.com/
+
+- NodeOS/NodeOS
+- groundwater/node-bin-nsh
+- piranna/Davius
+- piranna/nodeos-reverse-proxy
+- piranna/nodeos-reverse-proxy-register
+- piranna/logon
+- piranna/coreutils.js
+- piranna/Gaia
+- ...
+
+
+4. I'm going to start my contributions. What about code styles?
+
+ It is not set on stone, but your pull-requests have more chance to get clearance if you follow some simple rules.
+
+- Ident with tabs
+- If steatment 
+    if (true) {
+        alert('Good');
+    } else {
+        alert("Bad");
+    }
+- Case steatment
+    switch (variable) {
+        case 'One':
+            alert('Good');
+            break;
+
+        default:
+            alert('Ok');
+    }
+
+
+5. How does NodeOS compare to other OSes on how to do daily tasks?
+
+ If you know Linux, you get used with some standard ways of doing things.
+For example, you know that to manage a service you go for "/etc/init.d/CoolStuff" script or
+issue "service CoolStuff status" command.
+ NodeOS have some default places for OS programs and some distinct way of doing things as well:
+
+- To install pragrams use npm (Node Package Manager)
+-- ie. npm install vtop 
+- System programs goes in "/.../bin/"
+- User space programs goes in "/.../bin/"
+- To start a service do a "node ..."
+- To know a program is running do a "ps ..."
+
+
+6. What are the default system services on NodeOS and how they interact with each other?
+
+- Davius (piranna/Davius)
+-- Webdav implementation 
+-- Listens on port 80
+-- Resides at /lib/node_modules/Davius
+-- Interacts with nodeos-reverse-proxy by ...
+
+- nodeos-reverse-proxy (piranna/nodeos-reverse-proxy)
+-- Reverse proxy implementation
+-- ...
+
+
+7. Where can I find answers, ask other questions, talk about issues I'm facing and interact with the community?
+
+- https://github.com/NodeOS/NodeOS/issues
+- https://gitter.im/NodeOS
+
+
+8. Other sources of knowledge?
+
+- http://node-os.com/GitBlog/
+- https://github.com/NodeOS/NodeOS/tree/master/doc
+- https://www.npmjs.com/search?q=nodeos
