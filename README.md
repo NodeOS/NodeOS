@@ -156,7 +156,7 @@ build them from source code.
    sudo docker run -t -i nodeos/nodeos
    ```
 
-   or learn how to make a [Custom Build](http://node-os.com/blog/get-involved/)
+   or learn how to make a [Custom Build](http://node-os.com/blog/get-involved)
 
 ## Build from Source
 
