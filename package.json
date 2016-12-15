@@ -10,8 +10,9 @@
     "postbuild": "scripts/postbuild",
     "publish": "scripts/publish",
     "start": "scripts/start",
-    "test": "scripts/test",
-    "unbuild": "scripts/unbuild"
+    "test": "scripts/test && npm run cs-check",
+    "unbuild": "scripts/unbuild",
+    "cs-check": "nodeos-standard $(grep -ril './scripts' -e '/usr/bin/env node') ; exit 0"
   },
   "repository": {
     "type": "git",
@@ -40,6 +41,7 @@
     "nodeos-usersfs": "NodeOS/nodeos-usersfs"
   },
   "devDependencies": {
+    "nodeos-standard": "^0.2.0",
     "prebuild": "piranna/prebuild#prerelease",
     "qemu": "NodeOS/qemu",
     "suppose": "^0.6.1"
