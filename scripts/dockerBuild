@@ -18,7 +18,7 @@ source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
   npm run dockerBuild              || exit 20
 ) &&
 (
-  cd node_modules/nodeos-rootfs    &&
+  cd node_modules/nodeos-bootfs    &&
   npm run dockerBuild              || exit 30
 ) &&
 (
