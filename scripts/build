@@ -11,7 +11,7 @@ source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
 
 ( cd node_modules/nodeos-barebones && npm run build ) &&
 ( cd node_modules/nodeos-initramfs && npm run build ) &&
-( cd node_modules/nodeos-rootfs    && npm run build ) &&
+( cd node_modules/nodeos-bootfs    && npm run build ) &&
 ( cd node_modules/nodeos-usersfs   && npm run build ) || err $?
 
 
@@ -28,7 +28,7 @@ case $PLATFORM in
   ;;
 
   *_iso|*_img)
-    cp node_modules/nodeos-rootfs/out/latest $OUT_DIR/rootfs
+    cp node_modules/nodeos-bootfs/out/latest $OUT_DIR/rootfs
   ;;
 
   *)
