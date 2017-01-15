@@ -125,19 +125,42 @@ if [[ ! -z "$RELEASE" ]]; then
       esac
     ;;
 
-    raspberry_image)
-      createDiskImage || exit $?
+    raspi|raspi2|raspi3)
+      case $PLATFORM in
+        img)
+          createDiskImage || exit $?
 
-      eval "echo -e \"$(< resources/runners/runner_header.sh)\"" > /tmp/run.sh &&
-      cat resources/runners/raspberry.sh                        >> /tmp/run.sh || exit 40
+          eval "echo -e \"$(< resources/runners/runner_header.sh)\"" > /tmp/run.sh &&
+          cat resources/runners/disk.sh                             >> /tmp/run.sh || exit 80
 
-      chmod +x /tmp/run.sh         &&
-      zip -j $ZIP_FILE /tmp/run.sh || exit 41
+          chmod +x /tmp/run.sh         &&
+          zip -j $ZIP_FILE /tmp/run.sh || exit 81
 
-      zip -j $ZIP_FILE resources/runners/README.md || exit 42
-    ;;
+          zip -j $ZIP_FILE              \
+            resources/runners/README.md \
+            $OUT_DIR/disk.img           || exit 82
+        ;;
 
+        qemu)
+          eval "echo -e \"$(< resources/runners/runner_header.sh)\"" > /tmp/run.sh &&
+          cat resources/runners/qemu.sh                             >> /tmp/run.sh || exit 90
 
+          chmod +x /tmp/run.sh         &&
+          zip -j $ZIP_FILE /tmp/run.sh || exit 91
+
+          zip -j $ZIP_FILE              \
+            resources/runners/README.md \
+            $OUT_DIR/kernel             \
+            $OUT_DIR/dts                \
+            $OUT_DIR/initramfs.cpio.gz  \
+            $OUT_DIR/usersfs.img        || exit 92
+        ;;
+
+        *)
+          echo -e "${RED}Unknown platform '$PLATFORM'${CLR}"
+          exit 100
+        ;;
+      esac
     ;;
 
     *)
