@@ -13,7 +13,8 @@ const TIMEOUT = 300  // seconds
 
 var link = fs.readlinkSync('out/latest').split('/');
 
-var cpu_family = link[link.length-2]
+var cpu_family = link[link.length-3]
+var machine    = link[link.length-2]
 var platform   = link[link.length-1]
 
 var type = platform.split('_')[1] || platform
@@ -21,7 +22,6 @@ var type = platform.split('_')[1] || platform
 var args = processArguments(process.argv.slice(2))
 
 var cpu = args.cpu
-var machine = args.machine
 
 var exe
 var timeout = setTimeout(function()
@@ -37,29 +37,23 @@ var command = 'qemu-system-'+args.cpu_family
 
 var args =
 [
+  '-machine', machine,
 //  '-enable-kvm',
+  '-m', '256M',
   '-nographic',
 ]
 
-const outDir = join('out', cpu_family, platform)
+const outDir = join('out', cpu_family, machine, platform)
 switch(type)
 {
   case 'img':
-    fs.accessSync(join(outDir, 'rootfs'))
-    fs.accessSync(join(outDir, 'usersfs'))
-    process.exit()
-
-    // args.push('-hda', join(outDir, 'rootfs'))
-    // args.push('-hdb', join(outDir, 'usersfs'))
+    args.push('-hda', join(outDir, 'bootfs.img'),
+              '-hdb', join(outDir, 'usersfs.img'))
   break
 
   case 'iso':
-    fs.accessSync(join(outDir, 'rootfs'))
-    fs.accessSync(join(outDir, 'usersfs'))
-    process.exit()
-
-//    args.push('-cdrom', join(outDir, 'rootfs'))
-//    args.push('-hdb'  , join(outDir, 'usersfs'))
+    args.push('-cdrom', join(outDir, 'bootfs.iso'),
+              '-hda'  , join(outDir, 'usersfs.img'))
   break
 
   case 'qemu':
@@ -69,20 +63,24 @@ switch(type)
       'console=ttyS0'
     ]
 
-    args.push('--kernel', join(outDir, 'barebones'),
-              '--initrd', join(outDir, 'initramfs'),
-              '-hda',     join(outDir, 'usersfs'),
+    args.push('--kernel', join(outDir, 'kernel'),
+              '--initrd', join(outDir, 'initramfs.cpio.gz'),
+              '-hda',     join(outDir, 'usersfs.img'),
               '-append',  append.join(' '))
   break
 
-  case 'vagga':
-    fs.accessSync(join(outDir, 'barebones'))
-    fs.accessSync(join(outDir, 'initramfs'))
-    fs.accessSync(join(outDir, 'usersfs'))
+  case 'tar':
+    fs.accessSync(join(outDir, 'bootfs.tar.gz'))
+    fs.accessSync(join(outDir, 'usersfs.tar.gz'))
     process.exit()
+  break
 
-//    args.push('-cdrom', join(outDir, 'rootfs'))
-//    args.push('-hdb'  , join(outDir, 'usersfs'))
+  case 'docker':
+  case 'vagga':
+    fs.accessSync(join(outDir, 'barebones.tar.gz'))
+    fs.accessSync(join(outDir, 'initramfs.tar.gz'))
+    fs.accessSync(join(outDir, 'usersfs.tar.gz'))
+    process.exit()
   break
 
   default:
@@ -107,14 +105,21 @@ switch(type)
 //   args.shift();
 // }
 
-if(machine) args.unshift('-machine', machine)
 
-exe = suppose(command, args, {debug: true, stripAnsi: true})
+// Exec test
+exe = suppose(command, args, {stripAnsi: true})
+
+// On disk images, hook on the bootloader and force kernel to output to console
+if(type === 'img' || type === 'iso')
+  exe = exe.when('boot: ').respond('NodeOS console=ttyS0\n')
+
+exe = exe
   .when('username:  ').respond('nodeos\n')
   .when('password:  ').respond('nodeos\n')
-  .when('# ').respond('node\n')
-  .when('> ').respond('setTimeout(console.log, 2000, "this is","a test")\n')
-  .when(/this is a test/, function(exe)
+//  .when('# ').respond('node\n')
+//  .when('> ').respond('setTimeout(console.log, 2000, "this is","a test")\n')
+//  .when(/this is a test/, function(exe)
+  .when('~ > ', function(exe)
   {
     exe.kill()
   })

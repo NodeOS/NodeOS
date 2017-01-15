@@ -10,24 +10,16 @@ const QEMU_SYSTEM = 'qemu-system-'
 
 var link = fs.readlinkSync('out/latest').split('/');
 
-var cpu_family = link[link.length-2]
+var cpu_family = link[link.length-3]
+var machine    = link[link.length-2]
 var platform   = link[link.length-1]
-
-var type = platform.split('_')[1]
-
-var machine
-switch(cpu_family)
-{
-  case 'arm':
-    machine = 'versatilepb'
-  break
-}
 
 
 var command = QEMU_SYSTEM+cpu_family
 
 var args =
 [
+  '-machine', machine,
   '-enable-kvm',
   '-vga', 'std',
   '-m', '256M',
@@ -35,17 +27,23 @@ var args =
   '-redir', 'tcp:50443::443'
 ]
 
-const outDir = join('out', cpu_family, platform)
-switch(type)
+switch(process.argv[2])
+{
+  case 'curses'   : args.push('-curses')   ; break
+  case 'nographic': args.push('-nographic'); break
+}
+
+const outDir = join('out', cpu_family, machine, platform)
+switch(platform)
 {
   case 'img':
-    args.push('-hda', join(outDir, 'rootfs'))
-    args.push('-hdb', join(outDir, 'usersfs'))
+    args.push('-hda', join(outDir, 'bootfs.img'),
+              '-hdb', join(outDir, 'usersfs.img'))
   break
 
   case 'iso':
-    args.push('-cdrom', join(outDir, 'rootfs'))
-    args.push('-hdb'  , join(outDir, 'usersfs'))
+    args.push('-cdrom', join(outDir, 'bootfs.iso'),
+              '-hda'  , join(outDir, 'usersfs.img'))
   break
 
   case 'qemu':
@@ -59,29 +57,25 @@ switch(type)
     {
       case 'nographic':
         append.push('console=ttyS0')  // redirect to terminal
-        args.push('-nographic')
       break
 
       case 'curses':
         append.push('vga=extended')  // 80x50
-        args.push('-curses')
       break
 
       default:
         append.push('vga=0x344')  // 1024x768x32
     }
 
-    args.push('--kernel', join(outDir, 'barebones'))
-    args.push('--initrd', join(outDir, 'initramfs'))
-    args.push('-hda',     join(outDir, 'usersfs'))
-    args.push('-append', append.join(' '))
+    args.push('--kernel', join(outDir, 'kernel'),
+              '--initrd', join(outDir, 'initramfs.cpio.gz'),
+              '-hda',     join(outDir, 'usersfs.img'),
+              '-append', append.join(' '))
   break
 
   default:
     throw 'Unknown platform "'+platform+'"'
 }
-
-if(machine) args.unshift('-machine', machine)
 
 // check if kvm is supported
 var kvm = /(vmx|svm)/;
@@ -101,5 +95,7 @@ if(kvm.test(contents) === false)
   args.shift();
 }
 
+
+// Exec NodeOS
 spawn(command, args, {stdio: 'inherit'})
 .on('error', console.trace.bind(console));
