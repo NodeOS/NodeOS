@@ -1,3 +1,3 @@
 #!/usr/bin/env sh
 
-rm -rf deps/ out/ prebuilds/ || exit $?
+rm -rf deps/ build/ out/ prebuilds/ || exit $?

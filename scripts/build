@@ -1,41 +1,110 @@
 #!/usr/bin/env bash
 
-TOOLCHAIN=`pwd`/node_modules/nodeos-cross-toolchain
+set -o pipefail
+
+
+while getopts ":k:p:" opt; do
+  case $opt in
+    k)
+      KERNEL="$OPTARG"  # linux, netbsd, nokernel
+    ;;
+
+    p)
+      PLATFORM="$OPTARG"  # lxc, qemu, wsl
+    ;;
+  esac
+done
+
+
+# Default kernel and platform
+if [[ -z "$KERNEL" ]]; then
+  KERNEL=linux
+fi
+
+if [[ -z "$PLATFORM" ]]; then
+  PLATFORM=qemu
+fi
+
+
+TOOLCHAIN=`node -p "require('nodeos-cross-toolchain')"`
+BAREBONES=`node -p "require('nodeos-barebones')"`
+INITRAMFS=`node -p "require('nodeos-initramfs')"`
+USERSFS=`  node -p "require('nodeos-usersfs')"`
 
 source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
+
+
+OUT_DIR=`pwd`/out/$CPU_FAMILY/$MACHINE/$PLATFORM
+
+export MACHINE
 
 
 #
 # Build each layer up
 #
 
-( cd node_modules/nodeos-barebones && npm run build ) &&
-( cd node_modules/nodeos-initramfs && npm run build ) &&
-( cd node_modules/nodeos-rootfs    && npm run build ) &&
-( cd node_modules/nodeos-usersfs   && npm run build ) || err $?
+( cd $BAREBONES && KERNEL=$kERNEL npm install --arch=$NODE_ARCH --production ) &&
+( cd $INITRAMFS &&                npm install --arch=$NODE_ARCH --production ) &&
+( cd $USERSFS   &&                npm install --arch=$NODE_ARCH --production ) || exit 10
 
 
 #
 # Wrap the system up and pack it
 #
 
-OUT_DIR=`pwd`/out/$CPU_FAMILY/$PLATFORM
-mkdir -p $OUT_DIR
-case $PLATFORM in
-  *_qemu|docker|vagga)
-    cp node_modules/nodeos-barebones/out/latest $OUT_DIR/barebones
-    cp node_modules/nodeos-initramfs/out/latest $OUT_DIR/initramfs
+BAREBONES=$BAREBONES/out/$CPU
+INITRAMFS=$INITRAMFS/out/$CPU
+USERSFS=$USERSFS/out/$CPU.tar.gz
+
+STEP_DIR=$OUT_DIR
+
+mkdir -p $STEP_DIR
+
+case $MACHINE in
+  pc)
+    case $PLATFORM in
+      img)
+        tar2ext $USERSFS nodeos 1 1 $STEP_DIR/usersfs.img || err 40
+
+        nodeos-bootfs                \
+            -F $PLATFORM             \
+            -K $BAREBONES/bzImage    \
+            -I $INITRAMFS            \
+            -O $STEP_DIR/bootfs.img  \
+            -U $STEP_DIR/usersfs.img || err 41
+      ;;
+
+      iso)
+        tar2ext $USERSFS nodeos 1 1 $STEP_DIR/usersfs.img || err 50
+
+        nodeos-bootfs                \
+            -F $PLATFORM             \
+            -K $BAREBONES/bzImage    \
+            -I $INITRAMFS            \
+            -O $STEP_DIR/bootfs.iso  \
+            -U $STEP_DIR/usersfs.img || err 51
+      ;;
+
+      qemu)
+        cp $BAREBONES/bzImage $STEP_DIR/kernel            || err 60
+        cp $INITRAMFS         $STEP_DIR/initramfs.cpio.gz || err 61
+
+        tar2ext $USERSFS nodeos 1 1 $STEP_DIR/usersfs.img || err 62
+      ;;
+
+      *)
+        echo -e "${RED}Unknown platform '$PLATFORM'${CLR}"
+        err 90
+      ;;
+    esac
   ;;
 
-  *_iso|*_img)
-    cp node_modules/nodeos-rootfs/out/latest $OUT_DIR/rootfs
   ;;
 
   *)
-    echo -e "${RED}Unknown platform '$PLATFORM'${CLR}"
-    exit 10
+    echo -e "${RED}Unknown machine '$MACHINE'${CLR}"
+    exit 130
   ;;
 esac
-cp node_modules/nodeos-usersfs/out/latest $OUT_DIR/usersfs
 
-ln -sfn $CPU_FAMILY/$PLATFORM out/latest
+ln -sfn $CPU_FAMILY/$MACHINE/$PLATFORM out/latest
