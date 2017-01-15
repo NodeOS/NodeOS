@@ -1,29 +1,28 @@
 #!/usr/bin/env bash
 
+set -o pipefail
+
+
 BLD=$(tput bold)
+CLR="\e[0m"
+
+GRN="\e[32m"
 GRY="\e[90m"
+WHT="\e[37m"
 
 
-TOOLCHAIN=`pwd`/node_modules/nodeos-cross-toolchain
-
-source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
+CONTEXT=out/latest
 
 
-(
-  cd node_modules/nodeos-barebones &&
-  npm run dockerBuild              || exit 10
-) &&
-(
-  cd node_modules/nodeos-initramfs &&
-  npm run dockerBuild              || exit 20
-) &&
-(
-  cd node_modules/nodeos-rootfs    &&
-  npm run dockerBuild              || exit 30
-) &&
-(
-  docker build -t nodeos .         || exit 40
-) || exit $?
+cp resources/Dockerfile $CONTEXT || exit 10
+
+cd $CONTEXT || exit 20
+
+docker import barebones.tar.gz nodeos/barebones || exit 30
+docker build -t nodeos/initramfs .              || exit 31
+
+#docker volume create --name usersfs        || exit 32
+#cat usersfs.tar.gz | docker cp - usersfs:/ || exit 33
 
 
 echo -e "${GRY}------------------------------------------${CLR}"

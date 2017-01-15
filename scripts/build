@@ -60,9 +60,30 @@ STEP_DIR=$OUT_DIR
 
 mkdir -p $STEP_DIR
 
+function copyAndConvertInitrams() {
+  cpio2tar $BAREBONES/barebones.cpio.gz | gzip -c > $STEP_DIR/barebones || err 20
+  cpio2tar $INITRAMFS                   | gzip -c > $STEP_DIR/initramfs || err 21
+}
+
 case $MACHINE in
   pc)
     case $PLATFORM in
+      docker)
+        copyAndConvertInitrams || exit $?
+
+        # gunzip $STEP_DIR/barebones -c          | \
+        #     tar --delete dev/console sbin/init | \
+        #     gzip > $STEP_DIR/barebones.tar.gz  || err 30
+
+        mv $STEP_DIR/barebones $STEP_DIR/barebones.tar.gz || err 30
+        mv $STEP_DIR/initramfs $STEP_DIR/initramfs.tar.gz || err 31
+
+        cp $USERSFS $STEP_DIR/usersfs.tar.gz || err 32
+
+        # Delete temporal initrams
+        rm -f $STEP_DIR/barebones || err 33
+      ;;
+
       img)
         tar2ext $USERSFS nodeos 1 1 $STEP_DIR/usersfs.img || err 40
 
@@ -90,6 +111,21 @@ case $MACHINE in
         cp $INITRAMFS         $STEP_DIR/initramfs.cpio.gz || err 61
 
         tar2ext $USERSFS nodeos 1 1 $STEP_DIR/usersfs.img || err 62
+      ;;
+
+      tar)
+        copyAndConvertInitrams || exit $?
+
+        nodeos-bootfs                  \
+            -B $STEP_DIR/barebones     \
+            -F $PLATFORM               \
+            -I $STEP_DIR/initramfs     \
+            -O $STEP_DIR/bootfs.tar.gz || err 70
+
+        cp $USERSFS $STEP_DIR/usersfs.tar.gz || err 71
+
+        # Delete temporal initrams
+        rm -f $STEP_DIR/barebones $STEP_DIR/initramfs || err 72
       ;;
 
       *)
