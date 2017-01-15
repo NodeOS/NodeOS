@@ -128,6 +128,21 @@ case $MACHINE in
         rm -f $STEP_DIR/barebones $STEP_DIR/initramfs || err 72
       ;;
 
+      vagga)
+        copyAndConvertInitrams || exit $?
+
+        gunzip $STEP_DIR/barebones -c          | \
+            tar --delete dev/console sbin/init | \
+            gzip > $STEP_DIR/barebones.tar.gz  || err 80
+
+        mv $STEP_DIR/initramfs $STEP_DIR/initramfs.tar.gz || err 81
+
+        cp $USERSFS $STEP_DIR/usersfs.tar.gz || err 82
+
+        # Delete temporal initrams
+        rm -f $STEP_DIR/barebones || err 83
+      ;;
+
       *)
         echo -e "${RED}Unknown platform '$PLATFORM'${CLR}"
         err 90
