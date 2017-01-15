@@ -8,6 +8,7 @@
     "dockerBuild": "scripts/dockerBuild",
     "build": "scripts/build",
     "postbuild": "scripts/postbuild",
+    "postinstall": "scripts/postinstall",
     "publish": "scripts/publish",
     "start": "scripts/start",
     "test": "scripts/test",
@@ -33,19 +34,18 @@
   "homepage": "http://node-os.com",
   "private": true,
   "dependencies": {
-    "nodeos-barebones": "NodeOS/nodeos-barebones",
-    "nodeos-cross-toolchain": "NodeOS/nodeos-cross-toolchain",
-    "nodeos-initramfs": "NodeOS/nodeos-initramfs",
-    "nodeos-rootfs": "NodeOS/nodeos-rootfs",
-    "nodeos-usersfs": "NodeOS/nodeos-usersfs"
+    "nodeos-barebones": "^1.0.0-RC3.1",
+    "nodeos-initramfs": "^1.0.0-RC3.1",
+    "nodeos-usersfs": "^1.0.0-RC3.1"
   },
   "devDependencies": {
+    "cpio2tar": "^0.0.5",
+    "minimist": "^1.2.0",
+    "nodeos-bootfs": "^1.0.0-RC3.0",
+    "nodeos-cross-toolchain": "^1.0.0-RC3.1",
     "prebuild": "piranna/prebuild#prerelease",
-    "qemu": "NodeOS/qemu",
-    "suppose": "^0.6.1"
-  },
-  "engines": {
-    "node": "^0.12.0",
-    "npm": "^3.0.0"
+    "qemu": "^2.8.0",
+    "suppose": "^0.6.1",
+    "tar2ext": "^0.0.2"
   }
 }

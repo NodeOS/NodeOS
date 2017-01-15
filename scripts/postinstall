@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+# HACK `npm` add all the binaries to the `node_modules/.bin` folder without
+# matter what package installed it, so `env` from `usrbinenv` gets available on
+# the `$PATH` during build process, making it to fail since its shebang is
+# `#!/bin/node`, that's only valid on NodeOS, so we need to remove the symlink
+# to make it not interfere with the build process
+
+rm -f node_modules/.bin/env
