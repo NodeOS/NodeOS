@@ -84,7 +84,7 @@ case $MACHINE in
         rm -f $STEP_DIR/barebones || err 33
       ;;
 
-      img)
+      img|disk)
         tar2ext $USERSFS nodeos 1 1 $STEP_DIR/usersfs.img || err 40
 
         nodeos-bootfs                \
