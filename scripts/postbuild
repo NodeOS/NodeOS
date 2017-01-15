@@ -51,6 +51,21 @@ if [[ ! -z "$RELEASE" ]]; then
   case $MACHINE in
     pc)
       case $PLATFORM in
+        docker)
+          cp resources/runners/README_docker.md /tmp/README.md || exit 20
+
+          cp resources/runners/docker.sh /tmp/run.sh &&
+          chmod +x /tmp/run.sh                       &&
+          zip -j $ZIP_FILE /tmp/run.sh               || exit 21
+
+          zip -j $ZIP_FILE            \
+            /tmp/README.md            \
+            $OUT_DIR/barebones.tar.gz \
+            $OUT_DIR/initramfs.tar.gz \
+            $OUT_DIR/usersfs.tar.gz   \
+            resources/Dockerfile      || exit 22
+        ;;
+
         img)
           createDiskImage || exit $?
 
@@ -138,11 +153,13 @@ echo -e "- Interactively run your image with:"
 
 case $PLATFORM in
   docker)
-    echo -e "${WHT}    npm run dockerBuild ${CLR}"
-    echo -e "${WHT}    docker run -t -i NodeOS${CLR}"
+    echo -e "${WHT}    npm run dockerBuild${CLR}"
+    echo -e "${WHT}    npm run docker${CLR}"
     echo
     echo -e "- Share your creation with:"
     echo -e "${WHT}    docker push NodeOS${CLR}"
+    echo
+    echo -e "You would need administrator permissions to exec that commands"
   ;;
 
   vagga)
