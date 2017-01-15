@@ -150,6 +150,33 @@ case $MACHINE in
     esac
   ;;
 
+  raspi|raspi2|raspi3)
+    case $PLATFORM in
+      img)
+        tar2ext $USERSFS nodeos 1 1 $STEP_DIR/usersfs.img || err 100
+
+        nodeos-bootfs                \
+            -D $BAREBONES/dts        \
+            -F $PLATFORM             \
+            -K $BAREBONES/zImage     \
+            -I $INITRAMFS            \
+            -O $STEP_DIR/bootfs.img  \
+            -U $STEP_DIR/usersfs.img || err 101
+      ;;
+
+      qemu)
+        cp $BAREBONES/zImage $STEP_DIR/kernel            || err 110
+        cp $BAREBONES/dts    $STEP_DIR/dts               || err 111
+        cp $INITRAMFS        $STEP_DIR/initramfs.cpio.gz || err 112
+
+        tar2ext $USERSFS nodeos 1 1 $STEP_DIR/usersfs.img || err 113
+      ;;
+
+      *)
+        echo -e "${RED}Unknown platform '$PLATFORM'${CLR}"
+        err 120
+      ;;
+    esac
   ;;
 
   *)
