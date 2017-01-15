@@ -9,17 +9,17 @@ fi
 DEVICE=$1
 PARTITION=${DEVICE}2
 
-ROOTFS=$2
+BOOTFS=$2
 USERSFS=$3
 
 
-# Copy rootfs & usersfs partition images on USB device
+# Copy bootfs & usersfs partition images on USB device
 
-SIZE_ROOTFS=$(stat -L -c%s "$ROOTFS")
-SIZE_ROOTFS=$(($SIZE_ROOTFS/512))
+SIZE_BOOTFS=$(stat -L -c%s "$BOOTFS")
+SIZE_BOOTFS=$(($SIZE_BOOTFS/512))
 
-dd if=$ROOTFS  of=$DEVICE                   &&
-dd if=$USERSFS of=$DEVICE seek=$SIZE_ROOTFS || exit 11
+dd if=$BOOTFS  of=$DEVICE                   &&
+dd if=$USERSFS of=$DEVICE seek=$SIZE_BOOTFS || exit 11
 sync
 
 
