@@ -20,25 +20,25 @@ OUT_DIR=`pwd`/out/$CPU_FAMILY/$MACHINE/$PLATFORM
 
 # Disk images are a composition of bootfs and usersfs
 function createDiskImage() {
-  mkdir -p `dirname $OBJECTS`
+  DISK=$OUT_DIR/disk.img
 
   # ToDo: sizes would need to be on cylinders and retain DOS compatibility
   # http://elinux.org/RPi_Advanced_Setup#Advanced_SD_card_setup
 
-  BOOTFS=$OUT_DIR/bootfs
-  USERSFS=$OUT_DIR/usersfs
+  BOOTFS=$OUT_DIR/bootfs.img
+  USERSFS=$OUT_DIR/usersfs.img
 
   SIZE_MBR=$((2*1024))  # Reserve first megabyte for MBR and partitions table
   SIZE_BOOTFS=$(stat -L -c%s "$BOOTFS")
   SIZE_BOOTFS=$(($SIZE_BOOTFS/512))
   START_USERSFS=$(($SIZE_MBR+$SIZE_BOOTFS))
 
-  dd if=/dev/zero of=$OBJECTS count=$SIZE_MBR &&
-  cat $BOOTFS  >> $OBJECTS                    &&
-  cat $USERSFS >> $OBJECTS                    || exit 10
+  dd if=/dev/zero of=$DISK count=$SIZE_MBR     &&
+  dd if=$BOOTFS   of=$DISK seek=$SIZE_MBR      &&
+  dd if=$USERSFS  of=$DISK seek=$START_USERSFS || exit 10
 
   eval "echo \"$(< resources/sfdisk.txt)\"" | \
-      /sbin/sfdisk -uS --force $OBJECTS || exit 11
+      /sbin/sfdisk -uS --force $DISK        || exit 11
 }
 
 
@@ -75,44 +75,46 @@ if [[ ! -z "$RELEASE" ]]; then
           chmod +x /tmp/run.sh         &&
           zip -j $ZIP_FILE /tmp/run.sh || exit 31
 
-          zip -j $ZIP_FILE resources/runners/README.md || exit 32
+          zip -j $ZIP_FILE       \
+            $OUT_DIR/bootfs.img  \
+            $OUT_DIR/usersfs.img || exit 32
         ;;
 
         iso)
-          zip -j $ZIP_FILE              \
-            resources/runners/README.md \
-            $OUT_DIR/bootfs             \
-            $OUT_DIR/usersfs            || exit 40
-
           eval "echo -e \"$(< resources/runners/runner_header.sh)\"" > /tmp/run.sh &&
-          cat resources/runners/iso.sh                              >> /tmp/run.sh || exit 41
+          cat resources/runners/iso.sh                              >> /tmp/run.sh || exit 40
 
           chmod +x /tmp/run.sh         &&
-          zip -j $ZIP_FILE /tmp/run.sh || exit 42
+          zip -j $ZIP_FILE /tmp/run.sh || exit 41
+
+          zip -j $ZIP_FILE              \
+            resources/runners/README.md \
+            $OUT_DIR/bootfs.iso         \
+            $OUT_DIR/usersfs.img        || exit 42
         ;;
 
         qemu)
-          zip -j $ZIP_FILE              \
-            resources/runners/README.md \
-            $OUT_DIR/barebones          \
-            $OUT_DIR/initramfs          \
-            $OUT_DIR/usersfs            || exit 50
-
           eval "echo -e \"$(< resources/runners/runner_header.sh)\"" > /tmp/run.sh &&
-          cat resources/runners/qemu.sh                             >> /tmp/run.sh || exit 51
+          cat resources/runners/qemu.sh                             >> /tmp/run.sh || exit 50
 
           chmod +x /tmp/run.sh         &&
-          zip -j $ZIP_FILE /tmp/run.sh || exit 52
+          zip -j $ZIP_FILE /tmp/run.sh || exit 51
+
+          zip -j $ZIP_FILE              \
+            resources/runners/README.md \
+            $OUT_DIR/kernel             \
+            $OUT_DIR/initramfs.cpio.gz  \
+            $OUT_DIR/usersfs.img        || exit 52
         ;;
 
         vagga)
           cp resources/runners/README_vagga.md /tmp/README.md || exit 60
 
-          zip -j $ZIP_FILE       \
-            /tmp/README.md       \
-            $OUT_DIR/barebones   \
-            $OUT_DIR/initramfs   \
-            $OUT_DIR/usersfs     \
+          zip -j $ZIP_FILE            \
+            /tmp/README.md            \
+            $OUT_DIR/barebones.tar.gz \
+            $OUT_DIR/initramfs.tar.gz \
+            $OUT_DIR/usersfs.tar.gz   \
             resources/vagga.yaml || exit 61
         ;;
 
