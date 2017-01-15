@@ -51,6 +51,20 @@ if [[ ! -z "$RELEASE" ]]; then
   case $MACHINE in
     pc)
       case $PLATFORM in
+        disk)
+          createDiskImage || exit $?
+
+          eval "echo -e \"$(< resources/runners/runner_header.sh)\"" > /tmp/run.sh &&
+          cat resources/runners/disk.sh                             >> /tmp/run.sh || exit 30
+
+          chmod +x /tmp/run.sh         &&
+          zip -j $ZIP_FILE /tmp/run.sh || exit 31
+
+          zip -j $ZIP_FILE              \
+            resources/runners/README.md \
+            $OUT_DIR/disk.img           || exit 32
+        ;;
+
         docker)
           cp resources/runners/README_docker.md /tmp/README.md || exit 20
 
@@ -67,8 +81,6 @@ if [[ ! -z "$RELEASE" ]]; then
         ;;
 
         img)
-          createDiskImage || exit $?
-
           eval "echo -e \"$(< resources/runners/runner_header.sh)\"" > /tmp/run.sh &&
           cat resources/runners/img.sh                              >> /tmp/run.sh || exit 30
 
