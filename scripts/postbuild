@@ -105,6 +105,16 @@ if [[ ! -z "$RELEASE" ]]; then
           zip -j $ZIP_FILE /tmp/run.sh || exit 52
         ;;
 
+        vagga)
+          cp resources/runners/README_vagga.md /tmp/README.md || exit 60
+
+          zip -j $ZIP_FILE       \
+            /tmp/README.md       \
+            $OUT_DIR/barebones   \
+            $OUT_DIR/initramfs   \
+            $OUT_DIR/usersfs     \
+            resources/vagga.yaml || exit 61
+        ;;
 
         *)
           echo -e "${RED}Unknown platform '$PLATFORM'${CLR}"
@@ -125,15 +135,7 @@ if [[ ! -z "$RELEASE" ]]; then
       zip -j $ZIP_FILE resources/runners/README.md || exit 42
     ;;
 
-    vagga)
-      cp resources/runners/README_vagga.md /tmp/README.md || exit 50
 
-      zip -j $ZIP_FILE       \
-        /tmp/README.md       \
-        $OUT_DIR/barebones   \
-        $OUT_DIR/initramfs   \
-        $OUT_DIR/usersfs     \
-        resources/vagga.yaml || exit 51
     ;;
 
     *)
