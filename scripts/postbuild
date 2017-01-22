@@ -43,7 +43,7 @@ function createDiskImage() {
 
 
 if [[ ! -z "$RELEASE" ]]; then
-  ZIP_FILE=prebuilds/$CPU_FAMILY-$PLATFORM.zip
+  ZIP_FILE=prebuilds/$CPU_FAMILY-$MACHINE-$PLATFORM.zip
 
   mkdir -p prebuilds
   rm -f $ZIP_FILE
@@ -139,6 +139,20 @@ if [[ ! -z "$RELEASE" ]]; then
 
     raspi|raspi2|raspi3)
       case $PLATFORM in
+        disk)
+          createDiskImage || exit $?
+
+          eval "echo -e \"$(< resources/runners/runner_header.sh)\"" > /tmp/run.sh &&
+          cat resources/runners/disk.sh                             >> /tmp/run.sh || exit 30
+
+          chmod +x /tmp/run.sh         &&
+          zip -j $ZIP_FILE /tmp/run.sh || exit 31
+
+          zip -j $ZIP_FILE              \
+            resources/runners/README.md \
+            $OUT_DIR/disk.img           || exit 32
+        ;;
+
         img)
           createDiskImage || exit $?
 
@@ -191,6 +205,10 @@ echo
 echo -e "- Interactively run your image with:"
 
 case $PLATFORM in
+  disk|img|iso|qemu)
+    echo -e "${WHT}    npm start${CLR}"
+  ;;
+
   docker)
     echo -e "${WHT}    npm run dockerBuild${CLR}"
     echo -e "${WHT}    npm run docker${CLR}"
@@ -203,10 +221,6 @@ case $PLATFORM in
 
   vagga)
     echo -e "${WHT}    vagga run${CLR}"
-  ;;
-
-  img|iso|qemu)
-    echo -e "${WHT}    npm start${CLR}"
   ;;
 
   *)
