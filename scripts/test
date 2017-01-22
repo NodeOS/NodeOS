@@ -46,6 +46,18 @@ var args =
 const outDir = join('out', cpu_family, machine, platform)
 switch(type)
 {
+  case 'docker':
+    command = 'docker'
+    args =
+    [
+      'run', '-t',
+      '--cap-add', 'SYS_ADMIN',
+      '--security-opt=apparmor:unconfined',
+      '--device', '/dev/fuse',
+      'nodeos/initramfs'
+    ]
+  break
+
   case 'img':
     args.push('-hda', join(outDir, 'bootfs.img'),
               '-hdb', join(outDir, 'usersfs.img'))
@@ -75,7 +87,6 @@ switch(type)
     process.exit()
   break
 
-  case 'docker':
   case 'vagga':
     fs.accessSync(join(outDir, 'barebones.tar.gz'))
     fs.accessSync(join(outDir, 'initramfs.tar.gz'))
@@ -111,27 +122,31 @@ exe = suppose(command, args, {stripAnsi: true})
 
 // On disk images, hook on the bootloader and force kernel to output to console
 if(type === 'img' || type === 'iso')
-  exe = exe.when('boot: ').respond('NodeOS console=ttyS0\n')
+  exe.when('boot: ').respond('NodeOS console=ttyS0\n')
 
-exe = exe
-  .when('username:  ').respond('nodeos\n')
+exe.when('username:  ')
+
+if(type !== 'docker')
+  exe.respond('nodeos\n')
   .when('password:  ').respond('nodeos\n')
 //  .when('# ').respond('node\n')
 //  .when('> ').respond('setTimeout(console.log, 2000, "this is","a test")\n')
 //  .when(/this is a test/, function(exe)
-  .when('~ > ', function(exe)
-  {
-    exe.kill()
-  })
-  .on('error', function(error)
-  {
-    if(error.message.indexOf('terminating on signal 15 from pid') < 0)
-      console.trace(error)
-  })
-  .end(function()
-  {
-    clearTimeout(timeout)
+  .when('~ > ')
 
-    var expects = this.expects.length
-    if(expects) process.exit(expects)
-  })
+exe.respond(function(exe)
+{
+  exe.kill()
+})
+.on('error', function(error)
+{
+  if(error.message.indexOf('terminating on signal 15 from pid') < 0)
+    console.trace(error)
+})
+.end(function()
+{
+  clearTimeout(timeout)
+
+  var expects = this.expects.length
+  if(expects) process.exit(expects)
+})

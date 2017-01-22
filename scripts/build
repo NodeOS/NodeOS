@@ -38,14 +38,20 @@ OUT_DIR=`pwd`/out/$CPU_FAMILY/$MACHINE/$PLATFORM
 
 export MACHINE
 
+if [[ "$PLATFORM" == "docker" ]]; then
+  export KERNEL=nokernel
+fi
+
+NPMi="npm install --arch=$NODE_ARCH --production"
+
 
 #
 # Build each layer up
 #
 
-( cd $BAREBONES && KERNEL=$kERNEL npm install --arch=$NODE_ARCH --production ) &&
-( cd $INITRAMFS &&                npm install --arch=$NODE_ARCH --production ) &&
-( cd $USERSFS   &&                npm install --arch=$NODE_ARCH --production ) || exit 10
+( cd $BAREBONES && $NPMi ) &&
+( cd $INITRAMFS && $NPMi ) &&
+( cd $USERSFS   && $NPMi ) || exit 10
 
 
 #
@@ -71,17 +77,22 @@ case $MACHINE in
       docker)
         copyAndConvertInitrams || exit $?
 
-        # gunzip $STEP_DIR/barebones -c          | \
-        #     tar --delete dev/console sbin/init | \
-        #     gzip > $STEP_DIR/barebones.tar.gz  || err 30
+        # Docker already provides `/dev/console` by default
+        gunzip $STEP_DIR/barebones -c         | \
+            tar --delete dev/console          | \
+            gzip > $STEP_DIR/barebones.tar.gz || err 30
 
-        mv $STEP_DIR/barebones $STEP_DIR/barebones.tar.gz || err 30
         mv $STEP_DIR/initramfs $STEP_DIR/initramfs.tar.gz || err 31
 
-        cp $USERSFS $STEP_DIR/usersfs.tar.gz || err 32
+        # Exec `logon` directly instead of use `node-bin-getty` on the console
+        gunzip $USERSFS -c                                           | \
+            tar --delete root/etc/palmtree.json >  $STEP_DIR/usersfs || err 32
+
+        tar -f $STEP_DIR/usersfs -r resources/palmtree.json | \
+            gzip > $STEP_DIR/usersfs.tar.gz                 || err 33
 
         # Delete temporal initrams
-        rm -f $STEP_DIR/barebones || err 33
+        rm -f $STEP_DIR/barebones $STEP_DIR/usersfs || err 34
       ;;
 
       img|disk)

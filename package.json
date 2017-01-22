@@ -6,6 +6,7 @@
     "BigRedButton": "scripts/BigRedButton",
     "docker": "scripts/docker",
     "dockerBuild": "scripts/dockerBuild",
+    "dockerClean": "docker volume rm $(docker volume ls -qf dangling=true) || exit 0",
     "build": "scripts/build",
     "postbuild": "scripts/postbuild",
     "postinstall": "scripts/postinstall",
