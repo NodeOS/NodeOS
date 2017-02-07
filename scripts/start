@@ -23,8 +23,9 @@ var args =
   '-enable-kvm',
   '-vga', 'std',
   '-m', '256M',
-  '-redir', 'tcp:50080::80',
-  '-redir', 'tcp:50443::443'
+  '-net', 'nic',
+  '-net', 'user,id=eth0,hostfwd=tcp::50080-:80',
+  '-net', 'user,id=eth1,hostfwd=tcp::50443-:443'
 ]
 
 switch(process.argv[2])
