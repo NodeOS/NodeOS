@@ -69,7 +69,7 @@ switch(platform)
 
     args.push('--kernel', join(outDir, 'kernel'),
               '--initrd', join(outDir, 'initramfs.cpio.gz'),
-              '-hda',     join(outDir, 'usersfs.img'),
+              '-drive',   `file=${join(outDir, 'usersfs.img')},format=raw,index=0`,
               '-append', append.join(' '))
   break
 
