@@ -85,14 +85,16 @@ case $MACHINE in
         mv $STEP_DIR/initramfs $STEP_DIR/initramfs.tar.gz || err 31
 
         # Exec `logon` directly instead of use `node-bin-getty` on the console
-        gunzip $USERSFS -c                                           | \
-            tar --delete root/etc/palmtree.json >  $STEP_DIR/usersfs || err 32
+        mkdir -p root/etc && cp resources/palmtree.json root/etc || err 32
 
-        tar -f $STEP_DIR/usersfs -r resources/palmtree.json | \
-            gzip > $STEP_DIR/usersfs.tar.gz                 || err 33
+        gunzip $USERSFS -c                                              | \
+            tar --delete root/etc/palmtree.json > $STEP_DIR/usersfs.tar || err 33
+
+        tar -f $STEP_DIR/usersfs.tar -r root/etc/palmtree.json || err 34
+        gzip -f $STEP_DIR/usersfs.tar                          || err 35
 
         # Delete temporal initrams
-        rm -f $STEP_DIR/barebones $STEP_DIR/usersfs || err 34
+        rm -rf root $STEP_DIR/barebones $STEP_DIR/usersfs.tar || err 36
       ;;
 
       img|disk)
