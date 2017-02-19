@@ -36,6 +36,11 @@ switch(process.argv[2])
 const outDir = join('out', cpu_family, machine, platform)
 switch(platform)
 {
+  case 'docker':
+    command = 'scripts/docker'
+    args = []
+  break
+
   case 'img':
     args.push('-hda', join(outDir, 'bootfs.img'),
               '-hdb', join(outDir, 'usersfs.img'))
@@ -98,4 +103,8 @@ if(kvm.test(contents) === false)
 
 // Exec NodeOS
 spawn(command, args, {stdio: 'inherit'})
-.on('error', console.trace.bind(console));
+.on('error', console.trace.bind(console))
+.on('exit', function(code, signal)
+{
+  process.exit(code || signal)
+})
