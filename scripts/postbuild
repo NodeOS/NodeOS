@@ -18,30 +18,6 @@ fi
 OUT_DIR=`pwd`/out/$CPU_FAMILY/$MACHINE/$PLATFORM
 
 
-# Disk images are a composition of bootfs and usersfs
-function createDiskImage() {
-  DISK=$OUT_DIR/disk.img
-
-  # ToDo: sizes would need to be on cylinders and retain DOS compatibility
-  # http://elinux.org/RPi_Advanced_Setup#Advanced_SD_card_setup
-
-  BOOTFS=$OUT_DIR/bootfs.img
-  USERSFS=$OUT_DIR/usersfs.img
-
-  SIZE_MBR=$((2*1024))  # Reserve first megabyte for MBR and partitions table
-  SIZE_BOOTFS=$(stat -L -c%s "$BOOTFS")
-  SIZE_BOOTFS=$(($SIZE_BOOTFS/512))
-  START_USERSFS=$(($SIZE_MBR+$SIZE_BOOTFS))
-
-  dd if=/dev/zero of=$DISK count=$SIZE_MBR     &&
-  dd if=$BOOTFS   of=$DISK seek=$SIZE_MBR      &&
-  dd if=$USERSFS  of=$DISK seek=$START_USERSFS || exit 10
-
-  eval "echo \"$(< resources/sfdisk.txt)\"" | \
-      /sbin/sfdisk -uS --force $DISK        || exit 11
-}
-
-
 if [[ ! -z "$RELEASE" ]]; then
   ZIP_FILE=prebuilds/$CPU_FAMILY-$MACHINE-$PLATFORM.zip
 
@@ -52,8 +28,6 @@ if [[ ! -z "$RELEASE" ]]; then
     pc)
       case $PLATFORM in
         disk)
-          createDiskImage || exit $?
-
           eval "echo -e \"$(< resources/runners/runner_header.sh)\"" > /tmp/run.sh &&
           cat resources/runners/disk.sh                             >> /tmp/run.sh || exit 30
 
@@ -140,8 +114,6 @@ if [[ ! -z "$RELEASE" ]]; then
     raspi|raspi2|raspi3)
       case $PLATFORM in
         disk)
-          createDiskImage || exit $?
-
           eval "echo -e \"$(< resources/runners/runner_header.sh)\"" > /tmp/run.sh &&
           cat resources/runners/disk.sh                             >> /tmp/run.sh || exit 30
 
@@ -154,17 +126,16 @@ if [[ ! -z "$RELEASE" ]]; then
         ;;
 
         img)
-          createDiskImage || exit $?
-
           eval "echo -e \"$(< resources/runners/runner_header.sh)\"" > /tmp/run.sh &&
-          cat resources/runners/disk.sh                             >> /tmp/run.sh || exit 80
+          cat resources/runners/img.sh                              >> /tmp/run.sh || exit 80
 
           chmod +x /tmp/run.sh         &&
           zip -j $ZIP_FILE /tmp/run.sh || exit 81
 
           zip -j $ZIP_FILE              \
             resources/runners/README.md \
-            $OUT_DIR/disk.img           || exit 82
+            $OUT_DIR/bootfs.img         \
+            $OUT_DIR/usersfs.img        || exit 82
         ;;
 
         qemu)

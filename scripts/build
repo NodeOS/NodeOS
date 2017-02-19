@@ -74,56 +74,69 @@ function copyAndConvertInitrams() {
 case $MACHINE in
   pc)
     case $PLATFORM in
+      disk)
+        tar2ext $USERSFS nodeos 1 1 $STEP_DIR/usersfs.img || err 30
+
+        nodeos-bootfs                \
+            -F $PLATFORM             \
+            -K $BAREBONES/bzImage    \
+            -I $INITRAMFS            \
+            -O $STEP_DIR/disk.img    \
+            -U $STEP_DIR/usersfs.img || err 31
+
+        rm -f $STEP_DIR/usersfs.img || err 32
+      ;;
+
       docker)
         copyAndConvertInitrams || exit $?
 
         # Docker already provides `/dev/console` by default
         gunzip $STEP_DIR/barebones -c         | \
             tar --delete dev/console          | \
-            gzip > $STEP_DIR/barebones.tar.gz || err 30
+            gzip > $STEP_DIR/barebones.tar.gz || err 40
 
-        mv $STEP_DIR/initramfs $STEP_DIR/initramfs.tar.gz || err 31
+        mv $STEP_DIR/initramfs $STEP_DIR/initramfs.tar.gz || err 41
 
         # Exec `logon` directly instead of use `node-bin-getty` on the console
-        mkdir -p root/etc && cp resources/palmtree.json root/etc || err 32
+        mkdir -p root/etc && cp resources/palmtree.json root/etc || err 42
 
         gunzip $USERSFS -c                                              | \
-            tar --delete root/etc/palmtree.json > $STEP_DIR/usersfs.tar || err 33
+            tar --delete root/etc/palmtree.json > $STEP_DIR/usersfs.tar || err 43
 
-        tar -f $STEP_DIR/usersfs.tar -r root/etc/palmtree.json || err 34
-        gzip -f $STEP_DIR/usersfs.tar                          || err 35
+        tar -f $STEP_DIR/usersfs.tar -r root/etc/palmtree.json || err 44
+        gzip -f $STEP_DIR/usersfs.tar                          || err 45
 
         # Delete temporal initrams
-        rm -rf root $STEP_DIR/barebones $STEP_DIR/usersfs.tar || err 36
+        rm -rf root $STEP_DIR/barebones $STEP_DIR/usersfs.tar || err 46
       ;;
 
-      img|disk)
-        tar2ext $USERSFS nodeos 1 1 $STEP_DIR/usersfs.img || err 40
-
-        nodeos-bootfs                \
-            -F $PLATFORM             \
-            -K $BAREBONES/bzImage    \
-            -I $INITRAMFS            \
-            -O $STEP_DIR/bootfs.img  \
-            -U $STEP_DIR/usersfs.img || err 41
-      ;;
-
-      iso)
+      img)
         tar2ext $USERSFS nodeos 1 1 $STEP_DIR/usersfs.img || err 50
 
         nodeos-bootfs                \
             -F $PLATFORM             \
             -K $BAREBONES/bzImage    \
             -I $INITRAMFS            \
-            -O $STEP_DIR/bootfs.iso  \
+            -O $STEP_DIR/bootfs.img  \
             -U $STEP_DIR/usersfs.img || err 51
       ;;
 
-      qemu)
-        cp $BAREBONES/bzImage $STEP_DIR/kernel            || err 60
-        cp $INITRAMFS         $STEP_DIR/initramfs.cpio.gz || err 61
+      iso)
+        tar2ext $USERSFS nodeos 1 1 $STEP_DIR/usersfs.img || err 60
 
-        tar2ext $USERSFS nodeos 1 1 $STEP_DIR/usersfs.img || err 62
+        nodeos-bootfs                \
+            -F $PLATFORM             \
+            -K $BAREBONES/bzImage    \
+            -I $INITRAMFS            \
+            -O $STEP_DIR/bootfs.iso  \
+            -U $STEP_DIR/usersfs.img || err 61
+      ;;
+
+      qemu)
+        cp $BAREBONES/bzImage $STEP_DIR/kernel            || err 70
+        cp $INITRAMFS         $STEP_DIR/initramfs.cpio.gz || err 71
+
+        tar2ext $USERSFS nodeos 1 1 $STEP_DIR/usersfs.img || err 72
       ;;
 
       tar)
@@ -133,12 +146,12 @@ case $MACHINE in
             -B $STEP_DIR/barebones     \
             -F $PLATFORM               \
             -I $STEP_DIR/initramfs     \
-            -O $STEP_DIR/bootfs.tar.gz || err 70
+            -O $STEP_DIR/bootfs.tar.gz || err 80
 
-        cp $USERSFS $STEP_DIR/usersfs.tar.gz || err 71
+        cp $USERSFS $STEP_DIR/usersfs.tar.gz || err 81
 
         # Delete temporal initrams
-        rm -f $STEP_DIR/barebones $STEP_DIR/initramfs || err 72
+        rm -f $STEP_DIR/barebones $STEP_DIR/initramfs || err 82
       ;;
 
       vagga)
@@ -146,27 +159,41 @@ case $MACHINE in
 
         gunzip $STEP_DIR/barebones -c          | \
             tar --delete dev/console sbin/init | \
-            gzip > $STEP_DIR/barebones.tar.gz  || err 80
+            gzip > $STEP_DIR/barebones.tar.gz  || err 90
 
-        mv $STEP_DIR/initramfs $STEP_DIR/initramfs.tar.gz || err 81
+        mv $STEP_DIR/initramfs $STEP_DIR/initramfs.tar.gz || err 91
 
-        cp $USERSFS $STEP_DIR/usersfs.tar.gz || err 82
+        cp $USERSFS $STEP_DIR/usersfs.tar.gz || err 92
 
         # Delete temporal initrams
-        rm -f $STEP_DIR/barebones || err 83
+        rm -f $STEP_DIR/barebones || err 93
       ;;
 
       *)
         echo -e "${RED}Unknown platform '$PLATFORM'${CLR}"
-        err 90
+        err 100
       ;;
     esac
   ;;
 
   raspi|raspi2|raspi3)
     case $PLATFORM in
+      disk)
+        tar2ext $USERSFS nodeos 1 1 $STEP_DIR/usersfs.img || err 110
+
+        nodeos-bootfs                \
+            -D $BAREBONES/dts        \
+            -F $PLATFORM             \
+            -K $BAREBONES/zImage     \
+            -I $INITRAMFS            \
+            -O $STEP_DIR/disk.img    \
+            -U $STEP_DIR/usersfs.img || err 111
+
+        rm -f $STEP_DIR/usersfs.img || err 112
+      ;;
+
       img)
-        tar2ext $USERSFS nodeos 1 1 $STEP_DIR/usersfs.img || err 100
+        tar2ext $USERSFS nodeos 1 1 $STEP_DIR/usersfs.img || err 120
 
         nodeos-bootfs                \
             -D $BAREBONES/dts        \
@@ -174,27 +201,30 @@ case $MACHINE in
             -K $BAREBONES/zImage     \
             -I $INITRAMFS            \
             -O $STEP_DIR/bootfs.img  \
-            -U $STEP_DIR/usersfs.img || err 101
+            -U $STEP_DIR/usersfs.img || err 121
       ;;
 
       qemu)
-        cp $BAREBONES/zImage $STEP_DIR/kernel            || err 110
-        cp $BAREBONES/dts    $STEP_DIR/dts               || err 111
-        cp $INITRAMFS        $STEP_DIR/initramfs.cpio.gz || err 112
+        cp $BAREBONES/zImage $STEP_DIR/kernel || err 130
 
-        tar2ext $USERSFS nodeos 1 1 $STEP_DIR/usersfs.img || err 113
+        mkdir -p $STEP_DIR/dts               &&
+        cp -r $BAREBONES/dts/* $STEP_DIR/dts || err 131
+
+        cp $INITRAMFS $STEP_DIR/initramfs.cpio.gz || err 132
+
+        tar2ext $USERSFS nodeos 1 1 $STEP_DIR/usersfs.img || err 133
       ;;
 
       *)
         echo -e "${RED}Unknown platform '$PLATFORM'${CLR}"
-        err 120
+        err 140
       ;;
     esac
   ;;
 
   *)
     echo -e "${RED}Unknown machine '$MACHINE'${CLR}"
-    exit 130
+    exit 150
   ;;
 esac
 

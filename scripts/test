@@ -46,6 +46,10 @@ var args =
 const outDir = join('out', cpu_family, machine, platform)
 switch(type)
 {
+  case 'disk':
+    args.push('-hda', join(outDir, 'disk.img'))
+  break
+
   case 'docker':
     command = 'docker'
     args =
