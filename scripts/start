@@ -37,6 +37,10 @@ switch(process.argv[2])
 const outDir = join('out', cpu_family, machine, platform)
 switch(platform)
 {
+  case 'disk':
+    args.push('-hda', join(outDir, 'disk.img'))
+  break
+
   case 'docker':
     command = 'scripts/docker'
     args = []
