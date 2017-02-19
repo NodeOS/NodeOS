@@ -25,8 +25,8 @@ $APT install gcc git || exit 20
 # barebones
 $APT install bc || exit 21
 
-# rootfs
-$APT install genisoimage libc6-i386 libuuid1:i386 || exit 22
+# bootfs
+$APT install genisoimage mtools libc6-i386 libuuid1:i386 || exit 22
 
 
 # qemu
