@@ -122,10 +122,10 @@ switch(type)
 
 
 // Exec test
-exe = suppose(command, args, {stripAnsi: true})
+exe = suppose(command, args, {stripAnsi: true, debug: process.argv[2] === 'debug'})
 
 // On disk images, hook on the bootloader and force kernel to output to console
-if(type === 'img' || type === 'iso')
+if(type === 'disk' || type === 'img' || type === 'iso')
   exe.when('boot: ').respond('NodeOS console=ttyS0\n')
 
 exe.when('username:  ')
