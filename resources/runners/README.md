@@ -22,7 +22,7 @@ The ISO release can be burned to a CD-R or a USB flashdrive.
 However it will run as readonly which means everything is handled in memory and it will be
 lost on shutdown.
 
-You can you can use the script `bin/installUSB`, which will automatically create a read/write filesystem.
+You can use the script `bin/installUSB`, which will automatically create a read/write filesystem.
 The script will use the remaining space on the USB drive for the filesystem.
 
 ## What now?
