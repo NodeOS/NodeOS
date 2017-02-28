@@ -73,10 +73,10 @@ if [[ ! -z "$RELEASE" ]]; then
           chmod +x /tmp/run.sh         &&
           zip -j $ZIP_FILE /tmp/run.sh || exit 41
 
-          zip -j $ZIP_FILE              \
-            resources/runners/README.md \
-            $OUT_DIR/bootfs.iso         \
-            $OUT_DIR/usersfs.img        || exit 42
+          zip -j $ZIP_FILE                  \
+            resources/runners/README_iso.md \
+            $OUT_DIR/bootfs.iso             \
+            $OUT_DIR/usersfs.img            || exit 42
         ;;
 
         qemu)
