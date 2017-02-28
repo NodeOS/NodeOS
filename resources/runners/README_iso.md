@@ -22,7 +22,7 @@ This is the  ISO release, so it can be burned to a CD-R or a USB flashdrive.
 However it will run as readonly which means everything is handled in memory and it will be
 lost on shutdown.
 
-You can use the script `bin/installUSB`, which will automatically create a read/write filesystem.
+You can use the script `installUSB`, which will automatically create a read/write filesystem.
 You must provide the script with the device to write to, the rootfs and the usersfs files.
 
 *Tip: run the script with no arguments for the usage*
