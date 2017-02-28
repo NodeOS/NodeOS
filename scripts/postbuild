@@ -61,9 +61,10 @@ if [[ ! -z "$RELEASE" ]]; then
           chmod +x /tmp/run.sh         &&
           zip -j $ZIP_FILE /tmp/run.sh || exit 31
 
-          zip -j $ZIP_FILE       \
-            $OUT_DIR/bootfs.img  \
-            $OUT_DIR/usersfs.img || exit 32
+          zip -j $ZIP_FILE            \
+          resources/runners/README.md \
+            $OUT_DIR/bootfs.img       \
+            $OUT_DIR/usersfs.img      || exit 32
         ;;
 
         iso)
