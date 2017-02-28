@@ -75,6 +75,7 @@ if [[ ! -z "$RELEASE" ]]; then
 
           zip -j $ZIP_FILE                  \
             resources/runners/README_iso.md \
+            bin/installUSB                  \
             $OUT_DIR/bootfs.iso             \
             $OUT_DIR/usersfs.img            || exit 42
         ;;
