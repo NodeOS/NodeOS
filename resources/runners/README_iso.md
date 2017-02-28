@@ -17,5 +17,17 @@ $ password: nodeos
 ```
 If you run into trouble, please checkout the [troubleshooting here](https://github.com/NodeOS/NodeOS/wiki/Troubleshooting)
 
+## Burning to CD or USB
+This is the  ISO release, so it can be burned to a CD-R or a USB flashdrive. 
+However it will run as readonly which means everything is handled in memory and it will be
+lost on shutdown.
+
+You can use the script `installUSB`, which will automatically create a read/write filesystem.
+You must provide the script with the device to write to, the rootfs and the usersfs files.
+
+*Tip: run the script with no arguments for the usage*
+
+The script will use the remaining space on the USB drive for the filesystem.
+
 ## What now?
 When you have NodeOS up and running you should take a look at the [commands](https://github.com/NodeOS/NodeOS/wiki/Commands)

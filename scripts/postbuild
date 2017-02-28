@@ -61,22 +61,25 @@ if [[ ! -z "$RELEASE" ]]; then
           chmod +x /tmp/run.sh         &&
           zip -j $ZIP_FILE /tmp/run.sh || exit 31
 
-          zip -j $ZIP_FILE       \
-            $OUT_DIR/bootfs.img  \
-            $OUT_DIR/usersfs.img || exit 32
+          zip -j $ZIP_FILE            \
+          resources/runners/README.md \
+            $OUT_DIR/bootfs.img       \
+            $OUT_DIR/usersfs.img      || exit 32
         ;;
 
         iso)
           eval "echo -e \"$(< resources/runners/runner_header.sh)\"" > /tmp/run.sh &&
-          cat resources/runners/iso.sh                              >> /tmp/run.sh || exit 40
+          cat resources/runners/iso.sh                              >> /tmp/run.sh &&
+          cp resources/runners/README_iso.md /tmp/README.md                        || exit 40
 
           chmod +x /tmp/run.sh         &&
           zip -j $ZIP_FILE /tmp/run.sh || exit 41
 
-          zip -j $ZIP_FILE              \
-            resources/runners/README.md \
-            $OUT_DIR/bootfs.iso         \
-            $OUT_DIR/usersfs.img        || exit 42
+          zip -j $ZIP_FILE                  \
+            /tmp/README.md                  \
+            bin/installUSB                  \
+            $OUT_DIR/bootfs.iso             \
+            $OUT_DIR/usersfs.img            || exit 42
         ;;
 
         qemu)
