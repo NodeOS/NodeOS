@@ -1,3 +1,12 @@
+<!---
+NodeOS
+
+Copyright (c) 2013-2017 Jacob Groundwater, Jesús Leganés-Combarro 'piranna' and
+other contributors
+
+MIT License
+-->
+
 # NodeOS
 This zip file host a pre-build NodeOS instance with a demo users filesystem, you
 can find info about how to build your own users filesystem at

@@ -1,6 +1,13 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+# NodeOS
+#
+# Copyright (c) 2013-2017 Jacob Groundwater, Jesús Leganés-Combarro 'piranna'
+# and other contributors
+#
+# MIT License
+
 Vagrant.configure(2) do |config|
   config.vm.box = "ubuntu/trusty64"
 

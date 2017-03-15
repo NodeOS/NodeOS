@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2013-2016 Jacob Groundwater, Jesús Leganés-Combarro 'piranna' and
+Copyright (c) 2013-2017 Jacob Groundwater, Jesús Leganés-Combarro 'piranna' and
 other contributors
 
 This software consists of voluntary contributions made by many individuals. For

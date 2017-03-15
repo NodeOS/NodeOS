@@ -1,3 +1,12 @@
+<!---
+NodeOS
+
+Copyright (c) 2013-2017 Jacob Groundwater, Jesús Leganés-Combarro 'piranna' and
+other contributors
+
+MIT License
+-->
+
 [![Build Status](https://semaphoreapp.com/api/v1/projects/71d72807-779a-40d3-a8d4-523cd0a52eb3/356164/shields_badge.svg)](https://semaphoreapp.com/nodeos/nodeos)
 [![Stories in Ready](https://badge.waffle.io/NodeOS/NodeOS.png?label=ready&title=Ready)](https://waffle.io/NodeOS/NodeOS)
 [![Join the chat at https://gitter.im/NodeOS/NodeOS](https://badges.gitter.im/NodeOS/NodeOS.svg)](https://gitter.im/NodeOS/NodeOS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -166,3 +175,7 @@ git clone https://github.com/NodeOS/NodeOS.git
 cd NodeOS
 PLATFORM=docker npm install
 ```
+
+## License
+
+MIT

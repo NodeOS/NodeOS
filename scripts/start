@@ -1,5 +1,14 @@
 #!/usr/bin/env node
 
+/**
+ * NodeOS
+ *
+ * @copyright 2013-2017 Jacob Groundwater, Jesús Leganés-Combarro 'piranna'
+ *  and other contributors
+ *
+ * @license MIT
+ */
+
 var fs    = require('fs')
 var join  = require('path').join
 var spawn = require('child_process').spawn
