@@ -1,3 +1,12 @@
+<!---
+NodeOS
+
+Copyright (c) 2013-2017 Jacob Groundwater, Jesús Leganés-Combarro 'piranna' and
+other contributors
+
+MIT License
+-->
+
 # NodeOS
 This zip file host a pre-build NodeOS instance with a demo users filesystem, you
 can find info about how to build your own users filesystem at
@@ -18,7 +27,7 @@ $ password: nodeos
 If you run into trouble, please checkout the [troubleshooting here](https://github.com/NodeOS/NodeOS/wiki/Troubleshooting)
 
 ## Burning to CD or USB
-This is the  ISO release, so it can be burned to a CD-R or a USB flashdrive. 
+This is the  ISO release, so it can be burned to a CD-R or a USB flashdrive.
 However it will run as readonly which means everything is handled in memory and it will be
 lost on shutdown.
 

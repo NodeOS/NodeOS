@@ -1,24 +1,36 @@
 #!/usr/bin/env node
 
-const join = require('path').join
-const fs   = require('fs')
+/**
+ * NodeOS
+ *
+ * @copyright 2013-2017 Jacob Groundwater, Jesús Leganés-Combarro 'piranna'
+ *  and other contributors
+ *
+ * @license MIT
+ */
 
-const suppose = require('suppose')
+var join = require('path').join
+var fs   = require('fs')
 
-const processArguments = require('nodeos-barebones/scripts/processArguments')
+var suppose = require('suppose')
+
+var processArguments = require('nodeos-barebones/scripts/processArguments')
 
 
 const TIMEOUT = 300  // seconds
 
 
-const args = processArguments(process.argv.slice(2))
-const link = fs.readlinkSync('out/latest').split('/') || []
+var link = fs.readlinkSync('out/latest').split('/');
 
-const cpu_family = args.cpu_family || link[link.length-3]
-const machine    = args.machine    || link[link.length-2]
-const platform   = args.platform   || link[link.length-1]
+var cpu_family = link[link.length-3]
+var machine    = link[link.length-2]
+var platform   = link[link.length-1]
 
-const cpu = args.cpu
+var type = platform.split('_')[1] || platform
+
+var args = processArguments(process.argv.slice(2))
+
+var cpu = args.cpu
 
 var exe
 var timeout = setTimeout(function()
@@ -32,7 +44,7 @@ var timeout = setTimeout(function()
 
 var command = 'qemu-system-'+args.cpu_family
 
-var argv =
+var args =
 [
   '-machine', machine,
 //  '-enable-kvm',
@@ -41,18 +53,17 @@ var argv =
 ]
 
 const outDir = join('out', cpu_family, machine, platform)
-switch(platform)
+switch(type)
 {
   case 'disk':
-    argv.push('-hda', join(outDir, 'disk.img'))
+    args.push('-hda', join(outDir, 'disk.img'))
   break
 
   case 'docker':
     command = 'docker'
-    argv =
+    args =
     [
-      // TODO find a way to correctly set `stdio` as a TTY. Maybe with `pty.js`?
-      'run', '-i',
+      'run', '-t',
       '--cap-add', 'SYS_ADMIN',
       '--security-opt=apparmor:unconfined',
       '--device', '/dev/fuse',
@@ -61,23 +72,23 @@ switch(platform)
   break
 
   case 'img':
-    argv.push('-hda', join(outDir, 'bootfs.img'),
+    args.push('-hda', join(outDir, 'bootfs.img'),
               '-hdb', join(outDir, 'usersfs.img'))
   break
 
   case 'iso':
-    argv.push('-cdrom', join(outDir, 'bootfs.iso'),
+    args.push('-cdrom', join(outDir, 'bootfs.iso'),
               '-hda'  , join(outDir, 'usersfs.img'))
   break
 
   case 'qemu':
-    const append =
+    var append =
     [
       'root=/dev/sda',
       'console=ttyS0'
     ]
 
-    argv.push('--kernel', join(outDir, 'kernel'),
+    args.push('--kernel', join(outDir, 'kernel'),
               '--initrd', join(outDir, 'initramfs.cpio.gz'),
               '-drive',   `file=${join(outDir, 'usersfs.img')},format=raw,index=0`,
               '-append',  append.join(' '))
@@ -120,21 +131,21 @@ switch(platform)
 
 
 // Exec test
-exe = suppose(command, argv, {stripAnsi: true, debug: process.argv[2] === 'debug'})
+exe = suppose(command, args, {stripAnsi: true, debug: process.argv[2] === 'debug'})
 
 // On disk images, hook on the bootloader and force kernel to output to console
-if(platform === 'disk' || platform === 'img' || platform === 'iso')
+if(type === 'disk' || type === 'img' || type === 'iso')
   exe.when('boot: ').respond('NodeOS console=ttyS0\n')
 
-exe
-.when(/username: /, 'nodeos\n')
-.when(/password: /, 'nodeos\n')
-.when('~ > ')
+exe.when('username:  ')
 
-if(platform !== 'docker')
-  exe.respond('node\n')
-  .when('> ', 'setTimeout(console.log, 2000, "this is","a test")\n')
-  .when(/this is a test/)
+if(type !== 'docker')
+  exe.respond('nodeos\n')
+  .when('password:  ').respond('nodeos\n')
+//  .when('# ').respond('node\n')
+//  .when('> ').respond('setTimeout(console.log, 2000, "this is","a test")\n')
+//  .when(/this is a test/, function(exe)
+  .when('~ > ')
 
 exe.respond(function(exe)
 {

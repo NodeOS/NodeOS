@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# NodeOS
+#
+# Copyright (c) 2013-2017 Jacob Groundwater, Jesús Leganés-Combarro 'piranna'
+# and other contributors
+#
+# MIT License
 
 if [ "$#" -ne 3 ]; then
   echo "Usage: $0 <DEVICE> <ROOTFS> <USERSFS>"

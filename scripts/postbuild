@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+# NodeOS
+#
+# Copyright (c) 2013-2017 Jacob Groundwater, Jesús Leganés-Combarro 'piranna'
+# and other contributors
+#
+# MIT License
+
 BLD=$(tput bold)
 GRY="\e[90m"
 

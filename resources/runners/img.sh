@@ -1,3 +1,10 @@
+# NodeOS
+#
+# Copyright (c) 2013-2017 Jacob Groundwater, Jesús Leganés-Combarro 'piranna'
+# and other contributors
+#
+# MIT License
+
 while [ ! $# -eq 0 ]
 do
     case "$1" in

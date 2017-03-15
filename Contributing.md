@@ -1,3 +1,12 @@
+<!---
+NodeOS
+
+Copyright (c) 2013-2017 Jacob Groundwater, Jesús Leganés-Combarro 'piranna' and
+other contributors
+
+MIT License
+-->
+
 ## Overview
 
 This repository is for:
