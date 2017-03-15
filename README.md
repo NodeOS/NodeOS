@@ -10,9 +10,9 @@ Lightweight operating system using [Node.js](http://nodejs.org) as userspace.
 
 NodeOS is an operating system build entirely in Javascript and managed by
 [npm](https://www.npmjs.com). Any package in `npm` is a NodeOS package, which at
-last count was 301,660 packages. The goal of NodeOS is to provide just enough to
-let `npm` provide the rest. Since anyone can contribute to it, anyone can create
-NodeOS packages.
+last count was more than 400,000 packages. The goal of NodeOS is to provide just
+enough to let `npm` provide the rest. Since anyone can contribute to it, anyone
+can create NodeOS packages.
 
 This project won the spanish [9th National Free Software Championship](https://www.concursosoftwarelibre.org/1415)
 on the Systems category and was Honorable Mention of its [10th edition](https://www.concursosoftwarelibre.org/1516).
@@ -47,16 +47,15 @@ adjust better to each target platform, but the general structure is:
 
 - *barebones* custom Linux kernel with an initramfs that boots to a Node.js REPL
 - *initramfs* Initram environment to mount the users partition & boot the system
-- *rootfs*    Read-only partition image to host Linux kernel and initramfs files
 - *usersfs*   multi-user environment with the same behaviour of traditional OSes
 
 ### Booting process
 
 All the layers are bootable, leading *barebones* to a raw naked Node.js
-[REPL](http://nodejs.org/api/repl.html) prompt as PID 1, while *initramfs* (and
-by extension *rootfs*) exec actual NodeOS code to mount the *usersfs* partition.
-In all the cases, it will be used an initramfs as root filesystem and all the
-changes will be lost when powered-off.
+[REPL](http://nodejs.org/api/repl.html) prompt as PID 1, while *initramfs* exec
+actual NodeOS code to mount the *usersfs* partition. In all the cases, it will
+be used an initramfs as root filesystem and all the changes will be lost when
+powered-off.
 
 If a *usersfs* partition is being set at boot time, it will be mounted and the
 system will considerate each one of its folders as the home folder for a valid
@@ -67,15 +66,15 @@ permissions once the system has booted.
 
 ### Hacking
 
-If you are hacking on NodeOS as a somewhat production server, you are likely
-building *usersfs* images since each user is isolated of others, but you can be
-able to customize all layers. For example, you could be able to modify
+If you are hacking on NodeOS for a somewhat production environment, you are
+likely building *usersfs* images since each user is isolated of others, but you
+can be able to customize all layers. For example, you could be able to modify
 *initramfs* to login the users and mount their home folders from a cloud service
 or craft a system without global services (no `root` user) or also dedicate a
 full NodeOS instance to a single Node.js application.
 
 
-# Pre-built Images
+## Pre-built Images
 
 Ready to use [pre-build images](https://github.com/NodeOS/NodeOS/releases) are
 automatically generated after each commit in master branch that sucessfully
@@ -90,7 +89,7 @@ pendrive, it's recomended to do it by using `bin/installUSB` command so it will
 create automatically a read-write usersfs partition to fill the remaining space
 so your changes will persist.
 
-# Build NodeOS in five steps
+## Build NodeOS in five steps
 
 1. Download the project source code:
 
@@ -112,7 +111,7 @@ so your changes will persist.
    npm install
   ```
 
-3. Build NodeOS:
+4. Build NodeOS:
 
     ```bash
     npm run build
@@ -122,8 +121,6 @@ so your changes will persist.
    for your current machine architecture. You can be able to configure the build
    process by passing some environment variables. For example, to force to build
    for 32 bits, use `PLATFORM=qemu_32 npm install` instead.
-
-4. Pick some microwave pop-corn and go to see a movie. No, really, do it.
 
 5. Exec your fresh compiled NodeOS image:
 
@@ -140,17 +137,18 @@ If you encounter an error when building NodeOS, take a look at
 [the wiki](https://github.com/NodeOS/NodeOS/wiki/Fixing-NodeOS-Build-Errors) or
 open an [issue](https://github.com/NodeOS/NodeOS/issues).
 
-# NodeOS on LXC containers (Docker and vagga)
+## NodeOS on LXC containers (Docker and vagga)
 
-Currently LXC containers support is unmaintained due to the inability to mount
-filesystems from inside them. There are some NodeOS images on Docker Hub, but
-they are totally outdated. If you are interested in help or testing, you can
-build them from source code.
+NodeOS fully officially supports Docker, although is not publishing the images
+on DockerHub (pull-requests welcome), so they are totally outdated. If you are
+interested in help or testing, you can build them from source code.
 
-## Quick Start
+Vagga support is fairly experimental, and help here will be greatly appreciated.
+
+### Quick Start
 
 1. [Install Docker](http://docs.docker.io/en/latest/installation/)
-2. One Liner
+2. One Liner (outdated images)
 
    ```bash
    sudo docker run -t -i nodeos/nodeos
@@ -158,7 +156,7 @@ build them from source code.
 
    or learn how to make a [Custom Build](http://node-os.com/blog/get-involved)
 
-## Build from Source
+### Build from Source
 
 *Warning*: the build process is hairy, it probably won't work the first time.
 I'm working on that.
