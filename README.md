@@ -121,7 +121,7 @@ so your changes will persist.
    ```
 
 4. Build NodeOS:
-   
+
     ```bash
     npm run build
     ```
