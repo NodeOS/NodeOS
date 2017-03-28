@@ -118,7 +118,7 @@ so your changes will persist.
 
    ```bash
    npm install
-  ```
+   ```
 
 4. Build NodeOS:
 
