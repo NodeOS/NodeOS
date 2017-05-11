@@ -15,6 +15,8 @@ MIT License
 
 # NodeOS
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/NodeOS/NodeOS.svg)](https://greenkeeper.io/)
+
 Lightweight operating system using [Node.js](http://nodejs.org) as userspace.
 
 NodeOS is an operating system built entirely in Javascript and managed by
