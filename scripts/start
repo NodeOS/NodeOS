@@ -5,9 +5,6 @@ var join  = require('path').join
 var spawn = require('child_process').spawn
 
 
-const QEMU_SYSTEM = 'qemu-system-'
-
-
 var link = fs.readlinkSync('out/latest').split('/');
 
 var cpu_family = link[link.length-3]
@@ -15,7 +12,7 @@ var machine    = link[link.length-2]
 var platform   = link[link.length-1]
 
 
-var command = QEMU_SYSTEM+cpu_family
+var command = 'qemu-system-'+cpu_family
 
 var args =
 [
