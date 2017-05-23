@@ -51,7 +51,8 @@ switch(platform)
     command = 'docker'
     argv =
     [
-      'run', '-t',
+      // TODO find a way to correctly set `stdio` as a TTY. Maybe with `pty.js`?
+      'run', '-i',
       '--cap-add', 'SYS_ADMIN',
       '--security-opt=apparmor:unconfined',
       '--device', '/dev/fuse',
@@ -131,7 +132,7 @@ exe
 .when('~ > ')
 
 if(platform !== 'docker')
-  exe.respond('node"\n')
+  exe.respond('node\n')
   .when('> ', 'setTimeout(console.log, 2000, "this is","a test")\n')
   .when(/this is a test/)
 
