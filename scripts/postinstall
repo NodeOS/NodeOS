@@ -1,5 +1,12 @@
 #!/usr/bin/env sh
 
+# NodeOS
+#
+# Copyright (c) 2013-2017 Jacob Groundwater, Jesús Leganés-Combarro 'piranna'
+# and other contributors
+#
+# MIT License
+
 # HACK `npm` add all the binaries to the `node_modules/.bin` folder without
 # matter what package installed it, so `env` from `usrbinenv` gets available on
 # the `$PATH` during build process, making it to fail since its shebang is

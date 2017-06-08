@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+# NodeOS
+#
+# Copyright (c) 2013-2017 Jacob Groundwater, Jesús Leganés-Combarro 'piranna'
+# and other contributors
+#
+# MIT License
+
 # This script should generate all the possible build combinations of NodeOS and
 # test them by being able to login and exec a Node.js REPL. In some cases This
 # is not fully possible and so they should be improved in the future

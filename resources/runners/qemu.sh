@@ -1,3 +1,10 @@
+# NodeOS
+#
+# Copyright (c) 2013-2017 Jacob Groundwater, Jesús Leganés-Combarro 'piranna'
+# and other contributors
+#
+# MIT License
+
 APPEND="root=/dev/sda ip=dhcp vga=0x344"
 while [ ! $# -eq 0 ]
 do
@@ -20,7 +27,7 @@ $QEMU                        \
   -m 256M                    \
   -redir tcp:50080::80       \
   -redir tcp:50443::443      \
-  --kernel keernel           \
+  --kernel kernel            \
   --initrd initramfs.cpio.gz \
   -hda     usersfs.img       \
   -append  "$APPEND"
