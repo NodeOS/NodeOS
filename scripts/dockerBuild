@@ -14,25 +14,30 @@ WHT="\e[37m"
 CONTEXT=out/latest
 
 
-cp resources/Dockerfile $CONTEXT || exit 10
+cp resources/Dockerfile           $CONTEXT || exit 10
+cp resources/Dockerfile-initramfs $CONTEXT || exit 12
 
 cd $CONTEXT || exit 20
 
-docker import barebones.tar.gz nodeos/barebones || exit 30
-docker build -t nodeos/initramfs .              || exit 31
+ORG=nodeos
 
-#docker volume create --name usersfs        || exit 32
-#cat usersfs.tar.gz | docker cp - usersfs:/ || exit 33
+docker import barebones.tar.gz $ORG/barebones            || exit 30
+docker build -t $ORG/initramfs -f Dockerfile-initramfs . || exit 31
+
+#docker volume create --name $ORG/usersfs        || exit 32
+#cat usersfs.tar.gz | docker cp - $ORG/usersfs:/ || exit 33
+
+docker build -t $ORG/nodeos . || exit 34
 
 
-echo -e "${GRY}------------------------------------------${CLR}"
+echo -e "${GRY}-----------------------------------------${CLR}"
 echo -e "${GRN}${BLD}Success!${CLR}"
 echo -e "${GRN}You just registered a custom NodeOS image${CLR}"
-echo -e "${GRY}------------------------------------------${CLR}"
+echo -e "${GRY}-----------------------------------------${CLR}"
 echo
 echo -e "- Interactively run your image with:"
 
 echo -e "${WHT}    npm run docker${CLR}"
 echo
 echo -e "- Share your creation with:"
-echo -e "${WHT}    docker push NodeOS${CLR}"
+echo -e "${WHT}    docker push $ORG/nodeos${CLR}"
