@@ -65,7 +65,7 @@ switch(platform)
       '--cap-add', 'SYS_ADMIN',
       '--security-opt=apparmor:unconfined',
       '--device', '/dev/fuse',
-      'nodeos/initramfs'
+      'nodeos/nodeos'
     ]
   break
 
