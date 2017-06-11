@@ -24,19 +24,6 @@ let {command, argv, cwd, platform} = prepareCommandLine(process.argv.slice(2),
 
 switch(platform)
 {
-  case 'docker':
-    command = 'docker'
-    argv =
-    [
-      // TODO find a way to correctly set `stdio` as a TTY. Maybe with `pty.js`?
-      'run', '-i',
-      '--cap-add', 'SYS_ADMIN',
-      '--security-opt=apparmor:unconfined',
-      '--device', '/dev/fuse',
-      'nodeos/nodeos'
-    ]
-  break
-
   case 'tar':
     fs.accessSync(join(cwd, 'bootfs.tar.gz'))
     fs.accessSync(join(cwd, 'usersfs.tar.gz'))
@@ -74,14 +61,9 @@ if(platform === 'disk' || platform === 'img' || platform === 'iso')
 exe
 .when(/username: /, 'nodeos\n')
 .when(/password: /, 'nodeos\n')
-.when('~ > ')
-
-if(platform !== 'docker')
-  exe.respond('node\n')
-  .when('> ', 'setTimeout(console.log, 2000, "this is","a test")\n')
-  .when(/this is a test/)
-
-exe.respond(function(exe)
+.when('~ > '      , 'node\n')
+.when('> ', 'setTimeout(console.log, 2000, "this is","a test")\n')
+.when(/this is a test/, function(exe)
 {
   exe.kill()
 })
