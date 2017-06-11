@@ -10,52 +10,20 @@
  */
 
 const join = require('path').join
-const fs   = require('fs')
 
 const suppose = require('suppose')
 
-const processArguments = require('nodeos-barebones/scripts/processArguments')
+const prepareCommandLine = require('..')
 
 
-const TIMEOUT = 300  // seconds
+const TIMEOUT = 30  // seconds
 
 
-const args = processArguments(process.argv.slice(2))
-const link = fs.readlinkSync('out/latest').split('/') || []
+let {command, argv, cwd, platform} = prepareCommandLine(process.argv.slice(2),
+                                                        'nographic')
 
-const cpu_family = args.cpu_family || link[link.length-3]
-const machine    = args.machine    || link[link.length-2]
-const platform   = args.platform   || link[link.length-1]
-
-const cpu = args.cpu
-
-var exe
-var timeout = setTimeout(function()
-{
-  exe.kill()
-
-  console.error('Timeout while waiting an answer')
-  process.exit(-2)
-}, TIMEOUT*1000)
-
-
-var command = 'qemu-system-'+args.cpu_family
-
-var argv =
-[
-  '-machine', machine,
-//  '-enable-kvm',
-  '-m', '256M',
-  '-nographic',
-]
-
-const outDir = join('out', cpu_family, machine, platform)
 switch(platform)
 {
-  case 'disk':
-    argv.push('-hda', join(outDir, 'disk.img'))
-  break
-
   case 'docker':
     command = 'docker'
     argv =
@@ -69,67 +37,35 @@ switch(platform)
     ]
   break
 
-  case 'img':
-    argv.push('-hda', join(outDir, 'bootfs.img'),
-              '-hdb', join(outDir, 'usersfs.img'))
-  break
-
-  case 'iso':
-    argv.push('-cdrom', join(outDir, 'bootfs.iso'),
-              '-hda'  , join(outDir, 'usersfs.img'))
-  break
-
-  case 'qemu':
-    const append =
-    [
-      'root=/dev/sda',
-      'console=ttyS0'
-    ]
-
-    argv.push('--kernel', join(outDir, 'kernel'),
-              '--initrd', join(outDir, 'initramfs.cpio.gz'),
-              '-drive',   `file=${join(outDir, 'usersfs.img')},format=raw,index=0`,
-              '-append',  append.join(' '))
-  break
-
   case 'tar':
-    fs.accessSync(join(outDir, 'bootfs.tar.gz'))
-    fs.accessSync(join(outDir, 'usersfs.tar.gz'))
+    fs.accessSync(join(cwd, 'bootfs.tar.gz'))
+    fs.accessSync(join(cwd, 'usersfs.tar.gz'))
     process.exit()
   break
 
   case 'vagga':
-    fs.accessSync(join(outDir, 'barebones.tar.gz'))
-    fs.accessSync(join(outDir, 'initramfs.tar.gz'))
-    fs.accessSync(join(outDir, 'usersfs.tar.gz'))
+    fs.accessSync(join(cwd, 'barebones.tar.gz'))
+    fs.accessSync(join(cwd, 'initramfs.tar.gz'))
+    fs.accessSync(join(cwd, 'usersfs.tar.gz'))
     process.exit()
   break
-
-  default:
-    throw 'Unknown platform "'+platform+'"'
 }
-
-// // check if kvm is supported
-// var kvm = /(vmx|svm)/;
-// var contents = "";
-//
-// try
-// {
-//   contents = fs.readFileSync('/proc/cpuinfo');
-// } catch(e){
-//   throw(e);
-// }
-//
-// if(kvm.test(contents) === false)
-// {
-//   // disable kvm
-//   console.log("Your computer does not support kvm. NodeOS will be slower without it.");
-//   args.shift();
-// }
 
 
 // Exec test
-exe = suppose(command, argv, {stripAnsi: true, debug: process.argv[2] === 'debug'})
+let exe
+let timeout = setTimeout(function()
+{
+  exe.kill()
+
+  console.error('Timeout while waiting an answer')
+  process.exit(-2)
+}, TIMEOUT*1000)
+
+
+const options = {stripAnsi: true, debug: true, cwd}
+//const options = {stripAnsi: true, debug: process.argv[2] === 'debug', cwd}
+exe = suppose(command, argv, options)
 
 // On disk images, hook on the bootloader and force kernel to output to console
 if(platform === 'disk' || platform === 'img' || platform === 'iso')

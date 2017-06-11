@@ -9,111 +9,16 @@
  * @license MIT
  */
 
-var fs    = require('fs')
-var join  = require('path').join
-var spawn = require('child_process').spawn
+const spawn = require('child_process').spawn
+
+const prepareCommandLine = require('..')
 
 
-var link = fs.readlinkSync('out/latest').split('/');
-
-var cpu_family = link[link.length-3]
-var machine    = link[link.length-2]
-var platform   = link[link.length-1]
-
-
-var command = 'qemu-system-'+cpu_family
-
-var args =
-[
-  '-machine', machine,
-  '-enable-kvm',
-  '-vga', 'std',
-  '-m', '256M',
-  '-net', 'nic',
-  '-net', 'user,id=eth0,hostfwd=tcp::50080-:80',
-  '-net', 'user,id=eth1,hostfwd=tcp::50443-:443'
-]
-
-switch(process.argv[2])
-{
-  case 'curses'   : args.push('-curses')   ; break
-  case 'nographic': args.push('-nographic'); break
-}
-
-const outDir = join('out', cpu_family, machine, platform)
-switch(platform)
-{
-  case 'disk':
-    args.push('-hda', join(outDir, 'disk.img'))
-  break
-
-  case 'docker':
-    command = 'scripts/docker'
-    args = []
-  break
-
-  case 'img':
-    args.push('-hda', join(outDir, 'bootfs.img'),
-              '-hdb', join(outDir, 'usersfs.img'))
-  break
-
-  case 'iso':
-    args.push('-cdrom', join(outDir, 'bootfs.iso'),
-              '-hda'  , join(outDir, 'usersfs.img'))
-  break
-
-  case 'qemu':
-    var append =
-    [
-      'root=/dev/sda',
-      'ip=dhcp'
-    ]
-
-    switch(process.argv[2])
-    {
-      case 'nographic':
-        append.push('console=ttyS0')  // redirect to terminal
-      break
-
-      case 'curses':
-        append.push('vga=extended')  // 80x50
-      break
-
-      default:
-        append.push('vga=0x344')  // 1024x768x32
-    }
-
-    args.push('--kernel', join(outDir, 'kernel'),
-              '--initrd', join(outDir, 'initramfs.cpio.gz'),
-              '-drive',   `file=${join(outDir, 'usersfs.img')},format=raw,index=0`,
-              '-append', append.join(' '))
-  break
-
-  default:
-    throw 'Unknown platform "'+platform+'"'
-}
-
-// check if kvm is supported
-var kvm = /(vmx|svm)/;
-var contents = "";
-
-try
-{
-  contents = fs.readFileSync('/proc/cpuinfo');
-} catch(e){
-  throw(e);
-}
-
-if(kvm.test(contents) === false)
-{
-  // disable kvm
-  console.log("Your computer does not support kvm. NodeOS will be slower without it.");
-  args.shift();
-}
+const {command, argv, cwd} = prepareCommandLine(process.argv.slice(2))
 
 
 // Exec NodeOS
-spawn(command, args, {stdio: 'inherit'})
+spawn(command, argv, {stdio: 'inherit', cwd})
 .on('error', console.trace.bind(console))
 .on('exit', function(code, signal)
 {
