@@ -16,11 +16,11 @@ const suppose = require('suppose')
 const prepareCommandLine = require('..')
 
 
-const TIMEOUT = 30  // seconds
+const TIMEOUT = 300  // seconds
 
 
-let {command, argv, cwd, platform} = prepareCommandLine(process.argv.slice(2),
-                                                        'nographic')
+let {command, argv, cwd, platform, timeout_rate} =
+                        prepareCommandLine(process.argv.slice(2), 'nographic')
 
 switch(platform)
 {
@@ -47,7 +47,7 @@ let timeout = setTimeout(function()
 
   console.error('Timeout while waiting an answer')
   process.exit(-2)
-}, TIMEOUT*1000)
+}, TIMEOUT*timeout_rate*1000)
 
 
 const options = {stripAnsi: true, debug: true, cwd}
