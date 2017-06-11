@@ -192,10 +192,10 @@ case $PLATFORM in
 
   docker)
     echo -e "${WHT}    npm run dockerBuild${CLR}"
-    echo -e "${WHT}    npm run docker${CLR}"
+    echo -e "${WHT}    npm start${CLR}"
     echo
     echo -e "- Share your creation with:"
-    echo -e "${WHT}    docker push NodeOS${CLR}"
+    echo -e "${WHT}    docker push nodeos/nodeos${CLR}"
     echo
     echo -e "You would need administrator permissions to exec that commands"
   ;;
