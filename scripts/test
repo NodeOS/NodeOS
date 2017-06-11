@@ -9,31 +9,52 @@
  * @license MIT
  */
 
-var join = require('path').join
-var fs   = require('fs')
+const join = require('path').join
 
-var suppose = require('suppose')
+const suppose = require('suppose')
 
-var processArguments = require('nodeos-barebones/scripts/processArguments')
-
-
-const TIMEOUT = 300  // seconds
+const prepareCommandLine = require('..')
 
 
-var link = fs.readlinkSync('out/latest').split('/');
+const TIMEOUT = 30  // seconds
 
-var cpu_family = link[link.length-3]
-var machine    = link[link.length-2]
-var platform   = link[link.length-1]
 
-var type = platform.split('_')[1] || platform
+let {command, argv, cwd, platform} = prepareCommandLine(process.argv.slice(2),
+                                                        'nographic')
 
-var args = processArguments(process.argv.slice(2))
+switch(platform)
+{
+  case 'docker':
+    command = 'docker'
+    argv =
+    [
+      // TODO find a way to correctly set `stdio` as a TTY. Maybe with `pty.js`?
+      'run', '-i',
+      '--cap-add', 'SYS_ADMIN',
+      '--security-opt=apparmor:unconfined',
+      '--device', '/dev/fuse',
+      'nodeos/nodeos'
+    ]
+  break
 
-var cpu = args.cpu
+  case 'tar':
+    fs.accessSync(join(cwd, 'bootfs.tar.gz'))
+    fs.accessSync(join(cwd, 'usersfs.tar.gz'))
+    process.exit()
+  break
 
-var exe
-var timeout = setTimeout(function()
+  case 'vagga':
+    fs.accessSync(join(cwd, 'barebones.tar.gz'))
+    fs.accessSync(join(cwd, 'initramfs.tar.gz'))
+    fs.accessSync(join(cwd, 'usersfs.tar.gz'))
+    process.exit()
+  break
+}
+
+
+// Exec test
+let exe
+let timeout = setTimeout(function()
 {
   exe.kill()
 
@@ -42,110 +63,23 @@ var timeout = setTimeout(function()
 }, TIMEOUT*1000)
 
 
-var command = 'qemu-system-'+args.cpu_family
-
-var args =
-[
-  '-machine', machine,
-//  '-enable-kvm',
-  '-m', '256M',
-  '-nographic',
-]
-
-const outDir = join('out', cpu_family, machine, platform)
-switch(type)
-{
-  case 'disk':
-    args.push('-hda', join(outDir, 'disk.img'))
-  break
-
-  case 'docker':
-    command = 'docker'
-    args =
-    [
-      'run', '-t',
-      '--cap-add', 'SYS_ADMIN',
-      '--security-opt=apparmor:unconfined',
-      '--device', '/dev/fuse',
-      'nodeos/nodeos'
-    ]
-  break
-
-  case 'img':
-    args.push('-hda', join(outDir, 'bootfs.img'),
-              '-hdb', join(outDir, 'usersfs.img'))
-  break
-
-  case 'iso':
-    args.push('-cdrom', join(outDir, 'bootfs.iso'),
-              '-hda'  , join(outDir, 'usersfs.img'))
-  break
-
-  case 'qemu':
-    var append =
-    [
-      'root=/dev/sda',
-      'console=ttyS0'
-    ]
-
-    args.push('--kernel', join(outDir, 'kernel'),
-              '--initrd', join(outDir, 'initramfs.cpio.gz'),
-              '-drive',   `file=${join(outDir, 'usersfs.img')},format=raw,index=0`,
-              '-append',  append.join(' '))
-  break
-
-  case 'tar':
-    fs.accessSync(join(outDir, 'bootfs.tar.gz'))
-    fs.accessSync(join(outDir, 'usersfs.tar.gz'))
-    process.exit()
-  break
-
-  case 'vagga':
-    fs.accessSync(join(outDir, 'barebones.tar.gz'))
-    fs.accessSync(join(outDir, 'initramfs.tar.gz'))
-    fs.accessSync(join(outDir, 'usersfs.tar.gz'))
-    process.exit()
-  break
-
-  default:
-    throw 'Unknown platform "'+platform+'"'
-}
-
-// // check if kvm is supported
-// var kvm = /(vmx|svm)/;
-// var contents = "";
-//
-// try
-// {
-//   contents = fs.readFileSync('/proc/cpuinfo');
-// } catch(e){
-//   throw(e);
-// }
-//
-// if(kvm.test(contents) === false)
-// {
-//   // disable kvm
-//   console.log("Your computer does not support kvm. NodeOS will be slower without it.");
-//   args.shift();
-// }
-
-
-// Exec test
-exe = suppose(command, args, {stripAnsi: true, debug: process.argv[2] === 'debug'})
+const options = {stripAnsi: true, debug: true, cwd}
+//const options = {stripAnsi: true, debug: process.argv[2] === 'debug', cwd}
+exe = suppose(command, argv, options)
 
 // On disk images, hook on the bootloader and force kernel to output to console
-if(type === 'disk' || type === 'img' || type === 'iso')
+if(platform === 'disk' || platform === 'img' || platform === 'iso')
   exe.when('boot: ').respond('NodeOS console=ttyS0\n')
 
-exe.when('username:  ')
+exe
+.when(/username: /, 'nodeos\n')
+.when(/password: /, 'nodeos\n')
+.when('~ > ')
 
-if(type !== 'docker')
-  exe.respond('nodeos\n')
-  .when('password:  ').respond('nodeos\n')
-//  .when('# ').respond('node\n')
-//  .when('> ').respond('setTimeout(console.log, 2000, "this is","a test")\n')
-//  .when(/this is a test/, function(exe)
-  .when('~ > ')
+if(platform !== 'docker')
+  exe.respond('node\n')
+  .when('> ', 'setTimeout(console.log, 2000, "this is","a test")\n')
+  .when(/this is a test/)
 
 exe.respond(function(exe)
 {

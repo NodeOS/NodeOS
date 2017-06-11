@@ -2,9 +2,9 @@
   "name": "NodeOS",
   "version": "1.0.0-RC3",
   "description": "Lightweight operating system using Node.js as userspace",
+  "main": "lib",
   "scripts": {
     "BigRedButton": "scripts/BigRedButton",
-    "docker": "scripts/docker",
     "dockerBuild": "scripts/dockerBuild",
     "dockerClean": "docker volume rm $(docker volume ls -qf dangling=true) || exit 0",
     "build": "scripts/build",
