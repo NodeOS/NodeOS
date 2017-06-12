@@ -20,9 +20,10 @@ MIT License
 Lightweight operating system using [Node.js](http://nodejs.org) as userspace.
 
 NodeOS is an operating system built entirely in Javascript and managed by
-[npm](https://www.npmjs.com). Any package in `npm` is a NodeOS package, that means a selection of more than 400.000 packages. The goal of NodeOS is to provide just
-enough to let `npm` provide the rest. Since anyone can contribute to it, anyone
-can create NodeOS packages.
+[npm](https://www.npmjs.com). Any package in `npm` is a NodeOS package, that
+means a selection of more than 400.000 packages. The goal of NodeOS is to
+provide just enough to let `npm` provide the rest. Since anyone can contribute
+to it, anyone can create NodeOS packages.
 
 This project won the Spanish [9th National Free Software Championship](https://www.concursosoftwarelibre.org/1415)
 on the Systems category and was Honorable Mention of its [10th edition](https://www.concursosoftwarelibre.org/1516).
@@ -42,8 +43,8 @@ with a qualification of 10/10 with distinction.
 
 ## Introduction
 
-NodeOS is a Node.js based operating system, built-off of the Linux kernel.
-The NodeOS Project is aiming to, and can already run on some of the following
+NodeOS is a Node.js based operating system, built-off of the Linux kernel. The
+NodeOS Project is aiming to, and can already run on some of the following
 platforms:
 
 - **real hardware** like desktops, laptops, or SoC's (Raspberry Pi)
@@ -63,25 +64,25 @@ adjust better to each target platform, but the general structure is:
 
 All the layers are bootable, leading *barebones* to a raw naked Node.js
 [REPL](http://nodejs.org/api/repl.html) prompt as PID 1, while *initramfs* exec
-actual NodeOS code to mount the *usersfs* partition. In all the cases, it will
-be used an initramfs as root filesystem and all the changes will be lost when
-powered off.
+actual NodeOS code to isolate user code from the core system and, if available,
+mount a partition  with the users' home directories and root filesystems.
 
 If a *usersfs* partition is being set at boot time, it will be mounted and the
-system will consider each one of its folders as the home folder for a valid
-user on the system, and will execute a `init` file in the root of each of them.
-If found, the `root` user will be the first to be considered and will have access
+system will consider each one of its folders as the home folder for a valid user
+on the system, and will execute a `init` file in the root of each of them. If
+found, the `root` user will be the first to be considered and will have access
 to all of the home directories, but by design it will not be possible to elevate
 permissions once the system has finished booting.
 
 ### Hacking
 
 If you are hacking on NodeOS for a somewhat production environment, you are
-likely building *usersfs* images since each user is isolated of others, but you
-can customize all layers. For example, you can modify
-*initramfs* to login users and mount their home folders from a cloud service
-or craft a system without global services (no `root` user) or also dedicate a
-full NodeOS instance to a single Node.js application.
+likely interested on building a custom *usersfs* image or modify it once booted,
+since each user is isolated from the others and everyone can be able to define
+its own root filesystem, but you can customize all other layers if you want. For
+example, you can modify *initramfs* to login users and mount their home folders
+from a cloud service or craft a system without global services (no `root` user),
+or also dedicate a full NodeOS instance to a single Node.js application.
 
 
 ## Pre-built Images
@@ -92,11 +93,12 @@ automatically generated after each commit in master branch that sucessfully
 need to have [QEmu](http://wiki.qemu.org/Main_Page) installed on your system.
 
 The *iso* can be written to a CD-R or flashed to a USB pendrive, but will only
-provide the read-only rootfs and the changes will be done in memory losing them
-after reboot, so you'll manually need to set a read-write usersfs partition if
+provide the read-only rootfs and the changes will be done in memory, losing them
+after reboot, so you'll manually need to set a read-write *usersfs* partition if
 you want to persist them. On the other hand, if you want to flash it to a USB
-pendrive, I recommended doing it by using `bin/installUSB` command so it will
-automatically create a read-write usersfs partition to fill the remaining space and your changes will be persistent.
+pendrive, We recommended doing it by using `bin/installUSB` command so it will
+automatically create a read-write *usersfs* partition to fill the remaining
+space and use it as persistent storage.
 
 ## Build NodeOS in five steps
 
@@ -107,7 +109,8 @@ automatically create a read-write usersfs partition to fill the remaining space 
    cd NodeOS
    ```
 
-2. Install the required build tools. On a Ubuntu based system you can do it by executing:
+2. Install the required build tools. On a Ubuntu based system you can do it by
+   executing:
 
    ```bash
    sudo bin/install-dependencies
@@ -126,9 +129,9 @@ automatically create a read-write usersfs partition to fill the remaining space 
     ```
 
    By default it will generate some files that can be used with QEmu, compiled
-   for your current machine architecture. You can  configure the build
-   process by passing some environment variables. For example, to force to build
-   for 32 bits, use `PLATFORM=qemu_32 npm install` instead.
+   for your current machine architecture. You can  configure the build process
+   by passing some environment variables. For example, to force to build for 32
+   bits, use `BITS=32 npm install` instead.
 
 5. Exec your freshly compiled NodeOS image:
 
@@ -147,25 +150,22 @@ open an [issue](https://github.com/NodeOS/NodeOS/issues).
 
 ## NodeOS on LXC containers (Docker and vagga)
 
-NodeOS fully officially supports Docker, but the images published to DockerHub are totally outdated (we're accepting PRs!). If you are interested in helping or testing, you can build them from source code.
+NodeOS fully officially supports Docker, published images are available at the
+[DockerHub NodeOS organization](https://hub.docker.com/u/nodeos). If you are
+interested in helping or testing, you can build them from source code.
 
 Vagga support is fairly experimental, and help here will be greatly appreciated.
 
 ### Quick Start
 
 1. [Install Docker](http://docs.docker.io/en/latest/installation/)
-2. One Liner (outdated images)
+2. One Liner
 
    ```bash
    sudo docker run -t -i nodeos/nodeos
    ```
 
-   or learn how to make a [Custom Build](http://node-os.com/blog/get-involved)
-
 ### Build from Source
-
-*Warning*: the build process is hairy, it probably won't work the first time.
-I'm working on that.
 
 ```bash
 git clone https://github.com/NodeOS/NodeOS.git

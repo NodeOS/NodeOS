@@ -26,8 +26,11 @@ eval MACHINE=pc PLATFORM=iso  BITS=64 $BUILD && $TEST || exit 6
 eval MACHINE=pc PLATFORM=qemu BITS=32 $BUILD && $TEST || exit 7
 eval MACHINE=pc PLATFORM=qemu BITS=64 $BUILD && $TEST || exit 8
 
-eval MACHINE=pc PLATFORM=docker BITS=32 $BUILD && $DOCKER && $TEST || exit 9
-eval MACHINE=pc PLATFORM=docker BITS=64 $BUILD && $DOCKER && $TEST || exit 10
+# Docket tests disabled because SemaphoreCI don't support OverlayFS (yet)
+eval MACHINE=pc PLATFORM=docker BITS=32 $BUILD && $DOCKER || exit 9
+eval MACHINE=pc PLATFORM=docker BITS=64 $BUILD && $DOCKER || exit 10
+# eval MACHINE=pc PLATFORM=docker BITS=32 $BUILD && $DOCKER && $TEST || exit 9
+# eval MACHINE=pc PLATFORM=docker BITS=64 $BUILD && $DOCKER && $TEST || exit 10
 
 # eval MACHINE=pc PLATFORM=tar   BITS=32 $BUILD && $TEST || exit 11
 # eval MACHINE=pc PLATFORM=tar   BITS=64 $BUILD && $TEST || exit 12
