@@ -49,6 +49,9 @@ if [[ "$PLATFORM" == "docker" ]]; then
   export KERNEL=nokernel
 fi
 
+# Default: multiple users system
+export SINGLE_USER=${SINGLE_USER-"nodeos-boot-multiUser"}
+
 NPMi="npm install --arch=$NODE_ARCH --production"
 
 
@@ -57,8 +60,11 @@ NPMi="npm install --arch=$NODE_ARCH --production"
 #
 
 ( cd $BAREBONES && $NPMi ) &&
-( cd $INITRAMFS && $NPMi ) &&
-( cd $USERSFS   && $NPMi ) || exit 10
+( cd $INITRAMFS && $NPMi ) || exit 10
+
+if [ "$SINGLE_USER" == "nodeos-boot-multiUser" ]; then
+  ( cd $USERSFS && $NPMi ) || exit 11
+fi
 
 
 #
@@ -66,7 +72,7 @@ NPMi="npm install --arch=$NODE_ARCH --production"
 #
 
 BAREBONES=$BAREBONES/out/$CPU
-INITRAMFS=$INITRAMFS/out/$CPU
+INITRAMFS=$INITRAMFS/out/$CPU-$SINGLE_USER
 USERSFS=$USERSFS/out/$CPU.tar.gz
 
 STEP_DIR=$OUT_DIR
@@ -74,8 +80,8 @@ STEP_DIR=$OUT_DIR
 mkdir -p $STEP_DIR
 
 function copyAndConvertInitrams() {
-  cpio2tar $BAREBONES/barebones.cpio.gz | gzip -c > $STEP_DIR/barebones || err 20
-  cpio2tar $INITRAMFS                   | gzip -c > $STEP_DIR/initramfs || err 21
+  cpio2tar $BAREBONES/barebones.cpio.gz | gzip -c > $STEP_DIR/barebones              || err 20
+  cpio2tar $INITRAMFS                   | gzip -c > $STEP_DIR/initramfs-$SINGLE_USER || err 21
 }
 
 case $MACHINE in
@@ -102,7 +108,7 @@ case $MACHINE in
             tar --delete dev/console          | \
             gzip > $STEP_DIR/barebones.tar.gz || err 40
 
-        mv $STEP_DIR/initramfs $STEP_DIR/initramfs.tar.gz || err 41
+        mv $STEP_DIR/initramfs-$SINGLE_USER $STEP_DIR/initramfs.tar.gz || err 41
 
         # Exec `logon` directly instead of use `node-bin-getty` on the console
         mkdir -p root/etc && cp resources/palmtree.json root/etc || err 42
@@ -149,16 +155,16 @@ case $MACHINE in
       tar)
         copyAndConvertInitrams || exit $?
 
-        nodeos-bootfs                  \
-            -B $STEP_DIR/barebones     \
-            -F $PLATFORM               \
-            -I $STEP_DIR/initramfs     \
-            -O $STEP_DIR/bootfs.tar.gz || err 80
+        nodeos-bootfs                           \
+            -B $STEP_DIR/barebones              \
+            -F $PLATFORM                        \
+            -I $STEP_DIR/initramfs-$SINGLE_USER \
+            -O $STEP_DIR/bootfs.tar.gz          || err 80
 
         cp $USERSFS $STEP_DIR/usersfs.tar.gz || err 81
 
         # Delete temporal initrams
-        rm -f $STEP_DIR/barebones $STEP_DIR/initramfs || err 82
+        rm -f $STEP_DIR/barebones $STEP_DIR/initramfs-$SINGLE_USER || err 82
       ;;
 
       vagga)
@@ -168,7 +174,7 @@ case $MACHINE in
             tar --delete dev/console sbin/init | \
             gzip > $STEP_DIR/barebones.tar.gz  || err 90
 
-        mv $STEP_DIR/initramfs $STEP_DIR/initramfs.tar.gz || err 91
+        mv $STEP_DIR/initramfs-$SINGLE_USER $STEP_DIR/initramfs.tar.gz || err 91
 
         cp $USERSFS $STEP_DIR/usersfs.tar.gz || err 92
 

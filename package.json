@@ -36,7 +36,7 @@
   "private": true,
   "dependencies": {
     "nodeos-barebones": "^1.0.0-RC3.1",
-    "nodeos-initramfs": "^1.0.0-RC3.2",
+    "nodeos-initramfs": "NodeOS/nodeos-initramfs",
     "nodeos-usersfs": "NodeOS/nodeos-usersfs"
   },
   "devDependencies": {
