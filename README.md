@@ -148,6 +148,15 @@ If you encounter an error when building NodeOS, take a look at
 [the wiki](https://github.com/NodeOS/NodeOS/wiki/Fixing-NodeOS-Build-Errors) or
 open an [issue](https://github.com/NodeOS/NodeOS/issues).
 
+## Single Process OS
+
+NodeOS can be used as a Single Process OS, where only run a single executable.
+To do so, set the `SINGLE_USER` environment variable to the name of a `npm`
+module when executing `npm run build`. This will run fully from initram,
+persistence can be achieved by setting this environment variable to an empty
+string and later using a custom `usersfs` partition, but this is still
+experimental.
+
 ## NodeOS on LXC containers (Docker and vagga)
 
 NodeOS fully officially supports Docker, published images are available at the
