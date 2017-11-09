@@ -17,9 +17,14 @@ do
     shift
 done
 
-grep -q -e "vmx" -e "svm" /proc/cpuinfo
-if [ $? -eq 0 ]; then
-  QEMU="$QEMU -enable-kvm"
+# Check for hardware-virtualization support
+if [ "$(egrep -m 1 '^flags.*(vmx|svm)' /proc/cpuinfo)" ]
+then
+    echo ">>> KVM: ON "
+    export QEMU="qemu-system-x86_64 -M accel=kvm:tcg"
+else
+    echo ">>> KVM: OFF "
+    export QEMU="qemu-system-i386"
 fi
 
 $QEMU                        \
