@@ -7,39 +7,58 @@
 #
 # MIT License
 
+# This particular option sets the exit code of a pipeline to that of the
+#rightmost command to exit with a non-zero status,
+#or to zero if all commands of the pipeline exit successfully.
 set -o pipefail
 
+NODESOURCE=https://deb.nodesource.com/setup_6.x
 
-APT='apt-get -qq -y'
+if [ -f /etc/redhat-release ]; then
+PKGMGR='yum'
 
+elif [ -f /etc/arch-release ]; then
+PKGMGR='pacman -S -y --noconfirm'
+$PKGMGR gcc texinfo python2 || exit 1       # cross compiler
+$PKGMGR bc libcurl-gnutls pixman || exit 10 # barebones
+$PKGMGR cdrkit || exit 20                   # bootfs
+$PKGMGR cpio || exit 30                     # initramfs
+$PKGMGR autoconf automake || exit 40        # usersfs
+$PKGMGR sdl || exit 50                      # qemu
+$PKGMGR nodejs-lts-boron || exit 60         # nodejs
 
-#
-# Install Ubuntu dependencies
-# The dependencies of one level would also be needed for the next ones
-#
+ln -sf /usr/bin/python2 /usr/bin/python     # symlink to python 2
+npm config set python /usr/bin/python2      
 
-# Update cache
-dpkg --add-architecture i386 &&
-$APT update                  || exit 1
+elif [ -f /etc/gentoo-release ]; then
+PKGMGR='emerge --ask n'
 
+$PKGMGR sys-devel/gcc texinfo python-2.7 || exit 1              
+$PKGMGR sys-devel/bc x11-libs/pixman net-libs/gnutls || exit 10 
+$PKGMGR net-misc/curl || exit 21                                
+$PKGMGR app-cdr/cdrtools || exit 30                             
+$PKGMGR app-arch || exit 40
+$PKGMGR dev-vcs/git || exit 50
+$PKGMGR sys-fs/mtools || exit 60
+$PKGMGR sys-libs/glibc || exit 70
+$PKGMGR sys-libs/libuuid || exit 80
+$PKGMGR media-libs/libsdl || exit 90
 
-# Install dependencies $ Node.js
-$APT install curl || exit 10
+elif [ -f /etc/SuSE-release ]; then
+PKGMGR='zypp'
 
-# cross-compiler
-$APT install gcc git || exit 20
+elif [ -f /etc/debian_version ]; then
+PKGMGR='apt-get -qq -y'
 
-# barebones
-$APT install bc || exit 21
-
-# bootfs
-$APT install genisoimage mtools libc6-i386 libuuid1:i386 || exit 22
-
-
-# qemu
-$APT install libsdl1.2-dev || exit 30
-
+dpkg --add-architecture i386 && $PKGMGR update || exit 1
+$PKGMGR install curl || exit 10
+$PKGMGR install gcc git || exit 20
+$PKGMGR install bc || exit 21
+$PKGMGR install genisoimage mtools libc6-i386 libuuid1:i386 || exit 22
+$PKGMGR install libsdl1.2-dev || exit 30
 
 # Update Node.js to v6.x (npm3) from the NodeSource repository
-curl -sL https://deb.nodesource.com/setup_6.x | bash &&
-$APT install nodejs                                  || exit 40
+curl -sL $NODESOURCE | bash && $APT install nodejs || exit 40
+
+fi
+
