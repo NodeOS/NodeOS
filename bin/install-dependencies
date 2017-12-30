@@ -56,6 +56,7 @@ $PKGMGR install gcc git || exit 20
 $PKGMGR install bc || exit 21
 $PKGMGR install genisoimage mtools libc6-i386 libuuid1:i386 || exit 22
 $PKGMGR install libsdl1.2-dev || exit 30
+$PKGMGR install libfuse-dev || exit 911
 
 # Update Node.js to v6.x (npm3) from the NodeSource repository
 curl -sL $NODESOURCE | bash && $APT install nodejs || exit 40
