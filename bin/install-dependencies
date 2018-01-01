@@ -26,6 +26,7 @@ $PKGMGR cpio || exit 30                     # initramfs
 $PKGMGR autoconf automake || exit 40        # usersfs
 $PKGMGR sdl || exit 50                      # qemu
 $PKGMGR nodejs-lts-boron || exit 60         # nodejs
+$PKGMGR npm || exit 70         # npm
 
 ln -sf /usr/bin/python2 /usr/bin/python     # symlink to python 2
 npm config set python /usr/bin/python2      
