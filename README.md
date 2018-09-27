@@ -10,7 +10,6 @@ MIT License
 [![Build Status](https://semaphoreapp.com/api/v1/projects/71d72807-779a-40d3-a8d4-523cd0a52eb3/356164/shields_badge.svg)](https://semaphoreapp.com/nodeos/nodeos)
 [![Stories in Ready](https://badge.waffle.io/NodeOS/NodeOS.png?label=ready&title=Ready)](https://waffle.io/NodeOS/NodeOS)
 [![Join the chat at https://gitter.im/NodeOS/NodeOS](https://badges.gitter.im/NodeOS/NodeOS.svg)](https://gitter.im/NodeOS/NodeOS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![bitHound Overall Score](https://www.bithound.io/github/NodeOS/NodeOS/badges/score.svg)](https://www.bithound.io/github/NodeOS/NodeOS)
 [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg)](https://opensource.org/licenses/mit-license.php)   
 
 # NodeOS
