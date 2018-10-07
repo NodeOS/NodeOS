@@ -41,6 +41,7 @@
   },
   "devDependencies": {
     "cpio2tar": "^0.0.5",
+    "lodash": "^4.17.11",
     "minimist": "^1.2.0",
     "nodeos-bootfs": "NodeOS/nodeos-bootfs",
     "nodeos-cross-toolchain": "^1.0.0-RC3.1",
