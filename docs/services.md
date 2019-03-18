@@ -23,4 +23,4 @@ Typically [[init]] or another service manager handles system services.
 - Windows uses ?
 - SmartOS uses `SMF`
 
-NodeOS uses PalmTree as it's service starter. You can read more about working with it here on the wiki (see [[Service Starter|Service Starter (PalmTree)]]) and explore it's [repository](https://github.org/lite20/palmtree) too.
+NodeOS uses PalmTree as it's service starter. You can read more about working with it here on the wiki (see [[Service Starter|Service Starter (PalmTree)]]) and explore it's [repository](https://github.com/lite20/palmtree) too.
