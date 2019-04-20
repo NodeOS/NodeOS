@@ -45,7 +45,7 @@
     "nodeos-bootfs": "NodeOS/nodeos-bootfs",
     "nodeos-cross-toolchain": "^1.0.0-RC3.1",
     "prebuild": "piranna/prebuild#prerelease",
-    "qemu": "^2.9.0",
+    "qemu": "^2.12.0",
     "suppose": "jprichardson/node-suppose",
     "tar2ext": "^0.0.2"
   }
