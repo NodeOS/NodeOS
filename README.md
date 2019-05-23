@@ -87,7 +87,7 @@ or also dedicate a full NodeOS instance to a single Node.js application.
 ## Pre-built Images
 
 Ready to use [pre-build images](https://github.com/NodeOS/NodeOS/releases) are
-automatically generated after each commit in master branch that sucessfully
+automatically generated after each commit in master branch that successfully
 [pass the tests](https://semaphoreapp.com/nodeos/nodeos). To exec them, you'll
 need to have [QEmu](http://wiki.qemu.org/Main_Page) installed on your system.
 
