@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "cpio2tar": "^0.0.5",
-    "minimist": "^1.2.0",
+    "minimist": "1.2.0",
     "nodeos-bootfs": "NodeOS/nodeos-bootfs",
     "nodeos-cross-toolchain": "^1.0.0-RC3.1",
     "prebuild": "piranna/prebuild#prerelease",
