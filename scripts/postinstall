@@ -1,131 +1,16 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
-BLD=$(tput bold)
-GRY="\e[90m"
+# NodeOS
+#
+# Copyright (c) 2013-2017 Jacob Groundwater, Jesús Leganés-Combarro 'piranna'
+# and other contributors
+#
+# MIT License
 
+# HACK `npm` add all the binaries to the `node_modules/.bin` folder without
+# matter what package installed it, so `env` from `usrbinenv` gets available on
+# the `$PATH` during build process, making it to fail since its shebang is
+# `#!/bin/node`, that's only valid on NodeOS, so we need to remove the symlink
+# to make it not interfere with the build process
 
-TOOLCHAIN=`pwd`/node_modules/nodeos-cross-toolchain
-
-source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
-
-
-OUT_DIR=`pwd`/out/$CPU_FAMILY/$PLATFORM
-
-
-# Disk images are a composition of rootfs and usersfs
-function createDiskImage() {
-  mkdir -p `dirname $OBJECTS`
-
-  # ToDo: sizes would need to be on cylinders and retain DOS compatibility
-  # http://elinux.org/RPi_Advanced_Setup#Advanced_SD_card_setup
-
-  ROOTFS=$OUT_DIR/rootfs
-  USERSFS=$OUT_DIR/usersfs
-
-  SIZE_MBR=$((2*1024))
-  SIZE_ROOTFS=$(stat -L -c%s "$ROOTFS")
-  SIZE_ROOTFS=$(($SIZE_ROOTFS/512))
-  START_USERSFS=$(($SIZE_MBR+$SIZE_ROOTFS))
-
-  dd if=/dev/zero of=$OBJECTS count=$SIZE_MBR &&
-  cat $ROOTFS  >> $OBJECTS                    &&
-  cat $USERSFS >> $OBJECTS                    || exit 10
-
-  eval "echo \"$(< resources/sfdisk.txt)\"" | \
-      /sbin/sfdisk -uS --force $OBJECTS || exit 11
-}
-
-
-if [[ ! -z "$RELEASE" ]]; then
-  ZIP_FILE=$OUT_DIR/$CPU_FAMILY-$PLATFORM.zip
-
-  rm -f $ZIP_FILE
-
-  case $PLATFORM in
-    pc_qemu)
-      zip -j $ZIP_FILE              \
-        resources/runners/README.md \
-        $OUT_DIR/barebones          \
-        $OUT_DIR/initramfs          \
-        $OUT_DIR/usersfs            || exit 20
-
-      eval "echo -e \"$(< resources/runners/runner_header.sh)\"" > /tmp/run.sh &&
-      cat resources/runners/qemu.sh                             >> /tmp/run.sh || exit 21
-
-      chmod +x /tmp/run.sh         &&
-      zip -j $ZIP_FILE /tmp/run.sh || exit 22
-    ;;
-
-    pc_iso)
-      zip -j $ZIP_FILE              \
-        resources/runners/README.md \
-        $OUT_DIR/rootfs             \
-        $OUT_DIR/usersfs            || exit 30
-
-      eval "echo -e \"$(< resources/runners/runner_header.sh)\"" > /tmp/run.sh &&
-      cat resources/runners/iso.sh                              >> /tmp/run.sh || exit 31
-
-      chmod +x /tmp/run.sh         &&
-      zip -j $ZIP_FILE /tmp/run.sh || exit 32
-    ;;
-
-    raspberry_image)
-      createDiskImage || exit $?
-
-      eval "echo -e \"$(< resources/runners/runner_header.sh)\"" > /tmp/run.sh &&
-      cat resources/runners/raspberry.sh                        >> /tmp/run.sh || exit 40
-
-      chmod +x /tmp/run.sh         &&
-      zip -j $ZIP_FILE /tmp/run.sh || exit 41
-
-      zip -j $ZIP_FILE resources/runners/README.md || exit 42
-    ;;
-
-    vagga)
-      cp resources/runners/README_vagga.md /tmp/README.md || exit 50
-
-      zip -j $ZIP_FILE       \
-        /tmp/README.md       \
-        $OUT_DIR/barebones   \
-        $OUT_DIR/initramfs   \
-        $OUT_DIR/usersfs     \
-        resources/vagga.yaml || exit 51
-    ;;
-
-    *)
-      echo -e "${RED}Unknown platform '$PLATFORM'${CLR}"
-      exit 60
-    ;;
-  esac
-fi
-
-
-echo -e "${GRY}------------------------------------------${CLR}"
-echo -e "${GRN}${BLD}Success!${CLR}"
-echo -e "${GRN}You just built a custom NodeOS image${CLR}"
-echo -e "${GRY}------------------------------------------${CLR}"
-echo
-echo -e "- Interactively run your image with:"
-
-case $PLATFORM in
-  docker)
-    echo -e "${WHT}    npm run dockerBuild ${CLR}"
-    echo -e "${WHT}    docker run -t -i NodeOS${CLR}"
-    echo
-    echo -e "- Share your creation with:"
-    echo -e "${WHT}    docker push NodeOS${CLR}"
-  ;;
-
-  vagga)
-    echo -e "${WHT}    vagga run${CLR}"
-  ;;
-
-  *_img|*_iso|*_qemu)
-    echo -e "${WHT}    npm start${CLR}"
-  ;;
-
-  *)
-    echo -e "${RED}Unknown platform '$PLATFORM'${CLR}"
-    exit 70
-  ;;
-esac
+rm -f node_modules/.bin/env

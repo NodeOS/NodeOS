@@ -1,0 +1,210 @@
+#!/usr/bin/env bash
+
+# NodeOS
+#
+# Copyright (c) 2013-2017 Jacob Groundwater, Jesús Leganés-Combarro 'piranna'
+# and other contributors
+#
+# MIT License
+
+BLD=$(tput bold)
+GRY="\e[90m"
+
+
+TOOLCHAIN=`pwd`/node_modules/nodeos-cross-toolchain
+
+source $TOOLCHAIN/scripts/adjustEnvVars.sh || exit $?
+
+
+# Default kernel and platform
+if [[ -z "$PLATFORM" ]]; then
+  PLATFORM=qemu
+fi
+
+
+OUT_DIR=`pwd`/out/$CPU_FAMILY/$MACHINE/$PLATFORM
+
+
+if [[ ! -z "$RELEASE" ]]; then
+  ZIP_FILE=prebuilds/$CPU_FAMILY-$MACHINE-$PLATFORM.zip
+
+  mkdir -p prebuilds
+  rm -f $ZIP_FILE
+
+  case $MACHINE in
+    pc)
+      case $PLATFORM in
+        disk)
+          eval "echo -e \"$(< resources/runners/runner_header.sh)\"" > /tmp/run.sh &&
+          cat resources/runners/disk.sh                             >> /tmp/run.sh || exit 30
+
+          chmod +x /tmp/run.sh         &&
+          zip -j $ZIP_FILE /tmp/run.sh || exit 31
+
+          zip -j $ZIP_FILE              \
+            resources/runners/README.md \
+            $OUT_DIR/disk.img           || exit 32
+        ;;
+
+        docker)
+          cp resources/runners/README_docker.md /tmp/README.md || exit 20
+
+          cp resources/runners/docker.sh /tmp/run.sh &&
+          chmod +x /tmp/run.sh                       &&
+          zip -j $ZIP_FILE /tmp/run.sh               || exit 21
+
+          zip -j $ZIP_FILE            \
+            /tmp/README.md            \
+            $OUT_DIR/barebones.tar.gz \
+            $OUT_DIR/initramfs.tar.gz \
+            $OUT_DIR/usersfs.tar.gz   \
+            resources/Dockerfile      || exit 22
+        ;;
+
+        img)
+          eval "echo -e \"$(< resources/runners/runner_header.sh)\"" > /tmp/run.sh &&
+          cat resources/runners/img.sh                              >> /tmp/run.sh || exit 30
+
+          chmod +x /tmp/run.sh         &&
+          zip -j $ZIP_FILE /tmp/run.sh || exit 31
+
+          zip -j $ZIP_FILE            \
+          resources/runners/README.md \
+            $OUT_DIR/bootfs.img       \
+            $OUT_DIR/usersfs.img      || exit 32
+        ;;
+
+        iso)
+          eval "echo -e \"$(< resources/runners/runner_header.sh)\"" > /tmp/run.sh &&
+          cat resources/runners/iso.sh                              >> /tmp/run.sh &&
+          cp resources/runners/README_iso.md /tmp/README.md                        || exit 40
+
+          chmod +x /tmp/run.sh         &&
+          zip -j $ZIP_FILE /tmp/run.sh || exit 41
+
+          zip -j $ZIP_FILE                  \
+            /tmp/README.md                  \
+            bin/installUSB                  \
+            $OUT_DIR/bootfs.iso             \
+            $OUT_DIR/usersfs.img            || exit 42
+        ;;
+
+        qemu)
+          eval "echo -e \"$(< resources/runners/runner_header.sh)\"" > /tmp/run.sh &&
+          cat resources/runners/qemu.sh                             >> /tmp/run.sh || exit 50
+
+          chmod +x /tmp/run.sh         &&
+          zip -j $ZIP_FILE /tmp/run.sh || exit 51
+
+          zip -j $ZIP_FILE              \
+            resources/runners/README.md \
+            $OUT_DIR/kernel             \
+            $OUT_DIR/initramfs.cpio.gz  \
+            $OUT_DIR/usersfs.img        || exit 52
+        ;;
+
+        vagga)
+          cp resources/runners/README_vagga.md /tmp/README.md || exit 60
+
+          zip -j $ZIP_FILE            \
+            /tmp/README.md            \
+            $OUT_DIR/barebones.tar.gz \
+            $OUT_DIR/initramfs.tar.gz \
+            $OUT_DIR/usersfs.tar.gz   \
+            resources/vagga.yaml || exit 61
+        ;;
+
+        *)
+          echo -e "${RED}Unknown platform '$PLATFORM'${CLR}"
+          exit 70
+        ;;
+      esac
+    ;;
+
+    raspi|raspi2|raspi3)
+      case $PLATFORM in
+        disk)
+          eval "echo -e \"$(< resources/runners/runner_header.sh)\"" > /tmp/run.sh &&
+          cat resources/runners/disk.sh                             >> /tmp/run.sh || exit 30
+
+          chmod +x /tmp/run.sh         &&
+          zip -j $ZIP_FILE /tmp/run.sh || exit 31
+
+          zip -j $ZIP_FILE              \
+            resources/runners/README.md \
+            $OUT_DIR/disk.img           || exit 32
+        ;;
+
+        img)
+          eval "echo -e \"$(< resources/runners/runner_header.sh)\"" > /tmp/run.sh &&
+          cat resources/runners/img.sh                              >> /tmp/run.sh || exit 80
+
+          chmod +x /tmp/run.sh         &&
+          zip -j $ZIP_FILE /tmp/run.sh || exit 81
+
+          zip -j $ZIP_FILE              \
+            resources/runners/README.md \
+            $OUT_DIR/bootfs.img         \
+            $OUT_DIR/usersfs.img        || exit 82
+        ;;
+
+        qemu)
+          eval "echo -e \"$(< resources/runners/runner_header.sh)\"" > /tmp/run.sh &&
+          cat resources/runners/qemu.sh                             >> /tmp/run.sh || exit 90
+
+          chmod +x /tmp/run.sh         &&
+          zip -j $ZIP_FILE /tmp/run.sh || exit 91
+
+          zip -j $ZIP_FILE              \
+            resources/runners/README.md \
+            $OUT_DIR/kernel             \
+            $OUT_DIR/dts                \
+            $OUT_DIR/initramfs.cpio.gz  \
+            $OUT_DIR/usersfs.img        || exit 92
+        ;;
+
+        *)
+          echo -e "${RED}Unknown platform '$PLATFORM'${CLR}"
+          exit 100
+        ;;
+      esac
+    ;;
+
+    *)
+      echo -e "${RED}Unknown machine '$MACHINE'${CLR}"
+      exit 110
+    ;;
+  esac
+fi
+
+
+echo -e "${GRY}------------------------------------------${CLR}"
+echo -e "${GRN}${BLD}Success!${CLR}"
+echo -e "${GRN}You just built a custom NodeOS image${CLR}"
+echo -e "${GRY}------------------------------------------${CLR}"
+echo
+echo -e "- Interactively run your image with:"
+
+case $PLATFORM in
+  disk|img|iso|qemu)
+    echo -e "${WHT}    npm start${CLR}"
+  ;;
+
+  docker)
+    echo -e "${WHT}    npm run dockerBuild${CLR}"
+    echo -e "${WHT}    npm start${CLR}"
+    echo
+    echo -e "- Share your creation with:"
+    echo -e "${WHT}    docker push nodeos/nodeos${CLR}"
+    echo
+    echo -e "You would need administrator permissions to exec that commands"
+  ;;
+
+  vagga)
+    echo -e "${WHT}    vagga run${CLR}"
+  ;;
+
+  *)
+    echo -e "${RED}Unknown platform '$PLATFORM'${CLR}"
+  ;;
+esac

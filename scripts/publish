@@ -1,37 +1,45 @@
 #!/usr/bin/env node
 
-var resolve = require('path').resolve
+/**
+ * NodeOS
+ *
+ * @copyright 2013-2017 Jacob Groundwater, Jesús Leganés-Combarro 'piranna'
+ *  and other contributors
+ *
+ * @license MIT
+ */
 
-var publishRelease = require('publish-release')
+const readdir = require('fs').readdir
 
+const upload = require('prebuild/upload')
+
+
+const PREBUILDS = 'prebuilds'
+
+const PKG = require('../package.json')
 
 const token = process.env.GITHUB_TOKEN
 if(!token) throw 'GITHUB_TOKEN environment variable is not defined'
 
-const tag = (new Date()).toISOString().substr(0,10)
+var prerelease = (new Date()).toISOString().substr(0,10)
 
-var branch_name = process.env.BRANCH_NAME
-if(branch_name && branch_name !== 'master') tag += ' ('+branch_name+')'
+const branch_name = process.env.BRANCH_NAME
+if(branch_name && branch_name !== 'master') return
 
-var opts =
+readdir(PREBUILDS, function(err, files)
 {
-  token: token,
-  owner: 'NodeOS',
-  repo: 'NodeOS',
-  tag: tag,
-  prerelease: true,
-  assets:
-  [
-    'out/i386/pc_iso/i386-pc_iso.zip',
-    'out/i386/pc_qemu/i386-pc_qemu.zip',
-    'out/i386/vagga/i386-vagga.zip',
-    'out/x86_64/pc_iso/x86_64-pc_iso.zip',
-    'out/x86_64/pc_qemu/x86_64-pc_qemu.zip',
-    'out/x86_64/vagga/x86_64-vagga.zip'
-  ]
-}
+  if(err) throw err
 
-publishRelease(opts, function(error)
-{
-  if(error) throw error
+  const opts =
+  {
+    upload: token,
+    pkg: PKG,
+    prerelease: prerelease,
+    files: files.map(function(file){return PREBUILDS+'/'+file})
+  }
+
+  upload(opts, function(error)
+  {
+    if(error) throw error
+  })
 })

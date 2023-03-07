@@ -1,4 +1,15 @@
+# NodeOS
+#
+# Copyright (c) 2013-2017 Jacob Groundwater, Jesús Leganés-Combarro 'piranna'
+# and other contributors
+#
+# MIT License
+
+node_modules/
 npm-debug.log
-out/
 .vagga/
+.vagrant/
+build/
 deps/
+out/
+prebuilds/

@@ -1,21 +1,37 @@
+# NodeOS
+#
+# Copyright (c) 2013-2017 Jacob Groundwater, Jesús Leganés-Combarro 'piranna'
+# and other contributors
+#
+# MIT License
+
 containers:
-  NodeOS:
+  bootfs:
+    auto-clean: true
+    hosts-file-path: null
+    resolv-conf-path: null
     setup:
     - !Tar
-      url: ./out/latest/barebones
+      url: ./out/latest/barebones.tar.gz
     - !Tar
-      url: ./out/latest/initramfs
+      url: ./out/latest/initramfs.tar.gz
+    - !Tar
+      url: ./out/latest/usersfs.tar.gz
+      path: /tmp
     volumes:
-      /tmp: !BindRW ./out/latest/usersfs
+      /tmp: !Persistent usersfs
 
 commands:
   run: !Command
     description: Start NodeOS
-    container: NodeOS
+    container: bootfs
+#    volumes:
+#      /tmp: !Persistent
+#        name: usersfs
     environ:
-      PWD: /
-      root: ''
-    pid1mode: exec
+#       PWD: /
+#      root: ''
+      root: 'container'
+#     pid1mode: exec
     run: [/init]
-#    run: /tmp/bin/logon
     write-mode: transient-hard-link-copy

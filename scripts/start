@@ -1,85 +1,26 @@
 #!/usr/bin/env node
 
-var fs = require('fs');
+/**
+ * NodeOS
+ *
+ * @copyright 2013-2017 Jacob Groundwater, Jesús Leganés-Combarro 'piranna'
+ *  and other contributors
+ *
+ * @license MIT
+ */
 
-var spawn = require('child_process').spawn
+const spawn = require('child_process').spawn
+
+const prepareCommandLine = require('..')
 
 
-const QEMU_SYSTEM = 'qemu-system-'
+const {command, argv, cwd} = prepareCommandLine(process.argv.slice(2))
 
 
-var link = fs.readlinkSync('out/latest').split('/');
-
-var cpu_family = link[link.length-2]
-var machine
-
-switch(cpu_family)
+// Exec NodeOS
+spawn(command, argv, {stdio: 'inherit', cwd})
+.on('error', console.trace.bind(console))
+.on('exit', function(code, signal)
 {
-  case 'arm':
-    machine = 'versatilepb'
-  break
-}
-
-var append =
-[
-  'root=/dev/sda',
-  'ip=dhcp'
-]
-var graphicFlag
-
-switch(process.argv[2])
-{
-  case 'nographic':
-    append.push('console=ttyS0')  // redirect to terminal
-    graphicFlag = 'nographic'
-  break
-
-  case 'curses':
-    append.push('vga=extended')  // 80x50
-    graphicFlag = 'curses'
-  break
-
-  default:
-    append.push('vga=0x344')  // 1024x768x32
-}
-
-var command = QEMU_SYSTEM+cpu_family
-
-var args =
-[
-  '-enable-kvm',
-  '-vga', 'std',
-  '-m', '256M',
-  '-redir', 'tcp:50080::80',
-  '-redir', 'tcp:50443::443',
-  '--kernel', 'out/latest/barebones',
-  '--initrd', 'out/latest/initramfs',
-  '-hda',     'out/latest/usersfs',
-  '-append',  append.join(' ')
-]
-
-if(machine) args.unshift('-machine', machine)
-
-if(graphicFlag)
-  args.push('-'+graphicFlag)
-
-// check if kvm is supported
-var kvm = /(vmx|svm)/;
-var contents = "";
-
-try
-{
-  contents = fs.readFileSync('/proc/cpuinfo');
-} catch(e){
-  throw(e);
-}
-
-if(kvm.test(contents) === false)
-{
-  // disable kvm
-  console.log("Your computer does not support kvm. NodeOS will be slower without it.");
-  args.shift();
-}
-
-spawn(command, args, {stdio: 'inherit'})
-.on('error', console.trace.bind(console));
+  process.exit(code || signal)
+})

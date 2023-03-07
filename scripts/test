@@ -1,5 +1,81 @@
-#!/usr/bin/env bash
+#!/usr/bin/env node
 
-cd node_modules/nodeos-barebones
+/**
+ * NodeOS
+ *
+ * @copyright 2013-2017 Jacob Groundwater, Jesús Leganés-Combarro 'piranna'
+ *  and other contributors
+ *
+ * @license MIT
+ */
 
-npm test || exit 1
+const join = require('path').join
+
+const suppose = require('suppose')
+
+const prepareCommandLine = require('..')
+
+
+const TIMEOUT = 300  // seconds
+
+
+let {command, argv, cwd, platform, timeout_rate} =
+                        prepareCommandLine(process.argv.slice(2), 'nographic')
+
+switch(platform)
+{
+  case 'tar':
+    fs.accessSync(join(cwd, 'bootfs.tar.gz'))
+    fs.accessSync(join(cwd, 'usersfs.tar.gz'))
+    process.exit()
+  break
+
+  case 'vagga':
+    fs.accessSync(join(cwd, 'barebones.tar.gz'))
+    fs.accessSync(join(cwd, 'initramfs.tar.gz'))
+    fs.accessSync(join(cwd, 'usersfs.tar.gz'))
+    process.exit()
+  break
+}
+
+
+// Exec test
+let exe
+let timeout = setTimeout(function()
+{
+  exe.kill()
+
+  console.error('Timeout while waiting an answer')
+  process.exit(-2)
+}, TIMEOUT*timeout_rate*1000)
+
+
+const options = {stripAnsi: true, debug: true, cwd}
+//const options = {stripAnsi: true, debug: process.argv[2] === 'debug', cwd}
+exe = suppose(command, argv, options)
+
+// On disk images, hook on the bootloader and force kernel to output to console
+if(platform === 'disk' || platform === 'img' || platform === 'iso')
+  exe.when('boot: ').respond('NodeOS console=ttyS0\n')
+
+exe
+.when(/username: /, 'nodeos\n')
+.when(/password: /, 'nodeos\n')
+.when('~ > '      , 'node\n')
+.when('> ', 'setTimeout(console.log, 2000, "this is","a test")\n')
+.when(/this is a test/, function(exe)
+{
+  exe.kill()
+})
+.on('error', function(error)
+{
+  if(error.message.indexOf('terminating on signal 15 from pid') < 0)
+    console.trace(error)
+})
+.end(function()
+{
+  clearTimeout(timeout)
+
+  var expects = this.expects.length
+  if(expects) process.exit(expects)
+})

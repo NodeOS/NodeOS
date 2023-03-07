@@ -1,10 +1,45 @@
 #!/usr/bin/env bash
 
+# NodeOS
+#
+# Copyright (c) 2013-2017 Jacob Groundwater, Jesús Leganés-Combarro 'piranna'
+# and other contributors
+#
+# MIT License
 
-PLATFORM=iso_32    npm install --no-spin || exit 1
-PLATFORM=iso_64    npm install --no-spin || exit 2
-PLATFORM=qemu_32   npm install --no-spin || exit 3
-PLATFORM=qemu_64   npm install --no-spin || exit 4
-#PLATFORM=raspberry npm install --no-spin || exit 5
-PLATFORM=vagga_32  npm install --no-spin || exit 6
-PLATFORM=vagga_64  npm install --no-spin || exit 7
+# This script should generate all the possible build combinations of NodeOS and
+# test them by being able to login and exec a Node.js REPL. In some cases This
+# is not fully possible and so they should be improved in the future
+
+
+BUILD="npm run build --no-spin"
+DOCKER="npm run dockerBuild"
+TEST="npm test"
+
+
+eval MACHINE=pc PLATFORM=disk BITS=32 $BUILD && $TEST || exit 1
+eval MACHINE=pc PLATFORM=disk BITS=64 $BUILD && $TEST || exit 2
+eval MACHINE=pc PLATFORM=img  BITS=32 $BUILD && $TEST || exit 3
+eval MACHINE=pc PLATFORM=img  BITS=64 $BUILD && $TEST || exit 4
+eval MACHINE=pc PLATFORM=iso  BITS=32 $BUILD && $TEST || exit 5
+eval MACHINE=pc PLATFORM=iso  BITS=64 $BUILD && $TEST || exit 6
+eval MACHINE=pc PLATFORM=qemu BITS=32 $BUILD && $TEST || exit 7
+eval MACHINE=pc PLATFORM=qemu BITS=64 $BUILD && $TEST || exit 8
+
+# Docket tests disabled because SemaphoreCI don't support OverlayFS (yet)
+eval MACHINE=pc PLATFORM=docker BITS=32 $BUILD && $DOCKER || exit 9
+eval MACHINE=pc PLATFORM=docker BITS=64 $BUILD && $DOCKER || exit 10
+# eval MACHINE=pc PLATFORM=docker BITS=32 $BUILD && $DOCKER && $TEST || exit 9
+# eval MACHINE=pc PLATFORM=docker BITS=64 $BUILD && $DOCKER && $TEST || exit 10
+
+# eval MACHINE=pc PLATFORM=tar   BITS=32 $BUILD && $TEST || exit 11
+# eval MACHINE=pc PLATFORM=tar   BITS=64 $BUILD && $TEST || exit 12
+# eval MACHINE=pc PLATFORM=vagga BITS=32 $BUILD && $TEST || exit 13
+# eval MACHINE=pc PLATFORM=vagga BITS=64 $BUILD && $TEST || exit 14
+
+# eval MACHINE=raspi  PLATFORM=disk $BUILD && $TEST || exit 15
+# eval MACHINE=raspi  PLATFORM=img  $BUILD && $TEST || exit 16
+# eval MACHINE=raspi  PLATFORM=qemu $BUILD && $TEST || exit 17
+# eval MACHINE=raspi2 PLATFORM=disk $BUILD && $TEST || exit 18
+# eval MACHINE=raspi2 PLATFORM=img  $BUILD && $TEST || exit 19
+# eval MACHINE=raspi2 PLATFORM=qemu $BUILD && $TEST || exit 20

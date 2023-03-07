@@ -1,3 +1,10 @@
+# NodeOS
+#
+# Copyright (c) 2013-2017 Jacob Groundwater, Jesús Leganés-Combarro 'piranna'
+# and other contributors
+#
+# MIT License
+
 while [ ! $# -eq 0 ]
 do
     case "$1" in
@@ -18,5 +25,5 @@ $QEMU                   \
   -m 256M               \
   -redir tcp:50080::80  \
   -redir tcp:50443::443 \
-  -hda rootfs           \
-  -hdb usersfs
+  -cdrom bootfs.iso     \
+  -hda usersfs.img

@@ -1,21 +1,10 @@
 #!/usr/bin/env sh
 
-(
-  cd node_modules/nodeos-barebones &&
-  npm run unbuild                  || exit 10
-) &&
-(
-  cd node_modules/nodeos-initramfs &&
-  npm run unbuild                  || exit 20
-) &&
-(
-  cd node_modules/nodeos-rootfs    &&
-  npm run unbuild                  || exit 30
-) &&
-(
-  cd node_modules/nodeos-usersfs   &&
-  npm run unbuild                  || exit 40
-) &&
-(
-  rm -rf deps/ out/                || exit 50
-) || exit $?
+# NodeOS
+#
+# Copyright (c) 2013-2017 Jacob Groundwater, Jesús Leganés-Combarro 'piranna'
+# and other contributors
+#
+# MIT License
+
+rm -rf deps/ build/ out/ prebuilds/ || exit $?

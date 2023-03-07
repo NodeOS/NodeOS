@@ -1,5 +1,0 @@
-piranna/forever-monitor
-piranna/forever#starter
-NodeOS/node-bin-getty
-logon
-nodeos-reverse-proxy

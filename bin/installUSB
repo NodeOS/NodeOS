@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# NodeOS
+#
+# Copyright (c) 2013-2017 Jacob Groundwater, Jesús Leganés-Combarro 'piranna'
+# and other contributors
+#
+# MIT License
 
 if [ "$#" -ne 3 ]; then
   echo "Usage: $0 <DEVICE> <ROOTFS> <USERSFS>"
@@ -9,24 +15,28 @@ fi
 DEVICE=$1
 PARTITION=${DEVICE}2
 
-ROOTFS=$2
+BOOTFS=$2
 USERSFS=$3
 
 
-# Install disk image on USB
+# Copy bootfs & usersfs partition images on USB device
 
-SIZE_ROOTFS=$(stat -L -c%s "$ROOTFS")
-SIZE_ROOTFS=$(($SIZE_ROOTFS/512))
+SIZE_BOOTFS=$(stat -L -c%s "$BOOTFS")
+SIZE_BOOTFS=$(($SIZE_BOOTFS/512))
 
-dd if=$ROOTFS  of=$DEVICE                   &&
-dd if=$USERSFS of=$DEVICE seek=$SIZE_ROOTFS || exit 11
+dd if=$BOOTFS  of=$DEVICE                   &&
+dd if=$USERSFS of=$DEVICE seek=$SIZE_BOOTFS || exit 11
+sync
 
 
-# Resize usersfs partition
+# Create new partition for usersfs on USB device
 
 cat resources/fdisk-installUSB.txt | fdisk $DEVICE || exit 12
+sync
+
+
+# Resize usersfs partition to fill remaining free space
 
 e2fsck -f -y $PARTITION
 resize2fs -p $PARTITION || exit 13
-
 sync

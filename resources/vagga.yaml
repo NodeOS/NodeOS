@@ -1,3 +1,10 @@
+# NodeOS
+#
+# Copyright (c) 2013-2017 Jacob Groundwater, Jesús Leganés-Combarro 'piranna'
+# and other contributors
+#
+# MIT License
+
 containers:
   NodeOS:
     setup:
@@ -5,17 +12,21 @@ containers:
       url: ./barebones
     - !Tar
       url: ./initramfs
-    volumes:
-      /tmp: !BindRW ./usersfs
+  usersfs:
+    data-dirs: [/nodeos, /root]
+    setup:
+    - !Tar
+      url: ./usersfs
 
 commands:
   run: !Command
     description: Start NodeOS
-    container: NodeOS
+    container: bootfs
+    volumes:
+      /tmp: !Container usersfs
     environ:
-      PWD: /
-      root: ''
+#      PWD: /
+      root: 'container'
     pid1mode: exec
     run: [/init]
-#    run: /tmp/bin/logon
     write-mode: transient-hard-link-copy
