@@ -31,9 +31,8 @@ sync
 
 # Create new partition for usersfs on USB device
 
-cat resources/fdisk-installUSB.txt | fdisk $DEVICE || exit 12
+cat fdisk-installUSB.txt | fdisk $DEVICE || exit 12
 sync
-
 
 # Resize usersfs partition to fill remaining free space
 
